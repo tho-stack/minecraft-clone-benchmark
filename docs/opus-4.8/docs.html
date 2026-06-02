@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Voxel Sandbox — Documentation</title>
+<style>
+  :root { --bg:#0e1320; --panel:#161d2e; --ink:#e7eefc; --muted:#9fb0d0; --accent:#7db7ff; --good:#5fd08a; --no:#e07a7a; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  header { padding:34px 40px 22px; border-bottom:1px solid #243049; background:linear-gradient(180deg,#16203a,#0e1320); }
+  header h1 { margin:0 0 6px; font-size:30px; }
+  header p { margin:0; color:var(--muted); }
+  main { max-width:980px; margin:0 auto; padding:30px 28px 80px; }
+  section { margin:34px 0; }
+  h2 { font-size:21px; border-left:4px solid var(--accent); padding-left:12px; margin:0 0 14px; }
+  h3 { font-size:16px; color:var(--accent); margin:20px 0 8px; }
+  p, li { color:#d5ddf0; }
+  code { background:#0a0f1c; padding:2px 6px; border-radius:5px; font:13px ui-monospace,Menlo,Consolas,monospace; color:#bfe0ff; }
+  pre { background:#0a0f1c; padding:14px 16px; border-radius:8px; overflow:auto; border:1px solid #243049; }
+  table { border-collapse:collapse; width:100%; margin:10px 0; }
+  th, td { text-align:left; padding:7px 10px; border-bottom:1px solid #243049; vertical-align:top; }
+  th { color:var(--accent); font-size:13px; text-transform:uppercase; letter-spacing:.4px; }
+  .yes { color:var(--good); font-weight:700; }
+  .partial { color:#e8c46a; font-weight:700; }
+  .pending { color:var(--no); font-weight:700; }
+  .tag { display:inline-block; background:#21304f; color:#bfe0ff; border-radius:5px; padding:1px 7px; font-size:12px; font-family:ui-monospace,monospace; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .card { background:var(--panel); border:1px solid #243049; border-radius:10px; padding:16px 18px; }
+  .log li { margin:6px 0; }
+  .log time { color:var(--accent); font-family:ui-monospace,monospace; font-size:13px; }
+  footer { color:var(--muted); font-size:13px; padding:0 28px 40px; max-width:980px; margin:0 auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Voxel Sandbox — Living Documentation</h1>
+  <p>A single-file, browser-native Minecraft-style voxel game built on Three.js 0.160.0. Seed <code>1337</code>.</p>
+</header>
+<main>
+
+<section id="overview">
+  <h2>Architecture Overview</h2>
+  <p><code>game.html</code> is one self-contained file. The only network request is the pinned Three.js
+  module graph (declared via an <code>importmap</code>); everything else — textures, sounds, fonts, world data —
+  is generated procedurally at runtime. It runs by opening the file directly over <code>file://</code>.</p>
+  <div class="grid">
+    <div class="card"><h3>Rendering</h3><p>Three.js <code>WebGLRenderer</code>, a 70° FOV perspective camera,
+      a directional "sun" + ambient + hemisphere lighting, exponential-ish distance fog, and a gradient sky.</p></div>
+    <div class="card"><h3>World</h3><p>Seeded value/Perlin noise drives terrain height, biomes, caves and tree
+      placement. The world is split into 16×16 columns (chunks), each independently meshed with hidden-face
+      culling and baked ambient occlusion.</p></div>
+    <div class="card"><h3>Streaming</h3><p>Chunks within the render distance are generated/meshed on demand
+      (throttled per frame) and freed when the player walks away — both observable via the HUD chunk count.</p></div>
+    <div class="card"><h3>Player</h3><p>First-person controller with pointer-lock mouse-look, AABB collision,
+      gravity/jump, sprint, and a fly/no-clip mode. Raycast block break/place with a wireframe highlight.</p></div>
+  </div>
+</section>
+
+<section id="features">
+  <h2>Feature Manifest (mirrors <code>game.html</code>)</h2>
+  <p>Status is kept honest: only features that actually work when the file is run are marked done.</p>
+  <table id="manifest">
+    <tr><th>ID</th><th>Feature</th><th>Status</th><th>How it works</th></tr>
+    <tr><td class="tag">scaffold</td><td>Import map, canvas, render loop, HUD, start overlay</td><td class="yes">done</td><td>Loads Three.js via import map; 70° camera; click-to-play pointer-lock overlay.</td></tr>
+    <tr><td class="tag">W1</td><td>Voxel chunk system</td><td class="yes">done</td><td>16×16×64 chunks, Uint8Array storage, independently meshed.</td></tr>
+    <tr><td class="tag">W2</td><td>Seeded terrain (1337)</td><td class="yes">done</td><td>Perlin fBm height; spawn-area FNV-1a hash shown in HUD, identical across reloads.</td></tr>
+    <tr><td class="tag">W3</td><td>13 block types</td><td class="yes">done</td><td>grass, dirt, stone, sand, wood, leaves, water, snow, gravel, planks, glass, cobblestone, bedrock.</td></tr>
+    <tr><td class="tag">W4</td><td>Biomes</td><td class="yes">done</td><td>Plains, Forest (dense trees), Desert (sand), Snowy (snow), Mountains (stone cliffs + snow caps, peaks to ~y60) — temperature/elevation/moisture noise. Spawn sits ~36 blocks from a desert edge.</td></tr>
+    <tr><td class="tag">W5</td><td>Caves</td><td class="yes">done</td><td>3D Perlin cheese + ridged tunnels; a guaranteed cave mouth + chamber carved beside spawn.</td></tr>
+    <tr><td class="tag">W6</td><td>Water</td><td class="yes">done</td><td>Sea level y=30 fills low terrain; transparent mesh in a separate pass.</td></tr>
+    <tr><td class="tag">W7</td><td>Trees</td><td class="yes">done</td><td>Log trunk + layered leaf canopy, deterministic scatter on grass/snow; canopies cross chunk borders seamlessly.</td></tr>
+    <tr><td class="tag">R1</td><td>Procedural textures</td><td class="yes">done</td><td>4×4 canvas atlas drawn per tile; grass top ≠ grass side; logs, cobble, planks, glass, water etc.</td></tr>
+    <tr><td class="tag">R2</td><td>Sun + ambient light</td><td class="yes">done</td><td>Directional sun + ambient + hemisphere; MeshLambert shades faces by orientation.</td></tr>
+    <tr><td class="tag">R3</td><td>Ambient occlusion</td><td class="yes">done</td><td>Per-vertex AO from the 3 occluders at each face corner, baked into vertex colors with anisotropy flip.</td></tr>
+    <tr><td class="tag">R4</td><td>Distance fog</td><td class="yes">done</td><td>THREE.Fog tuned to the render distance, colored to the horizon sky.</td></tr>
+    <tr><td class="tag">R5</td><td>Sky gradient</td><td class="yes">done</td><td>BackSide sky dome with a horizon→zenith gradient shader.</td></tr>
+    <tr><td class="tag">R6</td><td>Transparent water</td><td class="yes">done</td><td>Separate transparent water material (opacity 0.72, depthWrite off, double-sided).</td></tr>
+    <tr><td class="tag">S1</td><td>Chunk streaming</td><td class="yes">done</td><td>Render distance 8; time-budgeted meshing nearest-first; chunks freed beyond distance — HUD count bounded.</td></tr>
+    <tr><td class="tag">S2</td><td>Face culling</td><td class="yes">done</td><td>Only faces touching air/water are meshed; ~200k tris for ~225 chunks vs tens of millions naive.</td></tr>
+    <tr><td class="tag">S3</td><td>FPS ≥ 50 walking</td><td class="yes">done</td><td>Time-budgeted meshing keeps frames smooth; measured min 94 / median 120 FPS sprint-walking fresh terrain at render distance 8.</td></tr>
+    <tr><td class="tag">S4</td><td>HUD instrumentation</td><td class="yes">done</td><td>Live FPS, XYZ, chunk count, render distance, triangles, draw calls, biome, time-of-day, spawn-hash.</td></tr>
+    <tr><td class="tag">P1</td><td>First-person eye camera</td><td class="yes">done</td><td>Camera at feet + 1.62; 70° vertical FOV.</td></tr>
+    <tr><td class="tag">P2</td><td>Pointer-lock mouse-look</td><td class="yes">done</td><td>Yaw/pitch from mouse deltas; pitch clamped ~89°; page scroll suppressed; lock failures swallowed.</td></tr>
+    <tr><td class="tag">P3</td><td>WASD + sprint</td><td class="yes">done</td><td>Movement relative to facing at 4.3 b/s; Shift sprints to 6.2 b/s (measured in-browser).</td></tr>
+    <tr><td class="tag">P4</td><td>Gravity + jump</td><td class="yes">done</td><td>Gravity 28 b/s²; jump apex ~1.29 blocks; lands back on terrain.</td></tr>
+    <tr><td class="tag">P5</td><td>AABB collision</td><td class="yes">done</td><td>Per-axis swept resolution against solid voxels (0.6×1.8×0.6 box); no tunnelling.</td></tr>
+    <tr><td class="tag">P6</td><td>Fly / no-clip</td><td class="yes">done</td><td>F toggles; Space up / Shift down; Ctrl faster; collision disabled while flying.</td></tr>
+    <tr><td class="tag">E4</td><td>Crosshair + pause/help</td><td class="yes">done</td><td>Center crosshair; Esc overlay lists every control and the seed.</td></tr>
+    <tr><td class="tag">I1</td><td>Raycast break</td><td class="yes">done</td><td>Amanatides–Woo voxel DDA; left click clears the block and remeshes it + boundary neighbors.</td></tr>
+    <tr><td class="tag">I2</td><td>Raycast place</td><td class="yes">done</td><td>Right click adds the selected block on the hit face; refused if it would intersect the player.</td></tr>
+    <tr><td class="tag">I3</td><td>Highlight</td><td class="yes">done</td><td>Wireframe edge box tracks the block under the crosshair every frame.</td></tr>
+    <tr><td class="tag">I4</td><td>Hotbar</td><td class="yes">done</td><td>9 slots with procedural icons; 1–9 keys and scroll wheel switch; active slot ringed.</td></tr>
+    <tr><td class="tag">I5</td><td>Inventory</td><td class="yes">done</td><td>E opens a 13-block palette; clicking assigns to the active hotbar slot (more types than the hotbar).</td></tr>
+    <tr><td class="tag">X3</td><td>Web Audio SFX</td><td class="yes">done</td><td>Synthesized dig (filtered noise burst), place (square blips), footstep — no audio files.</td></tr>
+    <tr><td class="tag">X5</td><td>Save / load</td><td class="yes">done</td><td>Debounced localStorage write of edits + player pos/look/hotbar; restored on load. Determinism hash is computed from pure generation so edits never change it.</td></tr>
+    <tr><td class="tag">X1</td><td>Day-night cycle</td><td class="yes">done</td><td>Sun/moon orbit the sky; sky, fog and light colors lerp day→dusk→night; stars fade in; 150 s/day.</td></tr>
+    <tr><td class="tag">X2</td><td>Clouds</td><td class="yes">done</td><td>Procedural cloud texture on a high plane that scrolls overhead and follows the camera.</td></tr>
+    <tr><td class="tag">X4</td><td>Wandering mobs</td><td class="yes">done</td><td>6 box creatures near spawn wander with leg-bob animation, follow terrain height, avoid water/straying.</td></tr>
+  </table>
+</section>
+
+<section id="decisions">
+  <h2>Key Technical Decisions</h2>
+  <ul>
+    <li><b>Single file, pinned CDN.</b> Three.js 0.160.0 is the only fetched resource, via the mandated import map.
+      All assets are procedural so a missing file is impossible.</li>
+    <li><b>Face-culled per-chunk meshes.</b> Each chunk builds one <code>BufferGeometry</code> with only the faces
+      exposed to air, plus a separate transparent mesh for water — keeping triangle counts far below cube-per-block.</li>
+    <li><b>Determinism.</b> All terrain shape derives from a seeded PRNG/noise (no <code>Math.random</code> for shape),
+      so the spawn-area hash in the HUD is identical on every reload.</li>
+  </ul>
+</section>
+
+<section id="devlog">
+  <h2>Dev Log</h2>
+  <ul class="log" id="log">
+    <li><time>2026-06-02</time> — Project scaffolded: import map, fullscreen 70° camera, renderer, render loop,
+      HUD shell (FPS + coords + seed), crosshair, click-to-play pointer-lock overlay, and the FEATURE MANIFEST
+      comment block. Verified it loads with zero console errors. Initial commit.</li>
+    <li><time>2026-06-02</time> — World engine: seeded Perlin noise (mulberry32 permutation), fBm terrain, 5 biomes,
+      3D-noise caves + ridged tunnels, sea-level water, deterministic tree scatter. Chunks (16×16×64) meshed with
+      hidden-face culling + baked ambient occlusion; procedural 4×4 texture atlas (grass top ≠ side). Gradient sky
+      dome, distance fog, sun/ambient/hemisphere lighting, transparent water pass. Time-budgeted chunk streaming
+      (render distance 8) with load <em>and</em> unload. Full HUD instrumentation (FPS, XYZ, chunk count, render
+      distance, triangles, draw calls, spawn hash). Added a deterministic spawn finder that lands the player near
+      water + a tree + a distinct biome, with a carved cave entrance beside spawn. Verified in-browser: 120 FPS,
+      225 chunks, ~250k triangles / ~96–226 draw calls, spawn hash <code>0x1a02f0bb</code> stable across reloads,
+      zero console errors.</li>
+    <li><time>2026-06-02</time> — Player controller: eye-height first-person camera, pointer-lock mouse-look
+      (clamped pitch, scroll suppressed, lock failures swallowed), WASD relative to facing (4.3 b/s, 6.2 sprint —
+      both measured), gravity + Space jump (~1.29 blocks), per-axis AABB collision, and F fly/no-clip
+      (Space up / Shift down / Ctrl faster). Pause/help overlay lists every control + the seed; centered crosshair.</li>
+    <li><time>2026-06-02</time> — Interaction + audio + persistence: Amanatides–Woo voxel raycast for break/place
+      with immediate remeshing, wireframe target highlight, a 9-slot hotbar (number keys + scroll, procedural
+      icons), an E inventory exposing all 13 block types, synthesized Web Audio SFX (dig/place/footstep), and
+      localStorage save/load of edits + player state. Verified in-browser: break/place mutate the world and
+      remesh; inventory has 13 &gt; 9 slots; audio context runs after the play gesture; an edit survives reload
+      while the determinism hash stays <code>0x1a02f0bb</code>. Zero console errors.</li>
+    <li><time>2026-06-02</time> — Final hardening: ran a 17-agent adversarial review (contract / runtime bugs /
+      manifest honesty / determinism+perf). Determinism confirmed (no global RNG in generation). Fixed the one
+      confirmed issue (resume the audio context on keyboard input so footsteps play for keyboard-only movement).
+      Re-tuned terrain so the <b>mountain biome actually renders</b> (stone cliffs + snow caps, peaks ~y58–60)
+      — the manifest now honestly lists 5 biomes. Verified after the change: spawn lands ~36 blocks from a desert
+      edge with water + trees + a carved cave; spawn hash <code>0x04322fec</code> stable across reloads; sustained
+      sprint-walk holds FPS min 94 / median 120 at render distance 8; zero console errors; network panel shows only
+      game.html + the pinned Three.js.</li>
+    <li><time>2026-06-02</time> — Atmosphere &amp; extras: a 150 s day-night cycle (orbiting sun/moon sprites,
+      sky/fog/light colors interpolating through dusk, stars fading in at night, dimmer nights), a scrolling
+      procedural cloud layer, and six wandering box-creature mobs near spawn (leg-bob animation, terrain-following,
+      water/stray avoidance). Verified in-browser: mobs move; stars opacity 0 at noon → 0.9 at midnight; FPS held
+      at 120; zero console errors.</li>
+  </ul>
+</section>
+
+</main>
+<footer>Built as a timed, single-file challenge. This document is updated in the same commits as the code it describes.</footer>
+</body>
+</html>

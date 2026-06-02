@@ -1,0 +1,33 @@
+Benchmark Evaluation License
+Copyright (c) 2026 the author of this repository. All rights reserved.
+
+These materials — the benchmark report, prompt, rubric, screenshots, and the four
+AI-generated `game.html` builds and their documentation (collectively, the
+"Materials") — are made available only so others can study and evaluate this
+benchmark. They are NOT open source.
+
+1. PERMITTED USE (non-commercial). Subject to the conditions below, you may:
+   (a) view and read the Materials;
+   (b) run and play the included builds locally or via the project's hosted
+       page; and
+   (c) reference, quote, and use the prompt, rubric, and report as a benchmark
+       to evaluate or compare AI coding agents,
+   in each case solely for non-commercial evaluation, research, or educational
+   purposes, and with clear attribution to this repository.
+
+2. PROHIBITED WITHOUT PRIOR WRITTEN PERMISSION. You may not:
+   (a) use the Materials, in whole or in part, for any commercial purpose;
+   (b) copy, redistribute, republish, host, sublicense, or sell the Materials
+       (or any substantial portion) as your own work or as a separate dataset
+       or product;
+   (c) modify, adapt, or create derivative works from the Materials;
+   (d) remove or obscure attribution or this license.
+
+3. RESERVATION. All rights not expressly granted in Section 1 are reserved by
+   the copyright holder. For any use beyond this license, contact the copyright
+   holder for written permission.
+
+4. NO WARRANTY. THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+   KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDER BE
+   LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN
+   CONNECTION WITH THE MATERIALS OR THEIR USE.

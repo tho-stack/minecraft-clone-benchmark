@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minecraft-Clone Coding Benchmark — M3 · 2.7-highspeed · GPT-5.5 · Opus-4.8</title>
+<style>
+  :root{
+    --bg:#eef2f7; --panel:#ffffff; --panel2:#f4f7fb; --line:#dbe3ee; --ink:#101a2b; --mut:#516074; --dim:#7c8aa0;
+    --accent:#0e7490; --good:#15803d; --warn:#b45309; --bad:#dc2626;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#eef2f7,#e7eef6 60%,#eef2f7);color:var(--ink);
+    font:15px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial}
+  a{color:var(--accent)}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+  header.hero{border:1px solid var(--line);border-radius:16px;padding:28px;
+    background:radial-gradient(900px 320px at 12% -25%,rgba(14,116,144,.10),transparent),linear-gradient(180deg,#ffffff,#f7fafd)}
+  .kick{color:var(--accent);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+  h1{margin:.3em 0 .15em;font-size:30px;line-height:1.15}
+  .sub{color:var(--mut);max-width:760px}
+  .meta{color:var(--dim);font-size:13px;margin-top:10px}
+  section{margin-top:34px}
+  h2{font-size:20px;border-left:3px solid var(--accent);padding-left:10px;margin:0 0 14px}
+  h3{font-size:16px;margin:0 0 8px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,26,43,.05)}
+  .muted{color:var(--mut)} .dim{color:var(--dim)} small{color:var(--dim)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .rank{color:var(--dim);font-variant-numeric:tabular-nums}
+  .bar{height:8px;border-radius:6px;background:#e6ecf4;overflow:hidden;min-width:120px}
+  .bar > i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#0891b2,#16a34a)}
+  .bar.warn > i{background:linear-gradient(90deg,#f59e0b,#d97706)}
+  .bar.bad > i{background:linear-gradient(90deg,#ef4444,#dc2626)}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line)}
+  .pill.win{background:rgba(21,128,61,.12);color:#15803d;border-color:#a7d8b6}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .chip{font-size:12px;padding:3px 9px;border-radius:999px;background:#eef3f9;border:1px solid var(--line);color:var(--mut)}
+  .chip b{color:var(--ink)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(460px,1fr));gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(16,26,43,.06)}
+  .shot{aspect-ratio:16/10;background:#dde5ee;object-fit:cover;width:100%;border-bottom:1px solid var(--line)}
+  .card .body{padding:16px}
+  .scorebig{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
+  .notebug{font-size:11px;color:var(--dim);text-align:right;margin-top:-4px}
+  .catbars{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;margin:10px 0;font-size:12.5px}
+  .catbars .k{color:var(--mut)} .catbars .v{color:var(--ink);font-variant-numeric:tabular-nums;text-align:right}
+  .sev{font-size:11px;font-weight:700;padding:1px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+  .sev.critical{background:rgba(220,38,38,.12);color:#b91c1c}
+  .sev.high{background:rgba(180,83,9,.14);color:#b45309}
+  .sev.medium{background:rgba(37,99,235,.12);color:#1d4ed8}
+  .sev.low{background:rgba(100,116,139,.14);color:#475569}
+  ul.issues{list-style:none;margin:8px 0 0;padding:0}
+  ul.issues li{padding:7px 0;border-top:1px solid var(--line);display:flex;gap:9px;align-items:flex-start}
+  ul.issues li .t{font-size:13px}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:10px;background:var(--panel2);padding:14px 16px;margin:12px 0}
+  .callout.bad{border-left-color:var(--bad)} .callout.good{border-left-color:var(--good)} .callout.info{border-left-color:#2563eb}
+  code{background:#eef3f9;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12.5px;color:#0b3b4a}
+  .foot{margin-top:46px;color:var(--dim);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  /* gallery of real screenshots */
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .gallery figure{margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);box-shadow:0 1px 3px rgba(16,26,43,.06)}
+  .gallery img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-bottom:1px solid var(--line)}
+  .gallery figcaption{padding:9px 13px;font-size:12.5px;color:var(--mut)} .gallery figcaption b{color:var(--ink)}
+  /* grouped cross-model comparison chart */
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--mut);margin:2px 0 14px}
+  .legend span{display:inline-flex;align-items:center;gap:6px} .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .gchart{display:grid;gap:16px}
+  .gctitle{font-weight:600;font-size:13px;margin-bottom:5px;display:flex;justify-content:space-between;color:var(--ink)}
+  .gctitle .max{color:var(--dim);font-weight:400}
+  .gcrow{display:grid;grid-template-columns:120px 1fr 40px;align-items:center;gap:10px;font-size:12px;margin:3px 0}
+  .gcrow .lbl{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gctrack{height:13px;border-radius:7px;background:#e6ecf4;overflow:hidden}
+  .gctrack > i{display:block;height:100%;border-radius:7px}
+  .gcrow .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .c-opus{background:linear-gradient(90deg,#0e7490,#06b6d4)}
+  .c-gpt{background:linear-gradient(90deg,#15803d,#22c55e)}
+  .c-m3{background:linear-gradient(90deg,#b45309,#f59e0b)}
+  .c-27{background:linear-gradient(90deg,#7c3aed,#a855f7)}
+  @media(max-width:760px){.two{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.gcrow{grid-template-columns:96px 1fr 36px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kick">Coding Benchmark · 2026-06-02</div>
+    <h1>Build-a-Minecraft-Clone: four frontier coding agents, one identical prompt</h1>
+    <p class="sub">Each model was handed the <em>identical</em> spec and asked to build the closest possible Minecraft clone as one
+      self-contained <code>game.html</code> (Three.js, runs from <code>file://</code>, zero external assets) plus living
+      <code>docs.html</code>. Graded on <b>130 points</b> — Quality (100) + Documentation (10) + Speed (20) — from source inspection
+      and live in-browser play, adversarially reviewed twice (Claude + Codex), with the report itself reviewed by Codex.</p>
+    <div class="meta">Contestants: <b>MiniMax-M3</b> (Pi) · <b>MiniMax-2.7-highspeed</b> (Pi) · <b>GPT-5.5</b> (Codex) · <b>Claude Opus-4.8</b> ·
+      run mode <code>/goal</code> + dynamic workflow · world seed 1337.</div>
+  </header>
+  <div class="panel" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="margin-right:4px">▶ Play the four builds live:</b> <a class="chip" href="opus-4.8/game.html">Opus-4.8</a> <a class="chip" href="gpt-5.5/game.html">GPT-5.5</a> <a class="chip" href="minimax-m3/game.html">MiniMax-M3</a> <a class="chip" href="minimax-m2.7-highspeed/game.html">MiniMax-2.7-highspeed</a> <small class="dim">— click the canvas to capture the mouse</small></div>
+
+  <main>
+
+  <div class="callout info" style="margin-top:18px">
+    <b>Scored under the revised “working-integration” rubric.</b> After Codex’s adversarial review of the games <em>and</em> of this report,
+    the rubric was tightened to credit <em>working integration, not announced intent</em> — a feature merely <em>defined</em> (textures,
+    AO) or claimed-but-broken scores zero. Quality is split into five source-evaluable buckets (below). This markedly separates the field
+    and removes the earlier overly-generous 100/100s <small>(rubric score; real bugs exist)</small>.
+  </div>
+
+  <section>
+    <h2>The four builds <small>— real daylight screenshots, captured live in-browser (seed 1337)</small></h2>
+    <div class="gallery">
+      <figure><img src="assets/opus-4.8.jpeg" alt="Opus-4.8 at midday"><figcaption><b>Opus-4.8</b> — wired per-face textures + ambient occlusion, water, a wandering mob, F3 HUD + crosshair. Noon.</figcaption></figure>
+      <figure><img src="assets/minimax-m3.jpeg" alt="MiniMax-M3 at midday"><figcaption><b>MiniMax-M3</b> — the richest world (1.6M triangles): textured trees, stone cliffs, water, mob, live block-highlight. Midday.</figcaption></figure>
+      <figure><img src="assets/gpt-5.5.jpeg" alt="GPT-5.5"><figcaption><b>GPT-5.5</b> — wired textures, drifting clouds, clean F3 HUD. Lower-ambient art with <em>no</em> day-night cycle (fixed lighting).</figcaption></figure>
+      <figure><img src="assets/minimax-m2.7-highspeed.jpeg" alt="MiniMax-2.7-highspeed at midday"><figcaption><b>MiniMax-2.7-highspeed</b> — blue-sky day, coastline + clouds, but <em>flat vertex colors</em>: its textures/AO were never wired into the mesh.</figcaption></figure>
+    </div>
+    <div class="callout info">
+      <b>Why the first screenshots looked dark.</b> Every shot here is a genuine in-browser capture, re-taken at midday. The earlier round
+      simply caught builds <em>after sunset</em> in their <b>day-night cycle</b> — and 2.7 only advances its clock while pointer-locked, so a
+      headless capture sat frozen at midnight. Same worlds, same real lighting. The cycle itself is a graded feature:
+    </div>
+    <div class="gallery">
+      <figure><img src="assets/opus-4.8-night.jpeg" alt="Opus-4.8 at night, same world"><figcaption><b>Opus-4.8 — the very same world at night.</b> Day-night cycle (feature X1): stars fade in, the moon orbits, sky + light lerp. Not a rendering fault — just dusk.</figcaption></figure>
+      <figure style="display:flex;align-items:center;justify-content:center"><figcaption style="padding:18px;font-size:13px"><b>Day-night across the field.</b> Opus, M3 and 2.7 all cycle sky colour + sun/ambient over time; GPT-5.5 ships fixed daylight. Judge brightness from the <b>midday</b> shots above — that's how each looks in normal play.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Verdict</h2>
+    <div class="panel">
+      <p style="margin-top:0">All four shipped <b>running voxel worlds</b> — but only three are <b>actually playable</b>. Under integration-grading,
+      capability and playability split apart: <b>Opus-4.8 leads on capability (96.5)</b> and GPT-5.5 trails it (94.5), both fully playable.
+      <b>MiniMax-M3 out-points 2.7 on raw capability (65.0 vs 60.0)</b> — richer world, real texture/AO wiring — <b>yet its core build loop is
+      broken</b>: duplicated <code>mousedown</code> handlers make every left-click <b>break two blocks</b> and every right-click <b>place two</b>,
+      and the save never restores your position, so it is <b>not playable as a Minecraft clone</b>. 2.7 is the opposite — flat and feature-thin,
+      but it <b>plays</b>. So on the <b>playability-gated headline, 2.7 ranks above M3, and M3 lands last.</b></p>
+      <div class="callout info" style="margin-bottom:0">
+        <b>Two axes, on purpose.</b> <b>Capability</b> = raw rubric points (what the build contains, wired-up). <b>Playable?</b> = can a person
+        actually move, break, place, and persist — the brief asked for a <em>playable</em> clone. M3 wins the capability comparison with 2.7 but
+        <b>fails the playability gate</b>, so the headline ranks playable builds first. (Overall also folds in Docs + Speed; M3’s Speed is
+        unmeasurable after a platform incident.) The benchmark measures <b>model + harness + plugins</b>, not the model alone.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Leaderboards</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Capability <small>(raw rubric · 0–100)</small></h3>
+        <table>
+          <tr><th class="rank">#</th><th>Model</th><th class="num">Capability</th><th class="num">Playable?</th></tr>
+          <tr><td class="rank">1</td><td><b>Opus-4.8</b> <span class="pill win">lead</span></td><td class="num">96.5</td><td class="num">✓</td></tr>
+          <tr><td class="rank">2</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">✓</td></tr>
+          <tr><td class="rank">3</td><td><b>MiniMax-M3</b></td><td class="num">65.0</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span></td></tr>
+          <tr><td class="rank">4</td><td><b>MiniMax-2.7-highspeed</b></td><td class="num">60.0</td><td class="num">✓ <small>flat</small></td></tr>
+        </table>
+        <small>M3 out-points 2.7 on raw capability (richer world + wired textures/AO) but its core build loop is unusable — the headline ranking (right) gates on playability.</small>
+      </div>
+      <div class="panel">
+        <h3>Overall <small>(Quality + Docs + Speed · 0–130)</small></h3>
+        <table>
+          <tr><th class="rank">#</th><th>Model</th><th class="num">Q</th><th class="num">Docs</th><th class="num">Spd</th><th class="num">Total</th></tr>
+          <tr><td class="rank">1</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">10</td><td class="num">4†</td><td class="num"><b>108.5†</b></td></tr>
+          <tr><td class="rank">2</td><td><b>Opus-4.8</b></td><td class="num">96.5</td><td class="num">9</td><td class="num">2</td><td class="num"><b>107.5</b></td></tr>
+          <tr><td class="rank">3</td><td><b>MiniMax-2.7-highspeed</b> <span class="pill win">plays</span></td><td class="num">60.0</td><td class="num">5</td><td class="num">20</td><td class="num"><b>85.0</b></td></tr>
+          <tr><td class="rank dim">4</td><td><b>MiniMax-M3</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">n/a*</td><td class="num"><b>broken*</b></td></tr>
+        </table>
+        <small>Headline ranks <b>playable builds first</b>; Speed = round(20 × T<sub>fastest</sub> / T), T<sub>fastest</sub> = 7 min (2.7-highspeed).<br>
+          <b>†GPT-5.5:</b> T = ~35 min <em>active labor</em> (≈30 core + ≈5 for the later overlay fix) → Speed 4 (calendar delay is a
+          reviewer artifact). Under strict first→final-commit timing (199 min) Speed = 1 → Overall 106.5, in which case <b>Opus leads Overall</b>.<br>
+          <b>*M3:</b> ranked <b>last</b> — its core build loop is unusable (both verbs double-fire; save doesn’t restore), so it fails the
+          playability gate regardless of its 65.0 capability. Timing is also unverifiable after the MiniMax incident → Speed n/a.</small>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Quality by bucket <small>— all four builds across the five rubric buckets</small></h2>
+    <div class="panel">
+      <div class="legend">
+        <span><i class="c-opus"></i> Opus-4.8</span>
+        <span><i class="c-gpt"></i> GPT-5.5</span>
+        <span><i class="c-m3"></i> MiniMax-M3</span>
+        <span><i class="c-27"></i> MiniMax-2.7-highspeed</span>
+      </div>
+      <div class="gchart">
+        <div>
+          <div class="gctitle"><span>World / Terrain</span><span class="max">/ 20</span></div>
+          <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:100%"></i></div><span class="val">20</span></div>
+          <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:95%"></i></div><span class="val">19</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:90%"></i></div><span class="val">18</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:82.5%"></i></div><span class="val">16.5</span></div>
+        </div>
+        <div>
+          <div class="gctitle"><span>Player + Interaction</span><span class="max">/ 22</span></div>
+          <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:95.5%"></i></div><span class="val">21</span></div>
+          <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:93.2%"></i></div><span class="val">20.5</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:31.8%"></i></div><span class="val">7</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.8%"></i></div><span class="val">12.5</span></div>
+        </div>
+        <div>
+          <div class="gctitle"><span>Rendering Authenticity</span><span class="max">/ 22</span></div>
+          <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:100%"></i></div><span class="val">22</span></div>
+          <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:95.5%"></i></div><span class="val">21</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:90.9%"></i></div><span class="val">20</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:45.5%"></i></div><span class="val">10</span></div>
+        </div>
+        <div>
+          <div class="gctitle"><span>Persistence + Atmosphere</span><span class="max">/ 16</span></div>
+          <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:100%"></i></div><span class="val">16</span></div>
+          <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:96.9%"></i></div><span class="val">15.5</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:50%"></i></div><span class="val">8</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.3%"></i></div><span class="val">9</span></div>
+        </div>
+        <div>
+          <div class="gctitle"><span>Scale + Engineering</span><span class="max">/ 20</span></div>
+          <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:87.5%"></i></div><span class="val">17.5</span></div>
+          <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:92.5%"></i></div><span class="val">18.5</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:60%"></i></div><span class="val">12</span></div>
+          <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:60%"></i></div><span class="val">12</span></div>
+        </div>
+      </div>
+      <p class="muted" style="margin:16px 0 0;font-size:12.5px">M3's collapse is concentrated in <b>Player + Interaction</b> (7/22 — both core verbs double-fire) and <b>Persistence</b> (8/16 — no working save); its World + Rendering stay near the top of the field. 2.7's deficit is <b>Rendering</b> (10/22 — textures never wired into the mesh). That's the raw-capability picture — the headline still gates on playability.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>How it was run &amp; graded</h2>
+    <div class="panel">
+      <div class="chips">
+        <span class="chip"><b>Deliverable</b> one self-contained game.html + docs.html</span>
+        <span class="chip"><b>Dep</b> pinned three@0.160.0 via import map, nothing else</span>
+        <span class="chip"><b>Assets</b> zero external — procedural / Web Audio / data-URI</span>
+        <span class="chip"><b>Determinism</b> seed 1337 (mobs/clouds may be random — spec-allowed)</span>
+        <span class="chip"><b>Instrumentation</b> required F3 HUD</span>
+        <span class="chip"><b>Launch</b> /goal + dynamic workflow</span>
+      </div>
+      <p class="muted" style="margin:10px 0 8px">Identical guide + identical <code>PROMPT.md</code> per agent. Grading uses the revised
+        <b>working-integration rubric</b> — a feature only earns points if it’s actually wired into the running game:</p>
+      <table>
+        <tr><th>Quality bucket</th><th class="num">Pts</th><th>Credits</th></tr>
+        <tr><td>World / Terrain systems</td><td class="num">20</td><td>chunks, seeded terrain, blocks, biomes, caves, water, trees</td></tr>
+        <tr><td>Player + Interaction correctness</td><td class="num">22</td><td>movement/physics, <b>working</b> break/place, real inventory, fly = true no-clip</td></tr>
+        <tr><td>Rendering authenticity</td><td class="num">22</td><td>procedural textures/AO <b>wired into the mesh</b>, lighting, fog, sky, transparent water</td></tr>
+        <tr><td>Persistence + Atmosphere</td><td class="num">16</td><td>bounded localStorage save/load, day-night, clouds, mobs, Web-Audio SFX</td></tr>
+        <tr><td>Scale + Engineering robustness</td><td class="num">20</td><td>streaming, culling, HUD-counter integrity, cleanup, manifest honesty</td></tr>
+      </table>
+      <p class="muted" style="margin:8px 0 0">Plus Documentation (10) and Speed (20). Two adversarial passes (Claude live-play + Codex source),
+        then this report reviewed by Codex and re-scored under the rubric above.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Caveats &amp; incidents <small>(transparency)</small></h2>
+    <div class="callout bad">
+      <b>MiniMax server-side image-moderation incident (error 1026) — hit MiniMax-M3 mid-run.</b> M3 verifies by reading rendered
+      screenshots; partway through, MiniMax’s API began rejecting <em>all</em> image inputs as “sensitive” (a server-side change that also
+      hit other users that day). It jammed at 34/35 todos; we rescued the session by stripping the flagged images and finished text-only.
+      Consequence: M3’s wall-clock (Speed) is not comparable, and it never got vision self-verification like Opus did. Its deliverable is unaffected.
+    </div>
+    <div class="callout">
+      <b>GPT-5.5 needed one later bugfix.</b> Core build ~30 min; a separate later commit <code>“Fix start overlay click handling”</code>
+      (~3 h later) fixed a real start bug. Speed uses ~35 min active labor (see leaderboard footnote for the strict-timing alternative).
+    </div>
+    <div class="callout">
+      <b>Git hygiene.</b> M3’s agent never made its own repo, so it committed into the parent harness repo (<b>9</b> commits after
+      <code>12f1738</code>) and force-added its files past <code>.gitignore</code>. Cleanup: reset the harness to <code>12f1738</code> and give M3 its own repo.
+    </div>
+  </section>
+
+  <section>
+    <h2>Harnesses &amp; plugins <small>(a real confound)</small></h2>
+    <div class="panel">
+      <p class="muted" style="margin-top:0">Each model ran in a <b>different harness with a different plugin loadout</b> — different
+        planning/orchestration plugins and, crucially, different <b>verification/vision</b> capabilities. (Inventory from run transcripts /
+        operator records.) This shapes outcomes — the benchmark measures <b>model + harness + plugins</b>.</p>
+      <table>
+        <tr><th>Harness</th><th>Model(s)</th><th>Orchestration / planning</th><th>Verification capability</th><th>Other enabled</th></tr>
+        <tr>
+          <td><b>Pi</b></td><td>MiniMax-M3, 2.7-highspeed</td>
+          <td><code>/goal</code> (@matthewlam/pi-goal) + <code>pi-dynamic-workflows</code> + plannotator <small>(pi-karpathy-skill installed)</small></td>
+          <td>Reads <em>rendered screenshots</em> as image inputs — M3’s path straight into the MiniMax-1026 wall</td>
+          <td>pi-subagents, pi-web-access, pi-context, pi-tool-display, pi-simplify, pi-mcp-adapter</td>
+        </tr>
+        <tr>
+          <td><b>Codex</b></td><td>GPT-5.5</td>
+          <td><code>$codex-dynamic-workflows</code> (produced a <code>.workflow/</code> plan)</td>
+          <td><code>browser</code> + <code>computer-use</code> enabled, but the sandbox blocked the jsDelivr CDN → <b>no in-game runtime checks</b></td>
+          <td>documents, spreadsheets, presentations</td>
+        </tr>
+        <tr>
+          <td><b>Claude Code</b></td><td>Opus-4.8</td>
+          <td><b>OMC</b> (oh-my-claudecode) + built-in Workflow/Task tools (ran Workflow ×2)</td>
+          <td><b>Playwright MCP</b> — live, headless screenshot self-verification (used heavily)</td>
+          <td>feature-dev, code-review, code-simplifier, frontend-design, security-guidance, typescript-lsp <small>(superpowers &amp; vercel off)</small></td>
+        </tr>
+      </table>
+      <div class="callout info" style="margin-bottom:0">
+        <b>Not apples-to-apples.</b> Opus’s Playwright access let it <em>see and fix</em> its own bugs (its 68-min build included real
+        screenshot verification) — plausibly why it tops Quality; Codex’s browser plugins were neutralized by a blocked CDN, so it shipped
+        source-validated only; and Pi’s screenshot-as-image verification is exactly what collided with the MiniMax incident for M3. To
+        isolate the <em>model</em> you’d equalize the plugin/verification loadout.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The entries</h2>
+    <div class="cards">
+
+      <!-- Opus-4.8 -->
+      <div class="card">
+        <img class="shot" src="assets/opus-4.8.jpeg" alt="Opus-4.8 gameplay (night)">
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h3 style="margin:0">Claude Opus-4.8 <small>· ~68 min · quality lead</small></h3>
+            <div class="scorebig" style="color:var(--good)">96.5<small class="dim">/100</small></div>
+          </div>
+          <div class="chips"><span class="chip">Docs <b>9/10</b></span><span class="chip">Speed <b>2/20</b></span><span class="chip">Overall <b>107.5</b></span><span class="chip">Workflow ×2 + Playwright self-verify</span></div>
+          <p class="muted" style="margin:.4em 0">Highest-integrity build — the only entry to run a real verification workflow and screenshot-verify
+            itself, which shows in fully-wired rendering and interaction. <em>The screenshot caught the day-night cycle mid-night — in normal daylight
+            play the world renders bright; the darkness is the cycle, not a rendering fault.</em></p>
+          <div class="callout info">
+            <b>Process note, not scored.</b> Excellent process: recognized contamination, reset and reran fresh. Used Playwright, subagents,
+            adversarial review, iterative fixes.
+          </div>
+          <div class="catbars">
+            <span class="k">World/Terrain</span><div class="bar"><i style="width:100%"></i></div><span class="v">20/20</span>
+            <span class="k">Player+Interaction</span><div class="bar"><i style="width:95%"></i></div><span class="v">21/22</span>
+            <span class="k">Rendering Authenticity</span><div class="bar"><i style="width:100%"></i></div><span class="v">22/22</span>
+            <span class="k">Persistence+Atmosphere</span><div class="bar"><i style="width:100%"></i></div><span class="v">16/16</span>
+            <span class="k">Scale+Engineering</span><div class="bar"><i style="width:88%"></i></div><span class="v">17.5/20</span>
+          </div>
+          <h3 style="margin-top:12px">Issues</h3>
+          <ul class="issues">
+            <li><span class="sev high">high</span><span class="t"><code>renderer.info.render</code> never reset per frame — HUD triangle/draw counts are cumulative and drift.</span></li>
+            <li><span class="sev high">high</span><span class="t">Esc while inventory open hides it but skips <code>requestLock()</code> — player stranded without pointer lock.</span></li>
+            <li><span class="sev medium">med</span><span class="t">Caves carve to surface in sea-level columns (seabed holes); spawn-hash doc says “FNV-1a” but isn’t; dead <code>three/addons/</code> import-map entry; manifest after <code>&lt;!DOCTYPE&gt;</code>.</span></li>
+            <li><span class="sev low">low</span><span class="t">Mob uses <code>Math.random()</code> — spec-permitted, reproducibility caveat only; per-call audio buffer allocation.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- GPT-5.5 -->
+      <div class="card">
+        <img class="shot" src="assets/gpt-5.5.jpeg" alt="GPT-5.5 gameplay">
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h3 style="margin:0">GPT-5.5 <small>· Codex · ~30 min · overall lead</small></h3>
+            <div class="scorebig" style="color:var(--good)">94.5<small class="dim">/100</small></div>
+          </div>
+          <div class="chips"><span class="chip">Docs <b>10/10</b></span><span class="chip">Speed <b>4/20†</b></span><span class="chip">Overall <b>108.5†</b></span><span class="chip">console <b>clean</b></span></div>
+          <p class="muted" style="margin:.4em 0">Cleanest source of the four (Codex found no source issues <small>(rubric score; real bugs exist)</small>) and fastest of the strong builds. Full F3 HUD
+            (646K tris, 289 chunks @ R=8), seeded terrain, wired AO + per-face textures, Web-Audio SFX, day-night, inventory with extra types.</p>
+          <div class="callout info">
+            <b>Process note, not scored.</b> Good process: structured workflow, self-verification. Tool friction: browser/Playwright unavailable,
+            CDP retries. Missed overlay bug until post-submission.
+          </div>
+          <div class="catbars">
+            <span class="k">World/Terrain</span><div class="bar"><i style="width:95%"></i></div><span class="v">19/20</span>
+            <span class="k">Player+Interaction</span><div class="bar"><i style="width:93%"></i></div><span class="v">20.5/22</span>
+            <span class="k">Rendering Authenticity</span><div class="bar"><i style="width:95%"></i></div><span class="v">21/22</span>
+            <span class="k">Persistence+Atmosphere</span><div class="bar"><i style="width:97%"></i></div><span class="v">15.5/16</span>
+            <span class="k">Scale+Engineering</span><div class="bar"><i style="width:93%"></i></div><span class="v">18.5/20</span>
+          </div>
+          <h3 style="margin-top:12px">Issues</h3>
+          <ul class="issues">
+            <li><span class="sev high">high</span><span class="t">Cannot place blocks into water cells; <code>columnCache</code>/<code>treeCache</code> grow unbounded (never evicted).</span></li>
+            <li><span class="sev medium">med</span><span class="t">Water blue channel can exceed 1.0 (clipped); dry-shore “biome” is just sand; O(n) <code>loadQueue.includes</code> per edit.</span></li>
+            <li><span class="sev low">low</span><span class="t">Mob wander uses <code>performance.now()</code> — spec-permitted; sky is a CSS body gradient (edge mismatch); caves largely hardcoded.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- MiniMax-M3 -->
+      <div class="card">
+        <img class="shot" src="assets/minimax-m3.jpeg" alt="MiniMax-M3 gameplay">
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h3 style="margin:0">MiniMax-M3 <small>· Pi · not playable*</small></h3>
+            <div class="scorebig" style="color:var(--bad)">65.0<small class="dim">/100 cap.</small></div>
+          </div>
+          <div class="chips"><span class="chip" style="background:var(--bad);color:#fff">core loop broken — not playable</span><span class="chip">Docs <b>5/10</b></span><span class="chip">Speed <b>n/a*</b></span><span class="chip">Q+D cap.: <b>70 / 110</b></span><span class="chip">richest world (1.6M tris)</span></div>
+          <p class="muted" style="margin:.4em 0"><b>Highest raw capability of the two MiniMax builds</b> — richest world, real texture/AO wiring, wandering mob, snow/glass, confirmed live.
+            But the <b>core build loop is broken</b>: two live <code>mousedown</code> handlers (a botched de-dup at line 1858 removes nothing) make
+            <b>every left-click break two blocks and every right-click place two</b> (the second offset), and only the second edit is saved — so you
+            cannot build, and the world reloads wrong. A beautiful engine that is, as a game, <b>unplayable</b> — confirmed by hands-on play.</p>
+          <div class="catbars">
+            <span class="k">World/Terrain</span><div class="bar"><i style="width:90%"></i></div><span class="v">18/20</span>
+            <span class="k">Player+Interaction</span><div class="bar bad"><i style="width:32%"></i></div><span class="v">7/22</span>
+            <span class="k">Rendering Authenticity</span><div class="bar"><i style="width:91%"></i></div><span class="v">20/22</span>
+            <span class="k">Persistence+Atmosphere</span><div class="bar bad"><i style="width:50%"></i></div><span class="v">8/16</span>
+            <span class="k">Scale+Engineering</span><div class="bar warn"><i style="width:60%"></i></div><span class="v">12/20</span>
+          </div>
+          <h3 style="margin-top:12px">Issues</h3>
+          <ul class="issues">
+            <li><span class="sev critical">crit</span><span class="t"><b>Both core verbs double-fire.</b> Two active <code>mousedown</code> listeners (lines 1743 + 1860; the “cleanup” at 1858 removes a throwaway anonymous fn): <b>LMB breaks two blocks, RMB places two</b>. Controlled building/mining is impossible — this is what makes it unplayable.</span></li>
+            <li><span class="sev critical">crit</span><span class="t"><b>No working save.</b> Only the second (tracked) edit reaches <code>editLog</code>, and the saved position is overwritten by <code>findSpawn()</code> on load — the world reloads inconsistent with what you built.</span></li>
+            <li><span class="sev high">high</span><span class="t">Fly mode still collision-aware — <em>not</em> true no-clip; docs claim working no-clip/highlight + 9 placeables the source doesn’t deliver (manifest dishonesty → Docs 5).</span></li>
+            <li><span class="sev medium">med</span><span class="t">Caves capped at y≤14 (none above sea level); AO samples the same 2 neighbors for all corners (≈ per-face); spawn-hash recomputed every frame; debug globals left in.</span></li>
+            <li><span class="sev low">low</span><span class="t"><b>Why capability stays at 65:</b> movement, camera, world-gen and rendering are genuinely strong; the points it loses are concentrated in the unusable interaction + persistence layer.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- MiniMax-2.7-highspeed -->
+      <div class="card">
+        <img class="shot" src="assets/minimax-m2.7-highspeed.jpeg" alt="MiniMax-2.7-highspeed gameplay (night)">
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h3 style="margin:0">MiniMax-2.7-highspeed <small>· Pi · ~7 min · playable</small></h3>
+            <div class="scorebig" style="color:var(--bad)">60.0<small class="dim">/100</small></div>
+          </div>
+          <div class="chips"><span class="chip" style="background:var(--good);color:#06281d;font-weight:700">playable</span><span class="chip">Docs <b>5/10</b></span><span class="chip">Speed <b>20/20</b></span><span class="chip">Overall <b>85.0</b></span><span class="chip">fastest by 4×</span></div>
+          <p class="muted" style="margin:.4em 0">Astonishing breadth for a 7-minute build — and lower-capability than M3, but it’s the <b>one MiniMax build you can actually play</b>:
+            single-action break, coherent traversable world. Integration-grading is still brutal — its declared textures, AO,
+            block placement, and save are <em>not wired up</em>, so much of what the manifest claims doesn’t work — yet the core loop holds together.</p>
+          <div class="catbars">
+            <span class="k">World/Terrain</span><div class="bar warn"><i style="width:83%"></i></div><span class="v">16.5/20</span>
+            <span class="k">Player+Interaction</span><div class="bar bad"><i style="width:57%"></i></div><span class="v">12.5/22</span>
+            <span class="k">Rendering Authenticity</span><div class="bar bad"><i style="width:45%"></i></div><span class="v">10/22</span>
+            <span class="k">Persistence+Atmosphere</span><div class="bar bad"><i style="width:56%"></i></div><span class="v">9/16</span>
+            <span class="k">Scale+Engineering</span><div class="bar warn"><i style="width:60%"></i></div><span class="v">12/20</span>
+          </div>
+          <h3 style="margin-top:12px">Issues</h3>
+          <ul class="issues">
+            <li><span class="sev critical">crit</span><span class="t">Right-click PLACE fully broken (stale <code>targetedBlock.place</code> — always undefined).</span></li>
+            <li><span class="sev critical">crit</span><span class="t">Procedural textures &amp; AO <em>defined but never wired into the mesh</em> — terrain renders flat vertex-colors only (Rendering 10/22).</span></li>
+            <li><span class="sev critical">crit</span><span class="t"><code>saveGame()</code> serializes ~200 chunks into 5 MB localStorage → guaranteed <code>QuotaExceededError</code>; HUD hidden on load until F3.</span></li>
+            <li><span class="sev high">high</span><span class="t">Inventory == hotbar; both biomes share one surface block; FPS = last-frame dt; unseeded <code>Math.random()</code> textures.</span></li>
+            <li><span class="sev medium">med</span><span class="t">No compliant top-of-file HTML FEATURE MANIFEST; manifest is JS comments inside module.</span></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>The two adversarial reviews</h2>
+    <div class="panel">
+      <p class="muted" style="margin-top:0">Two independent passes drove these scores: a <b>Claude workflow</b> playing each game live in a browser,
+        and <b>Codex</b> reviewing source (its sandbox blocked the CDN → no runtime, which is why the live pass complements it). Overlapping
+        findings are high-confidence; Codex’s static findings (2.7 textures-not-wired, M3 fly-not-no-clip + save-overwrite) are what pulled
+        those two down under integration-grading.</p>
+      <div class="callout bad">
+        <b>Most systematic failure — manifest honesty &amp; placement.</b> M3 and Opus put <code>&lt;!DOCTYPE html&gt;</code> before the
+        FEATURE MANIFEST (spec required it first); 2.7-highspeed has <em>no</em> compliant top-of-file HTML manifest at all (JS comments
+        inside the module); and several entries marked rubric features “implemented” that the source shows missing, stubbed, or broken.
+      </div>
+      <div class="callout good" style="margin-bottom:0">
+        <b>This report was then reviewed by Codex</b> (verdict: yes-with-fixes), which proposed the working-integration rubric adopted here.
+        The score sheet now reflects the updated leaderboard and the timing limits called out above.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Why the revised rubric?</h2>
+    <div class="panel">
+      <p style="margin-top:0">The old rubric awarded near-full credit for declared features. The revised rubric requires <b>working integration</b>:
+        a feature has to be wired into the running game, not merely named in code or described in a manifest.</p>
+      <p class="muted">That matters most for MiniMax-2.7-highspeed: textures were defined but not mapped to the mesh (<code>vertexColors</code> only);
+        the AO helper exists but is unused; block placement is source-broken; and inventory equals hotbar. Speed also uses GPT-5.5’s
+        <b>35 min active labor</b>, not calendar delay. M3 Speed is n/a because timing is unverifiable after the MiniMax incident.</p>
+    </div>
+  </section>
+
+  </main>
+
+  <div class="foot">
+    Harness, prompt, and rubric: <code>minimax-m3-minecraft-bench/</code> · Generated 2026-06-02 ·
+    Scores from a Claude grading workflow (source + live browser play), adversarially reviewed by Claude + Codex, report reviewed by Codex and
+    re-scored under the revised working-integration rubric. · Screenshots captured live via headless Chromium at 1280×800.
+  </div>
+
+</div>
+</body>
+</html>
