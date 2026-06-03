@@ -41,7 +41,7 @@ fails the playability gate below.
 | 3 | MiniMax-2.7-highspeed *(playable)* | 60.0 | 5 | 20 | **85.0** |
 | 4 | MiniMax-M3 *(not playable\*)* | 65.0 | 5 | n/a\* | **broken\*** |
 
-† GPT-5.5 Speed = ~35 min active labor; under strict elapsed timing it ties Opus.
+† GPT-5.5 Speed = ~35 min active labor; under strict elapsed timing (~205 min) it drops to Overall 105.5, just behind Opus.
 \* MiniMax-M3 is ranked **last**: two duplicated `mousedown` handlers make every left-click break two blocks and every
 right-click place two, and the save never restores position — the core build loop is unusable, so it fails the
 playability gate regardless of its 65.0 capability. Its wall-clock was also distorted by a MiniMax **server-side
@@ -65,7 +65,8 @@ image-moderation incident** mid-run, so Speed isn't comparable.
 - **Two adversarial reviews**: a Claude workflow playing each build live, and Codex reviewing source.
   The report itself was then reviewed by Codex.
 - **Honest caveats** (detailed in the report): the harnesses were **not identical** (different
-  planning/verification plugins — a real confound; e.g. only one had live screenshot self-verification),
+  planning/verification plugins — a real confound; Opus self-verified via Playwright and Codex/GPT-5.5
+  via Chrome DevTools Protocol, while Pi's vision pass was cut short by the incident),
   and MiniMax-M3 hit a MiniMax server-side image-moderation incident mid-run.
 
 ## Repo layout

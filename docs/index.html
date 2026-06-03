@@ -112,7 +112,7 @@
     <div class="gallery">
       <figure><img src="assets/opus-4.8.jpeg" alt="Opus-4.8 at midday"><figcaption><b>Opus-4.8</b> — wired per-face textures + ambient occlusion, water, a wandering mob, F3 HUD + crosshair. Noon.</figcaption></figure>
       <figure><img src="assets/minimax-m3.jpeg" alt="MiniMax-M3 at midday"><figcaption><b>MiniMax-M3</b> — the richest world (1.6M triangles): textured trees, stone cliffs, water, mob, live block-highlight. Midday.</figcaption></figure>
-      <figure><img src="assets/gpt-5.5.jpeg" alt="GPT-5.5"><figcaption><b>GPT-5.5</b> — wired textures, drifting clouds, clean F3 HUD. Lower-ambient art with <em>no</em> day-night cycle (fixed lighting).</figcaption></figure>
+      <figure><img src="assets/gpt-5.5.jpeg" alt="GPT-5.5"><figcaption><b>GPT-5.5</b> — wired textures, drifting clouds, clean F3 HUD. Lower-ambient art; its day-night cycle happened to be mid-shadow in this frame.</figcaption></figure>
       <figure><img src="assets/minimax-m2.7-highspeed.jpeg" alt="MiniMax-2.7-highspeed at midday"><figcaption><b>MiniMax-2.7-highspeed</b> — blue-sky day, coastline + clouds, but <em>flat vertex colors</em>: its textures/AO were never wired into the mesh.</figcaption></figure>
     </div>
     <div class="callout info">
@@ -122,7 +122,7 @@
     </div>
     <div class="gallery">
       <figure><img src="assets/opus-4.8-night.jpeg" alt="Opus-4.8 at night, same world"><figcaption><b>Opus-4.8 — the very same world at night.</b> Day-night cycle (feature X1): stars fade in, the moon orbits, sky + light lerp. Not a rendering fault — just dusk.</figcaption></figure>
-      <figure style="display:flex;align-items:center;justify-content:center"><figcaption style="padding:18px;font-size:13px"><b>Day-night across the field.</b> Opus, M3 and 2.7 all cycle sky colour + sun/ambient over time; GPT-5.5 ships fixed daylight. Judge brightness from the <b>midday</b> shots above — that's how each looks in normal play.</figcaption></figure>
+      <figure style="display:flex;align-items:center;justify-content:center"><figcaption style="padding:18px;font-size:13px"><b>Day-night across the field.</b> All four builds cycle sky colour + sun/ambient over time. The earlier “dark” shots just caught the wrong phase — judge brightness from the <b>midday</b> shots above, which is how each looks in normal play.</figcaption></figure>
     </div>
   </section>
 
@@ -169,7 +169,7 @@
         </table>
         <small>Headline ranks <b>playable builds first</b>; Speed = round(20 × T<sub>fastest</sub> / T), T<sub>fastest</sub> = 7 min (2.7-highspeed).<br>
           <b>†GPT-5.5:</b> T = ~35 min <em>active labor</em> (≈30 core + ≈5 for the later overlay fix) → Speed 4 (calendar delay is a
-          reviewer artifact). Under strict first→final-commit timing (199 min) Speed = 1 → Overall 106.5, in which case <b>Opus leads Overall</b>.<br>
+          reviewer artifact). Under strict first→final-commit timing (≈205 min) Speed = 1 → Overall 105.5, in which case <b>Opus leads Overall</b>.<br>
           <b>*M3:</b> ranked <b>last</b> — its core build loop is unusable (both verbs double-fire; save doesn’t restore), so it fails the
           playability gate regardless of its 65.0 capability. Timing is also unverifiable after the MiniMax incident → Speed n/a.</small>
       </div>
@@ -248,7 +248,8 @@
         <tr><td>Scale + Engineering robustness</td><td class="num">20</td><td>streaming, culling, HUD-counter integrity, cleanup, manifest honesty</td></tr>
       </table>
       <p class="muted" style="margin:8px 0 0">Plus Documentation (10) and Speed (20). Two adversarial passes (Claude live-play + Codex source),
-        then this report reviewed by Codex and re-scored under the rubric above.</p>
+        then this report reviewed by Codex and re-scored under the rubric above. <small>(These five buckets re-group the detailed
+        seven-category rubric in <a href="../GRADING.md">GRADING.md</a>; both total 100, but the per-bucket maxes don’t map one-to-one.)</small></p>
     </div>
   </section>
 
@@ -287,21 +288,22 @@
         <tr>
           <td><b>Codex</b></td><td>GPT-5.5</td>
           <td><code>$codex-dynamic-workflows</code> (produced a <code>.workflow/</code> plan)</td>
-          <td><code>browser</code> + <code>computer-use</code> enabled, but the sandbox blocked the jsDelivr CDN → <b>no in-game runtime checks</b></td>
+          <td><code>browser</code> + <code>computer-use</code> — ran <b>Chrome DevTools Protocol</b> <code>file://</code> loads: screenshot-verified the rendered textured world, console-clean check, two-load spawn-hash determinism (9959b2cc), KeyE inventory smoke <small>(via CDP, not Playwright MCP)</small></td>
           <td>documents, spreadsheets, presentations</td>
         </tr>
         <tr>
           <td><b>Claude Code</b></td><td>Opus-4.8</td>
-          <td>Built-in <b>Workflow / Task</b> tools (ran Workflow ×2), launched via <code>/goal</code> + dynamic workflow <small>(OMC / oh-my-claudecode was <b>disabled</b>)</small></td>
+          <td>Built-in <b>Workflow / Task</b> tools (ran Workflow ×2), launched via <code>/goal</code> + dynamic workflow <small>(no OMC / oh-my-claudecode <b>orchestration</b> — no OMC subagents dispatched)</small></td>
           <td><b>Playwright MCP</b> — live, headless screenshot self-verification (used heavily)</td>
           <td>feature-dev, code-review, code-simplifier, frontend-design, security-guidance, typescript-lsp <small>(superpowers &amp; vercel off)</small></td>
         </tr>
       </table>
       <div class="callout info" style="margin-bottom:0">
-        <b>Not apples-to-apples.</b> Opus’s Playwright access let it <em>see and fix</em> its own bugs (its 68-min build included real
-        screenshot verification) — plausibly why it tops Quality; Codex’s browser plugins were neutralized by a blocked CDN, so it shipped
-        source-validated only; and Pi’s screenshot-as-image verification is exactly what collided with the MiniMax incident for M3. To
-        isolate the <em>model</em> you’d equalize the plugin/verification loadout.
+        <b>Not apples-to-apples.</b> The harness/plugin loadouts differed (different planning plugins, different <em>vision</em> tooling).
+        <b>Both Opus and Codex/GPT-5.5 ran live browser screenshot self-verification</b> — Opus via Playwright MCP, Codex via Chrome DevTools
+        Protocol (its workflow log records a rendered-world screenshot + a two-load spawn-hash check). Pi’s screenshot-as-image verification
+        is what collided with the MiniMax incident for M3, cutting its vision pass short. To isolate the <em>model</em> you’d equalize the
+        plugin/verification loadout.
       </div>
     </div>
   </section>
@@ -319,8 +321,8 @@
             <div class="scorebig" style="color:var(--good)">96.5<small class="dim">/100</small></div>
           </div>
           <div class="chips"><span class="chip">Docs <b>9/10</b></span><span class="chip">Speed <b>2/20</b></span><span class="chip">Overall <b>107.5</b></span><span class="chip">Workflow ×2 + Playwright self-verify</span></div>
-          <p class="muted" style="margin:.4em 0">Highest-integrity build — the only entry to run a real verification workflow and screenshot-verify
-            itself, which shows in fully-wired rendering and interaction. <em>The screenshot caught the day-night cycle mid-night — in normal daylight
+          <p class="muted" style="margin:.4em 0">Highest-integrity build — ran a dedicated Playwright verification workflow and screenshot-verified
+            itself (as did Codex, via CDP), which shows in fully-wired rendering and interaction. <em>The screenshot caught the day-night cycle mid-night — in normal daylight
             play the world renders bright; the darkness is the cycle, not a rendering fault.</em></p>
           <div class="callout info">
             <b>Process note, not scored.</b> Excellent process: recognized contamination, reset and reran fresh. Used Playwright, subagents,
@@ -335,9 +337,8 @@
           </div>
           <h3 style="margin-top:12px">Issues</h3>
           <ul class="issues">
-            <li><span class="sev high">high</span><span class="t"><code>renderer.info.render</code> never reset per frame — HUD triangle/draw counts are cumulative and drift.</span></li>
             <li><span class="sev high">high</span><span class="t">Esc while inventory open hides it but skips <code>requestLock()</code> — player stranded without pointer lock.</span></li>
-            <li><span class="sev medium">med</span><span class="t">Caves carve to surface in sea-level columns (seabed holes); spawn-hash doc says “FNV-1a” but isn’t; dead <code>three/addons/</code> import-map entry; manifest after <code>&lt;!DOCTYPE&gt;</code>.</span></li>
+            <li><span class="sev medium">med</span><span class="t">Caves carve to surface in sea-level columns (seabed holes); dead <code>three/addons/</code> import-map entry; manifest after <code>&lt;!DOCTYPE&gt;</code>. <small>(Spawn-hash <em>is</em> genuine FNV-1a; <code>renderer.info</code> auto-resets per frame — both earlier flags were wrong.)</small></span></li>
             <li><span class="sev low">low</span><span class="t">Mob uses <code>Math.random()</code> — spec-permitted, reproducibility caveat only; per-call audio buffer allocation.</span></li>
           </ul>
         </div>
@@ -353,17 +354,18 @@
           </div>
           <div class="chips"><span class="chip">Docs <b>10/10</b></span><span class="chip">Speed <b>4/20†</b></span><span class="chip">Overall <b>108.5†</b></span><span class="chip">console <b>clean</b></span></div>
           <p class="muted" style="margin:.4em 0">Cleanest source of the four (Codex found no source issues <small>(rubric score; real bugs exist)</small>) and fastest of the strong builds. Full F3 HUD
-            (646K tris, 289 chunks @ R=8), seeded terrain, wired AO + per-face textures, Web-Audio SFX, day-night, inventory with extra types.</p>
+            (~640K tris fully meshed, 289 chunks @ R=8), seeded terrain, wired AO + per-face textures, Web-Audio SFX, day-night, inventory with extra types.</p>
           <div class="callout info">
-            <b>Process note, not scored.</b> Good process: structured workflow, self-verification. Tool friction: browser/Playwright unavailable,
-            CDP retries. Missed overlay bug until post-submission.
+            <b>Process note, not scored.</b> Good process: structured workflow + live self-verification. Playwright MCP wasn’t in Codex’s
+            loadout, so it verified via Chrome DevTools Protocol directly (some CDP retries) — it <em>did</em> run the game in a browser and
+            screenshot-verify. Missed the overlay bug until post-submission.
           </div>
           <div class="catbars">
             <span class="k">World/Terrain</span><div class="bar"><i style="width:95%"></i></div><span class="v">19/20</span>
             <span class="k">Player+Interaction</span><div class="bar"><i style="width:93%"></i></div><span class="v">20.5/22</span>
             <span class="k">Rendering Authenticity</span><div class="bar"><i style="width:95%"></i></div><span class="v">21/22</span>
             <span class="k">Persistence+Atmosphere</span><div class="bar"><i style="width:97%"></i></div><span class="v">15.5/16</span>
-            <span class="k">Scale+Engineering</span><div class="bar"><i style="width:93%"></i></div><span class="v">18.5/20</span>
+            <span class="k">Scale+Engineering</span><div class="bar"><i style="width:92.5%"></i></div><span class="v">18.5/20</span>
           </div>
           <h3 style="margin-top:12px">Issues</h3>
           <ul class="issues">
@@ -398,8 +400,8 @@
           <ul class="issues">
             <li><span class="sev critical">crit</span><span class="t"><b>Both core verbs double-fire.</b> Two active <code>mousedown</code> listeners (lines 1743 + 1860; the “cleanup” at 1858 removes a throwaway anonymous fn): <b>LMB breaks two blocks, RMB places two</b>. Controlled building/mining is impossible — this is what makes it unplayable.</span></li>
             <li><span class="sev critical">crit</span><span class="t"><b>No working save.</b> Only the second (tracked) edit reaches <code>editLog</code>, and the saved position is overwritten by <code>findSpawn()</code> on load — the world reloads inconsistent with what you built.</span></li>
-            <li><span class="sev high">high</span><span class="t">Fly mode still collision-aware — <em>not</em> true no-clip; docs claim working no-clip/highlight + 9 placeables the source doesn’t deliver (manifest dishonesty → Docs 5).</span></li>
-            <li><span class="sev medium">med</span><span class="t">Caves capped at y≤14 (none above sea level); AO samples the same 2 neighbors for all corners (≈ per-face); spawn-hash recomputed every frame; debug globals left in.</span></li>
+            <li><span class="sev high">high</span><span class="t">Fly mode still collision-aware — <em>not</em> true no-clip; docs claim working no-clip and 9 distinct placeables the source doesn’t deliver (9 hotbar slots but only 8 distinct placeable blocks). The targeted-block highlight, however, <em>does</em> work. Manifest dishonesty → Docs 5.</span></li>
+            <li><span class="sev medium">med</span><span class="t">Caves capped at y≤14 (none above sea level); AO offset directions are fixed per-face (always the +tangent axes) instead of varying toward each corner → asymmetric/incorrect corner AO; spawn-hash recomputed every frame; debug globals left in.</span></li>
             <li><span class="sev low">low</span><span class="t"><b>Why capability stays at 65:</b> movement, camera, world-gen and rendering are genuinely strong; the points it loses are concentrated in the unusable interaction + persistence layer.</span></li>
           </ul>
         </div>
@@ -418,7 +420,7 @@
             single-action break, coherent traversable world. Integration-grading is still brutal — its declared textures, AO,
             block placement, and save are <em>not wired up</em>, so much of what the manifest claims doesn’t work — yet the core loop holds together.</p>
           <div class="catbars">
-            <span class="k">World/Terrain</span><div class="bar warn"><i style="width:83%"></i></div><span class="v">16.5/20</span>
+            <span class="k">World/Terrain</span><div class="bar warn"><i style="width:82.5%"></i></div><span class="v">16.5/20</span>
             <span class="k">Player+Interaction</span><div class="bar bad"><i style="width:57%"></i></div><span class="v">12.5/22</span>
             <span class="k">Rendering Authenticity</span><div class="bar bad"><i style="width:45%"></i></div><span class="v">10/22</span>
             <span class="k">Persistence+Atmosphere</span><div class="bar bad"><i style="width:56%"></i></div><span class="v">9/16</span>
@@ -442,7 +444,7 @@
     <h2>The two adversarial reviews</h2>
     <div class="panel">
       <p class="muted" style="margin-top:0">Two independent passes drove these scores: a <b>Claude workflow</b> playing each game live in a browser,
-        and <b>Codex</b> reviewing source (its sandbox blocked the CDN → no runtime, which is why the live pass complements it). Overlapping
+        and <b>Codex</b> reviewing source (Codex also ran its own CDP runtime + screenshot pass, so the Claude live-play is a second, independent runtime check). Overlapping
         findings are high-confidence; Codex’s static findings (2.7 textures-not-wired, M3 fly-not-no-clip + save-overwrite) are what pulled
         those two down under integration-grading.</p>
       <div class="callout bad">
