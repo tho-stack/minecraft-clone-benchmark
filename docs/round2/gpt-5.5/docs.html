@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voxel Sandbox Build Docs</title>
+  <style>
+    :root { color-scheme: light; --ink: #16202a; --muted: #52606d; --line: #d8e0e7; --panel: #f7f9fb; --accent: #2f6f59; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: #fff; }
+    main { width: min(1100px, calc(100% - 36px)); margin: 0 auto; padding: 34px 0 56px; }
+    h1 { font-size: 32px; margin: 0 0 10px; }
+    h2 { font-size: 20px; margin: 30px 0 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    h3 { font-size: 16px; margin: 20px 0 8px; color: var(--accent); }
+    p { margin: 8px 0; }
+    ul { margin: 8px 0 16px 22px; padding: 0; }
+    li { margin: 4px 0; }
+    .muted { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    .box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; vertical-align: top; }
+    th { background: #eef4f2; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #edf1f5; padding: 1px 4px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Voxel Sandbox Build Docs</h1>
+  <p class="muted">Living documentation for <code>game.html</code>. It is self-contained and has no external assets.</p>
+
+  <h2>Architecture Overview</h2>
+  <div class="grid">
+    <section class="box">
+      <h3>Single-File Runtime</h3>
+      <p><code>game.html</code> contains all HTML, CSS, and JavaScript inline. The only network dependency is the required pinned Three.js module graph resolved through the mandatory import map.</p>
+    </section>
+    <section class="box">
+      <h3>World Model</h3>
+      <p>The world is generated from hard-coded seed <code>1337</code>. Blocks are queried procedurally from deterministic value noise, biome rules, cave carving, tree shapes, water fill, and a localStorage edit overlay.</p>
+    </section>
+    <section class="box">
+      <h3>Chunk Meshes</h3>
+      <p>Chunks are 16 by 16 columns and 72 blocks tall. Each chunk builds independent opaque and water meshes, emits only visible faces, adds per-vertex ambient occlusion darkening, and streams within render distance 8 while bounded terrain and tree caches evict old entries.</p>
+    </section>
+    <section class="box">
+      <h3>Player and Interaction</h3>
+      <p>The camera is first-person at eye height. Pointer-lock mouse-look, WASD movement, sprint, jump, gravity, AABB block collision, fly/no-clip, DDA raycast targeting, block break/place including water replacement, hotbar, palette, and persistent edits are all handled inline.</p>
+    </section>
+    <section class="box">
+      <h3>Rendering and Atmosphere</h3>
+      <p>A canvas-generated texture atlas supplies all block surfaces. Directional sun, ambient light, fog, a procedural in-scene sky dome, transparent water, day-night lighting changes, drifting procedural clouds, synthesized Web Audio sounds, and a blocky wandering mob provide atmosphere.</p>
+    </section>
+    <section class="box">
+      <h3>Instrumentation</h3>
+      <p>The F3 HUD reports FPS, coordinates, chunk coordinates, loaded/meshed chunk counts, render distance, draw calls, triangle count, seed, mode, current target, selected block, edit count, and the spawn-area block hash.</p>
+    </section>
+  </div>
+
+  <h2>Feature Manifest Mirror</h2>
+  <table>
+    <thead><tr><th>Category</th><th>Implemented Features</th></tr></thead>
+    <tbody>
+      <tr><td>World</td><td>W1 voxel chunks; W2 seeded procedural terrain and stable hash; W3 twelve distinct blocks; W4 forest/dry biomes with different elevation, surface, and vegetation rules; W5 cave tunnels and hollows; W6 sea-level water; W7 trunk/canopy trees.</td></tr>
+      <tr><td>Player</td><td>P1 eye-height first-person camera; P2 pointer-lock mouse-look; P3 WASD and sprint; P4 gravity and jump; P5 AABB collision; P6 fly/no-clip toggle.</td></tr>
+      <tr><td>Interaction</td><td>I1 break targeted block; I2 place selected block on targeted face, including replacing water cells; I3 wireframe target highlight; I4 nine-slot hotbar with keys/wheel; I5 expanded E palette with extra blocks.</td></tr>
+      <tr><td>Rendering</td><td>R1 procedural canvas textures; R2 directional and ambient light; R3 vertex ambient occlusion; R4 distance fog; R5 in-scene sky dome; R6 transparent water mesh.</td></tr>
+      <tr><td>Scale and Performance</td><td>S1 render-distance 8 chunk streaming and unloading; S2 visible-face meshing; S3 live FPS target instrumentation and frame-budgeted chunk builds; S4 full debug HUD.</td></tr>
+      <tr><td>Atmosphere and Extras</td><td>X1 day-night cycle; X2 drifting clouds; X3 synthesized break/place/step/jump sounds; X4 wandering blocky mob; X5 localStorage world-edit persistence.</td></tr>
+      <tr><td>Engineering</td><td>E1 single inline file contract; E2 defensive console-clean runtime; E3 honest manifest; E4 crosshair plus Esc help overlay with controls and seed.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Key Technical Decisions</h2>
+  <ul>
+    <li>Use deterministic value-noise and hash functions instead of <code>Math.random()</code> for terrain, trees, caves, ores, and clouds so the default world remains reproducible.</li>
+    <li>Keep edits as an overlay map instead of mutating generated terrain. This preserves deterministic generation and lets localStorage save only changed blocks.</li>
+    <li>Cap terrain-column and tree-presence caches with recency eviction so long-distance travel cannot grow them without bound.</li>
+    <li>Mesh water separately with transparency and hidden-water-neighbor culling so shorelines remain readable while underwater terrain stays visible.</li>
+    <li>Use a large in-scene sky dome driven by the same day-night colors as fog and lighting so the world owns its horizon.</li>
+    <li>Use direct DDA voxel raycasting for precise break/place targeting and an independent wireframe cube for the crosshair highlight.</li>
+    <li>Throttle chunk building based on measured FPS so initial streaming fills the render distance without freezing normal play; nearby chunks are sorted first and low-FPS frames skip some mesh work.</li>
+    <li>Render at device pixel ratio 1 for stable desktop performance; the procedural block textures remain crisp because the atlas uses nearest-neighbor sampling.</li>
+  </ul>
+
+  <h2>Dev Log</h2>
+  <ul>
+    <li><strong>2026-06-02 12:58 UTC</strong> Initialized the nested contestant repository and committed the prompt scaffold.</li>
+    <li><strong>2026-06-02 13:04 UTC</strong> Added the dynamic workflow plan and first runnable game/docs shell with current manifest status.</li>
+    <li><strong>2026-06-02 13:19 UTC</strong> Implemented the full voxel sandbox pass: deterministic terrain, streamed meshed chunks, player controls, interaction UI, rendering polish, atmosphere, save/load, and updated documentation.</li>
+    <li><strong>2026-06-02 13:25 UTC</strong> Opened the spawn view, reduced excess cave/tree geometry, added a quiet WebGL-unavailable fallback, and paced chunk meshing based on live FPS.</li>
+    <li><strong>2026-06-02 13:31 UTC</strong> Added a closer pond and cave mouth near spawn, added a second nearby tree, and slowed low-FPS chunk mesh scheduling for smoother startup play.</li>
+    <li><strong>2026-06-02 13:35 UTC</strong> Set renderer pixel ratio to 1 for predictable performance on high-DPI desktop displays.</li>
+    <li><strong>2026-06-02 13:38 UTC</strong> Opened cave-carve rules through the surface so cave entrances are visible and enterable instead of capped by the top block.</li>
+    <li><strong>2026-06-02 13:44 UTC</strong> Fixed the start/help overlay so clicking the menu itself starts pointer lock and hides the menu, instead of requiring an unreachable canvas click underneath it.</li>
+    <li><strong>2026-06-03 10:15 UTC</strong> Allowed block placement to replace water cells and bounded terrain/tree caches with recency eviction.</li>
+    <li><strong>2026-06-03 10:20 UTC</strong> Bounded the column and tree caches, clamped water vertex color output, replaced the load-queue scan with a membership set, moved cave carving to seeded noise, and added an in-scene sky dome.</li>
+    <li><strong>2026-06-03 10:24 UTC</strong> Dropped stale shoreline-biome wording, kept the dry biome as a terrain/vegetation variant, and made water color clamping explicit.</li>
+    <li><strong>2026-06-03 10:30 UTC</strong> Removed the page-background sky dependency so the in-scene dome controls the visible horizon.</li>
+  </ul>
+</main>
+</body>
+</html>

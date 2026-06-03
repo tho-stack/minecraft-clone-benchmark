@@ -273,7 +273,7 @@
     </table>
     <small>*Total tokens = throughput (context re-read each agentic turn + output), each vendor's own count. <b>Treat as rough order-of-magnitude</b>, not a precise ratio — cache economics differ (Opus's is mostly discounted cache-reads). We deliberately publish <b>no efficiency leaderboard</b>: output-only tokens and $ aren't reported for the MiniMax runs, so an output-vs-total comparison would be apples-to-oranges. On this common basis the spread is ~1.5–2.6×.</small>
     <div class="callout">
-      <b>Honest framing.</b> This was <b>assisted</b> repair — each agent got its own bug list and web was on — so it measures fix-execution, not self-diagnosis. The round-2 builds aren't linked here: two are known-unplayable, and they live in separate local repos.
+      <b>Honest framing.</b> This was <b>assisted</b> repair — each agent got its own bug list and web was on — so it measures fix-execution, not self-diagnosis. The round-2 builds are published under <code>docs/round2/&lt;model&gt;/</code> for inspection — two are known-unplayable (see the regressions above); the frontier two play. Full prompts, harness, and methodology are in the repo (<code>prompts/</code>, <code>harness/</code>).
     </div>
   </section>
 
