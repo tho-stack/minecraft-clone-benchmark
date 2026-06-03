@@ -356,6 +356,17 @@
         is what collided with the MiniMax incident for M3, cutting its vision pass short. To isolate the <em>model</em> you’d equalize the
         plugin/verification loadout.
       </div>
+      <div class="callout" style="margin-bottom:0;margin-top:14px">
+        <b>Added run — MiniMax-M3 on its own first-party harness (Mavis).</b> Round&nbsp;1 ran M3 through <b>Pi</b> (above). To separate
+        <em>model</em> from <em>harness</em>, the identical <code>PROMPT.md</code> + operating guide is also run through <b>Mavis</b> —
+        MiniMax’s own agent runtime (<code>minimax</code> CLI v3, default model <code>MiniMax-M3</code>) — launched in <b>agent-team mode</b>.
+        To keep parity with round&nbsp;1, where each harness’s planner decomposed the rubric itself, the team is told to derive its own agent
+        roles rather than being handed an architecture; the only non-identical token vs. round&nbsp;1 is the planner invocation
+        (<code>/team</code> in place of Pi’s <code>/goal</code> + dynamic workflow):
+        <code style="display:block;white-space:pre-wrap;margin:8px 0;padding:10px 12px;line-height:1.5">/team Use team to build me a "Minecraft-clone build squad" whose single mission is to finish every goal in PROMPT.md in this directory — the deliverable contract, all 100 rubric points, docs.html, and the F3 HUD. Decide the agent roles yourselves by decomposing the rubric, then build and verify each part by actually running it; don't stop until everything works with no stubs. Commit as you go — git init + an initial commit first, a commit per feature with docs.html updated in the same commit, and a final commit when done.</code>
+        Full prompt: <a href="../prompts/round1/goal-minimax-mavis.txt">prompts/round1/goal-minimax-mavis.txt</a>.
+        <b>Status: in progress — not yet scored.</b> It will be folded in as a distinct contestant (M3 · Mavis), separate from round&nbsp;1’s M3 · Pi.
+      </div>
     </div>
   </section>
 

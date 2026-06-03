@@ -68,6 +68,13 @@ image-moderation incident** mid-run, so Speed isn't comparable.
   planning/verification plugins — a real confound; Opus self-verified via Playwright and Codex/GPT-5.5
   via Chrome DevTools Protocol, while Pi's vision pass was cut short by the incident),
   and MiniMax-M3 hit a MiniMax server-side image-moderation incident mid-run.
+- **Model vs. harness (added run)**: round-1 MiniMax-M3 ran through **Pi**. To separate the *model* from the *harness*,
+  the identical [`PROMPT.md`](PROMPT.md) + operating guide is also run through **Mavis** — MiniMax's own agent runtime
+  (`minimax` CLI, default `MiniMax-M3`) — in agent-team mode. For parity with round 1 (where each harness's planner
+  decomposed the rubric itself) the team derives its own agent roles; the only non-identical token is the planner call
+  (`/team` vs. Pi's `/goal` + dynamic workflow). Launch prompt:
+  [`prompts/round1/goal-minimax-mavis.txt`](prompts/round1/goal-minimax-mavis.txt). Tracked as a distinct contestant
+  (M3 · Mavis); **in progress, not yet scored.**
 - **Round 2 — self-repair**: each agent was handed its own Round-1 bug list and fixed its build in
   place (assisted repair); re-graded by hands-on live-play + fresh Claude + Codex adversarial reviews.
   **Verdict: all four fixed their checklists, but only the frontier models stayed playable** — both
@@ -85,7 +92,7 @@ docs/                       ← GitHub Pages site
 PROMPT.md                   ← the identical build prompt (Round 1)
 GRADING.md                  ← the 130-point rubric
 prompts/                    ← every prompt used
-  round1/                   ← per-harness launch prompts (Pi/Claude, Codex)
+  round1/                   ← per-harness launch prompts (Pi/Claude, Codex, MiniMax/Mavis)
   round2/                   ← self-repair fix prompts + variance-study prompts
   reviews/                  ← the Claude/Codex adversarial-review prompts + Pi setup
 harness/                    ← tooling + methodology
