@@ -6,14 +6,14 @@ assets) plus living `docs.html`. Each was graded on **130 points** — Quality (
 (10) + Speed (20) — from source inspection **and live in-browser play**, then adversarially reviewed
 twice (Claude + Codex). World seed 1337.
 
-**▶ Play all four & read the full report → the live site**
-`https://<user>.github.io/<repo>/` &nbsp;*(replace after enabling Pages: Settings → Pages → branch `main`, folder `/docs`)*
+**▶ Play all four & read the full report → the live site:**
+**https://tho-stack.github.io/minecraft-clone-benchmark/** &nbsp;*(enable once: Settings → Pages → branch `main`, folder `/docs`)*
 
-Direct play links (once Pages is on):
-[Opus-4.8](https://<user>.github.io/<repo>/opus-4.8/game.html) ·
-[GPT-5.5](https://<user>.github.io/<repo>/gpt-5.5/game.html) ·
-[MiniMax-M3](https://<user>.github.io/<repo>/minimax-m3/game.html) ·
-[MiniMax-2.7-highspeed](https://<user>.github.io/<repo>/minimax-m2.7-highspeed/game.html)
+Direct play links:
+[Opus-4.8](https://tho-stack.github.io/minecraft-clone-benchmark/opus-4.8/game.html) ·
+[GPT-5.5](https://tho-stack.github.io/minecraft-clone-benchmark/gpt-5.5/game.html) ·
+[MiniMax-M3](https://tho-stack.github.io/minecraft-clone-benchmark/minimax-m3/game.html) ·
+[MiniMax-2.7-highspeed](https://tho-stack.github.io/minecraft-clone-benchmark/minimax-m2.7-highspeed/game.html)
 
 ## Results
 
