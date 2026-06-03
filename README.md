@@ -73,8 +73,12 @@ image-moderation incident** mid-run, so Speed isn't comparable.
   (`minimax` CLI, default `MiniMax-M3`) — in agent-team mode. For parity with round 1 (where each harness's planner
   decomposed the rubric itself) the team derives its own agent roles; the only non-identical token is the planner call
   (`/team` vs. Pi's `/goal` + dynamic workflow). Launch prompt:
-  [`prompts/round1/goal-minimax-mavis.txt`](prompts/round1/goal-minimax-mavis.txt). Tracked as a distinct contestant
-  (M3 · Mavis); **in progress, not yet scored.**
+  [`prompts/round1/goal-minimax-mavis.txt`](prompts/round1/goal-minimax-mavis.txt). **Round-1 result: NOT PLAYABLE —
+  the worst of all five** (capability ≈ 40/100, last on the playable board). Live play + a Codex review found two
+  showstoppers — any save bricks the world (no finite-guard → camera `NaN`), and the chunk mesher double-applies the
+  world-offset so solid terrain renders as disconnected floating islands — plus a cosmetic-only seed and a save that
+  never restores edits. It also burned the **most tokens and money of any contestant** (~34.2M tokens / $20.73 / 75 min):
+  the model's own first-party harness was not the equalizer one might expect. Round 2 (self-repair) to follow.
 - **Round 2 — self-repair**: each agent was handed its own Round-1 bug list and fixed its build in
   place (assisted repair); re-graded by hands-on live-play + fresh Claude + Codex adversarial reviews.
   **Verdict: all four fixed their checklists, but only the frontier models stayed playable** — both

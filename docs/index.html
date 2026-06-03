@@ -365,7 +365,21 @@
         (<code>/team</code> in place of Pi’s <code>/goal</code> + dynamic workflow):
         <code style="display:block;white-space:pre-wrap;margin:8px 0;padding:10px 12px;line-height:1.5">/team Use team to build me a "Minecraft-clone build squad" whose single mission is to finish every goal in PROMPT.md in this directory — the deliverable contract, all 100 rubric points, docs.html, and the F3 HUD. Decide the agent roles yourselves by decomposing the rubric, then build and verify each part by actually running it; don't stop until everything works with no stubs. Commit as you go — git init + an initial commit first, a commit per feature with docs.html updated in the same commit, and a final commit when done.</code>
         Full prompt: <a href="../prompts/round1/goal-minimax-mavis.txt">prompts/round1/goal-minimax-mavis.txt</a>.
-        <b>Status: in progress — not yet scored.</b> It will be folded in as a distinct contestant (M3 · Mavis), separate from round&nbsp;1’s M3 · Pi.
+        <b>Round-1 result: NOT PLAYABLE — the worst build of all five.</b> Hands-on live play + a Codex
+        adversarial source review found two independent showstoppers: <b>(1)</b> any save bricks the world —
+        the loader has no finite-guard, so a malformed/NaN <code>pos</code> drives the camera to
+        <code>(NaN,NaN,z)</code> and the whole world goes invisible; <b>(2)</b> even from a clean load the
+        chunk mesher applies the chunk world-offset <em>twice</em> (and ships a wrong face-vertex table), so
+        continuous solid terrain renders as a grid of disconnected floating islands you fall through. Plus the
+        “seed 1337” is cosmetic (the noise hashes ignore the seed) and the save never restores edits.
+        Capability ≈ <b>40/100</b> (lowest of five); ranks <b>last on the playable board</b>, below M3 · Pi.
+        And it burned the <b>most tokens and money of any contestant</b> — <b>~34.2M tokens · $20.73 · 75 min</b>
+        — for the worst result: the model’s own first-party harness was <em>not</em> the equalizer one might
+        expect. <span class="muted">(Round 2 / self-repair to follow, same as the others.)</span>
+        <div class="gallery" style="margin-top:10px">
+          <figure><img src="assets/m3-mavis-void.png" alt="M3·Mavis — invisible world after a save (player position NaN)"><figcaption><b>After any save</b> → player pos NaN → camera dead → world invisible. The hotbar icons <em>are</em> textured, so textures generate fine — the world just isn’t there.</figcaption></figure>
+          <figure><img src="assets/m3-mavis-islands.png" alt="M3·Mavis — clean load renders as floating disconnected chunk-islands"><figcaption><b>Even from a clean load</b> → continuous solid terrain (verified via the block data) meshes into disconnected floating islands: the chunk offset is applied twice.</figcaption></figure>
+        </div>
       </div>
     </div>
   </section>
