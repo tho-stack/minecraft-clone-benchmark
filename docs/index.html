@@ -97,6 +97,7 @@
       run mode <code>/goal</code> + dynamic workflow · world seed 1337.</div>
   </header>
   <div class="panel" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="margin-right:4px">▶ Play the four builds live:</b> <a class="chip" href="opus-4.8/game.html">Opus-4.8</a> <a class="chip" href="gpt-5.5/game.html">GPT-5.5</a> <a class="chip" href="minimax-m3/game.html">MiniMax-M3</a> <a class="chip" href="minimax-m2.7-highspeed/game.html">MiniMax-2.7-highspeed</a> <small class="dim">— click the canvas to capture the mouse</small></div>
+  <div class="panel" style="margin-top:12px;border-left:3px solid var(--accent)"><b>🆕 Round 2 — Self-Repair:</b> each agent got its own bug list and fixed its own build. Verdict: all four fixed their checklists, but only the frontier models stayed playable; both MiniMax builds shipped showstopper regressions. <a href="#round2"><b>Jump to Round 2 →</b></a></div>
 
   <main>
 
@@ -223,6 +224,56 @@
         </div>
       </div>
       <p class="muted" style="margin:16px 0 0;font-size:12.5px">M3's collapse is concentrated in <b>Player + Interaction</b> (7/22 — both core verbs double-fire) and <b>Persistence</b> (8/16 — no working save); its World + Rendering stay near the top of the field. 2.7's deficit is <b>Rendering</b> (10/22 — textures never wired into the mesh). That's the raw-capability picture — the headline still gates on playability.</p>
+    </div>
+  </section>
+
+  <section id="round2">
+    <h2>Round 2 — Self-Repair <small>(each agent fixes its own build · its own scoreboard)</small></h2>
+    <div class="callout info" style="margin-top:0">
+      <b>What this round measured.</b> Each agent was handed <b>its own bug list — the findings from the
+      Round-1 Claude + Codex adversarial reviews</b> — and asked to fix its own Round-1 build <em>in place</em>
+      (assisted repair, web allowed, "iterate to convergence"). The fixed builds were then re-graded by
+      <b>hands-on live-play</b> plus <b>two fresh adversarial reviews</b> (a Claude 4-reviewer workflow + Codex
+      <code>/codex:adversarial-review</code>) — and it's those that caught the new regressions below; the
+      agents' own checks and the automated smoke harness did <em>not</em>. Round 2 keeps its <b>own</b>
+      scoreboard; it doesn't alter the Round-1 results above.
+    </div>
+    <div class="callout bad">
+      <b>Verdict — all four fixed their assigned checklists, but only the two frontier builds stayed playable.</b>
+      Both MiniMax builds introduced <b>new showstopper regressions</b> while fixing their lists, and neither caught
+      them — because neither the agents nor an automated harness can truly playtest. The gap did <em>not</em> close.
+    </div>
+    <table>
+      <tr><th>Build</th><th>Assigned bugs</th><th>New bugs introduced</th><th class="num">Real-play</th></tr>
+      <tr><td><b>Opus-4.8</b></td><td>5/5 fixed</td><td>1 major (inventory overlay) + 1 minor</td><td class="num"><span class="pill win">playable</span></td></tr>
+      <tr><td><b>GPT-5.5</b></td><td>7/7 fixed</td><td>3 minor (water / sky / caves)</td><td class="num"><span class="pill win">playable*</span></td></tr>
+      <tr><td><b>MiniMax-M3</b></td><td>fixed in code</td><td><b>2 blockers</b> (surface cave-holes; highlight inverted) + a save-mesh bug</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">unplayable</span></td></tr>
+      <tr><td><b>MiniMax-2.7-highspeed</b></td><td>fixed in code</td><td><b>2 blockers</b> (click-to-play; save-restore)</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">unplayable ↓</span></td></tr>
+    </table>
+    <small>*GPT playable but 60–90s chunk-load at spawn. &nbsp;↓ 2.7 <b>regressed</b>: playable (flat) in Round 1 → its fix pass broke the start flow.</small>
+    <h3 style="margin-top:18px">The regressions (what real play + the reviews caught, the harness didn't)</h3>
+    <ul class="issues">
+      <li><span class="sev critical">M3</span><span class="t"><b>Cave-uncap</b>: a fix removed the cave-depth cap, so caves carve through hillsides/surface → world riddled with holes, you fall through. And the targeted-block <b>highlight is inverted</b> (never shows in play) — <b>which was true in Round 1 too</b>: our Round-1 grade credited it from a screenshot that dismissed the overlay the wrong way. Honest correction.</span></li>
+      <li><span class="sev critical">2.7</span><span class="t"><b>Click-to-play stuck</b>: a debug-lock hook added for the test harness makes real pointer-lock never register, so the overlay never dismisses. And the sparse-save "fix" re-applies edits before chunks exist → edits lost on reload.</span></li>
+      <li><span class="sev high">Opus</span><span class="t">Pressing <kbd>E</kbd> opens inventory but the start overlay paints over it → can't pick blocks. (Minor: the audio fix reuses one noise buffer → every dig sounds identical.)</span></li>
+      <li><span class="sev high">GPT</span><span class="t">60–90s to stream chunks at spawn (a pre-existing FPS death-spiral, not fixed). Minor: right-click on water submerges the block; a sky-dome horizon seam.</span></li>
+    </ul>
+    <div class="gallery" style="margin-top:12px">
+      <figure><img src="assets/r2-m3-holes.jpeg" alt="MiniMax-M3 Round-2 top-down: terrain shredded into fragments with gaps"><figcaption><b>MiniMax-M3 (Round 2), looking down.</b> The cave-uncap regression: the surface is shredded into fragments separated by gaps — you fall through the voids. (Round-1 M3 was one contiguous world.)</figcaption></figure>
+      <figure><img src="assets/r2-27-stuck.jpeg" alt="MiniMax-2.7 Round-2: the Click to Play overlay never dismisses"><figcaption><b>MiniMax-2.7 (Round 2): can't start.</b> Real pointer-lock never registers (a debug-lock test hook reads its own stale value), so "Click to Play" never dismisses and the PAUSED overlay stacks on top.</figcaption></figure>
+    </div>
+    <p class="muted" style="margin:.4em 0"><b>Pattern:</b> every build that made non-trivial fixes introduced ≥1 new bug — <b>minor for the frontier models, showstoppers for the MiniMax builds.</b> The lesson: a faked-pointer-lock, no-physics smoke harness (and the agents' own checks) can confirm an assigned bug is <em>fixed</em>, but not that the game is <em>playable</em> — only real play can. The Claude live-play review enumerated the four blockers; Codex's adversarial pass didn't refute them (it focused on review methodology + repo state).</p>
+    <h3 style="margin-top:18px">Effort <small>— like-for-like only (the metrics every platform reports)</small></h3>
+    <table>
+      <tr><th>Build</th><th class="num">Total tokens*</th><th class="num">Wall-clock</th><th class="num">Real-play</th></tr>
+      <tr><td>Opus-4.8</td><td class="num">~6.9M</td><td class="num">~32 min</td><td class="num">playable</td></tr>
+      <tr><td>GPT-5.5</td><td class="num">~11.4M</td><td class="num">~21 min</td><td class="num">playable</td></tr>
+      <tr><td>MiniMax-2.7-highspeed</td><td class="num">~7.4M</td><td class="num">~31 min</td><td class="num">unplayable</td></tr>
+      <tr><td>MiniMax-M3</td><td class="num">~17.75M</td><td class="num">~44 min</td><td class="num">unplayable</td></tr>
+    </table>
+    <small>*Total tokens = throughput (context re-read each agentic turn + output), each vendor's own count. <b>Treat as rough order-of-magnitude</b>, not a precise ratio — cache economics differ (Opus's is mostly discounted cache-reads). We deliberately publish <b>no efficiency leaderboard</b>: output-only tokens and $ aren't reported for the MiniMax runs, so an output-vs-total comparison would be apples-to-oranges. On this common basis the spread is ~1.5–2.6×.</small>
+    <div class="callout">
+      <b>Honest framing.</b> This was <b>assisted</b> repair — each agent got its own bug list and web was on — so it measures fix-execution, not self-diagnosis. The round-2 builds aren't linked here: two are known-unplayable, and they live in separate local repos.
     </div>
   </section>
 
