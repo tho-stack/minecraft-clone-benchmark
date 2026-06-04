@@ -80,6 +80,7 @@
   .c-gpt{background:linear-gradient(90deg,#15803d,#22c55e)}
   .c-m3{background:linear-gradient(90deg,#b45309,#f59e0b)}
   .c-27{background:linear-gradient(90deg,#7c3aed,#a855f7)}
+  .c-mc{background:linear-gradient(90deg,#9f1239,#fb7185)}
   @media(max-width:760px){.two{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.gcrow{grid-template-columns:96px 1fr 36px}}
 </style>
 </head>
@@ -158,8 +159,9 @@
           <tr><td class="rank">2</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">✓</td></tr>
           <tr><td class="rank">3</td><td><b>MiniMax-M3</b></td><td class="num">65.0</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span></td></tr>
           <tr><td class="rank">4</td><td><b>MiniMax-2.7-highspeed</b></td><td class="num">60.0</td><td class="num">✓ <small>flat</small></td></tr>
+          <tr><td class="rank">5</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>(added run)</small></td><td class="num">40.0 <small class="dim">→ 70 (R2)</small></td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span> <small>→ ✓ R2</small></td></tr>
         </table>
-        <small>M3 out-points 2.7 on raw capability (richer world + wired textures/AO) but its core build loop is unusable — the headline ranking (right) gates on playability.</small>
+        <small>M3 out-points 2.7 on raw capability (richer world + wired textures/AO) but its core build loop is unusable — the headline ranking (right) gates on playability. <b>Row 5</b> is the same M3 model on MiniMax’s <b>own</b> harness (not Pi) — worst at 40 in round 1, <b>fixed to ~70 and playable</b> in its round-2 self-repair (<a href="#minimax-code">details</a>).</small>
       </div>
       <div class="panel">
         <h3>Overall <small>(Quality + Docs + Speed · 0–130)</small></h3>
@@ -169,6 +171,7 @@
           <tr><td class="rank">2</td><td><b>Opus-4.8</b></td><td class="num">96.5</td><td class="num">9</td><td class="num">2</td><td class="num"><b>107.5</b></td></tr>
           <tr><td class="rank">3</td><td><b>MiniMax-2.7-highspeed</b> <span class="pill win">plays</span></td><td class="num">60.0</td><td class="num">5</td><td class="num">20</td><td class="num"><b>85.0</b></td></tr>
           <tr><td class="rank dim">4</td><td><b>MiniMax-M3</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">n/a*</td><td class="num"><b>broken*</b></td></tr>
+          <tr><td class="rank dim">5</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>added run · not playable* (R1)</small></td><td class="num">40.0</td><td class="num">7</td><td class="num">n/a*</td><td class="num"><b>broken*</b> <small class="dim">→ playable R2</small></td></tr>
         </table>
         <small>Headline ranks <b>playable builds first</b>; Speed = round(20 × T<sub>fastest</sub> / T), T<sub>fastest</sub> = 7 min (2.7-highspeed).<br>
           <b>†GPT-5.5:</b> T = ~35 min <em>active labor</em> (≈30 core + ≈5 for the later overlay fix) → Speed 4 (calendar delay is a
@@ -180,13 +183,14 @@
   </section>
 
   <section>
-    <h2>Quality by bucket <small>— all four builds across the five rubric buckets</small></h2>
+    <h2>Quality by bucket <small>— all five builds across the five rubric buckets <span class="dim">(round-1 capability)</span></small></h2>
     <div class="panel">
       <div class="legend">
         <span><i class="c-opus"></i> Opus-4.8</span>
         <span><i class="c-gpt"></i> GPT-5.5</span>
-        <span><i class="c-m3"></i> MiniMax-M3</span>
+        <span><i class="c-m3"></i> MiniMax-M3 · Pi</span>
         <span><i class="c-27"></i> MiniMax-2.7-highspeed</span>
+        <span><i class="c-mc"></i> M3 · MiniMax Code <span class="dim">(added run)</span></span>
       </div>
       <div class="gchart">
         <div>
@@ -195,6 +199,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:95%"></i></div><span class="val">19</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:90%"></i></div><span class="val">18</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:82.5%"></i></div><span class="val">16.5</span></div>
+          <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45%"></i></div><span class="val">9</span></div>
         </div>
         <div>
           <div class="gctitle"><span>Player + Interaction</span><span class="max">/ 22</span></div>
@@ -202,6 +207,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:93.2%"></i></div><span class="val">20.5</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:31.8%"></i></div><span class="val">7</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.8%"></i></div><span class="val">12.5</span></div>
+          <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45.5%"></i></div><span class="val">10</span></div>
         </div>
         <div>
           <div class="gctitle"><span>Rendering Authenticity</span><span class="max">/ 22</span></div>
@@ -209,6 +215,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:95.5%"></i></div><span class="val">21</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:90.9%"></i></div><span class="val">20</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:45.5%"></i></div><span class="val">10</span></div>
+          <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:31.8%"></i></div><span class="val">7</span></div>
         </div>
         <div>
           <div class="gctitle"><span>Persistence + Atmosphere</span><span class="max">/ 16</span></div>
@@ -216,6 +223,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:96.9%"></i></div><span class="val">15.5</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:50%"></i></div><span class="val">8</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.3%"></i></div><span class="val">9</span></div>
+          <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:31.3%"></i></div><span class="val">5</span></div>
         </div>
         <div>
           <div class="gctitle"><span>Scale + Engineering</span><span class="max">/ 20</span></div>
@@ -223,9 +231,10 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:92.5%"></i></div><span class="val">18.5</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:60%"></i></div><span class="val">12</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:60%"></i></div><span class="val">12</span></div>
+          <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45%"></i></div><span class="val">9</span></div>
         </div>
       </div>
-      <p class="muted" style="margin:16px 0 0;font-size:12.5px">M3's collapse is concentrated in <b>Player + Interaction</b> (7/22 — both core verbs double-fire) and <b>Persistence</b> (8/16 — no working save); its World + Rendering stay near the top of the field. 2.7's deficit is <b>Rendering</b> (10/22 — textures never wired into the mesh). That's the raw-capability picture — the headline still gates on playability.</p>
+      <p class="muted" style="margin:16px 0 0;font-size:12.5px">M3's collapse is concentrated in <b>Player + Interaction</b> (7/22 — both core verbs double-fire) and <b>Persistence</b> (8/16 — no working save); its World + Rendering stay near the top of the field. 2.7's deficit is <b>Rendering</b> (10/22 — textures never wired into the mesh). <b>M3 · MiniMax Code</b> (rose) sits <em>lowest in every bucket</em> — in round 1 its world wouldn't even render — but its round-2 self-repair lifted it to ≈70 and playable. That's the round-1 raw-capability picture; the headline still gates on playability.</p>
     </div>
   </section>
 
@@ -548,6 +557,34 @@
             <li><span class="sev critical">crit</span><span class="t"><code>saveGame()</code> serializes ~200 chunks into 5 MB localStorage → guaranteed <code>QuotaExceededError</code>; HUD hidden on load until F3.</span></li>
             <li><span class="sev high">high</span><span class="t">Inventory == hotbar; both biomes share one surface block; FPS = last-frame dt; unseeded <code>Math.random()</code> textures.</span></li>
             <li><span class="sev medium">med</span><span class="t">No compliant top-of-file HTML FEATURE MANIFEST; manifest is JS comments inside module.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- MiniMax-M3 · MiniMax Code (5th, added run) -->
+      <div class="card" style="border:2px solid #9f1239">
+        <img class="shot" src="assets/m3-mavis-r2-fixed.png" alt="MiniMax-M3 · MiniMax Code — round-2 (fixed) world">
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h3 style="margin:0">MiniMax-M3 · MiniMax Code <small>· Mavis · added 5th run</small></h3>
+            <div class="scorebig" style="color:var(--bad)">40.0<small class="dim">/100 cap. (R1)</small></div>
+          </div>
+          <div class="chips"><span class="chip" style="background:var(--bad);color:#fff">R1: not playable (worst of 5)</span><span class="chip" style="background:var(--good);color:#06281d;font-weight:700">R2: fixed → playable</span><span class="chip">R2 cap. <b>≈70</b></span><span class="chip">Docs <b>7/10</b></span><span class="chip">~34.2M tok · $20.73 (R1)</span></div>
+          <p class="muted" style="margin:.4em 0"><b>The same M3 model as “MiniMax-M3 · Pi,” but on MiniMax’s own first-party harness</b> (the <code>minimax</code>/Mavis CLI) — a separate contestant. <b>Round 1 was the worst build of all five:</b> any save drove the camera to <code>(NaN,NaN,z)</code> → invisible world, and the chunk mesher double-applied the world-offset (+ a wrong face table) → continuous terrain rendered as disconnected floating islands you fall through; the “seed 1337” was cosmetic and the save never restored edits. <b>Round 2 (self-repair) fixed every one</b> — one continuous grass-and-trees world, a save that round-trips, a real seed, one-block-per-click — and came out genuinely playable, the only MiniMax build to <em>improve</em> in round 2. <a href="#minimax-code"><b>Full story + play both builds →</b></a></p>
+          <div class="catbars">
+            <span class="k">World/Terrain</span><div class="bar warn"><i style="width:45%"></i></div><span class="v">9/20</span>
+            <span class="k">Player+Interaction</span><div class="bar bad"><i style="width:45.5%"></i></div><span class="v">10/22</span>
+            <span class="k">Rendering Authenticity</span><div class="bar bad"><i style="width:31.8%"></i></div><span class="v">7/22</span>
+            <span class="k">Persistence+Atmosphere</span><div class="bar bad"><i style="width:31.3%"></i></div><span class="v">5/16</span>
+            <span class="k">Scale+Engineering</span><div class="bar warn"><i style="width:45%"></i></div><span class="v">9/20</span>
+          </div>
+          <small class="dim" style="display:block;margin-top:4px">Round-1 capability (above). Round 2 lifted it to ≈70 — see the <a href="#minimax-code">M3 · MiniMax Code section</a>.</small>
+          <h3 style="margin-top:12px">Issues <small>(round 1 — all fixed in round 2)</small></h3>
+          <ul class="issues">
+            <li><span class="sev critical">crit</span><span class="t"><b>Save bricks the world.</b> No finite-guard on load → a malformed/NaN <code>pos</code> sets the camera to <code>(NaN,NaN,z)</code> → entire world invisible. <em>(R2: v2 schema + finite-guard.)</em></span></li>
+            <li><span class="sev critical">crit</span><span class="t"><b>Floating-island world.</b> The mesher applies the chunk world-offset twice (+ a wrong <code>FACE_VERTS</code> table), so continuous solid terrain renders as disconnected floating slabs. <em>(R2: local coords + corrected faces.)</em></span></li>
+            <li><span class="sev high">high</span><span class="t"><b>Seed is theater</b> (noise hashes ignore <code>SEED</code>) and the <b>save never restores edits</b>. <em>(R2: seed threaded; diff-vs-baseline restore.)</em></span></li>
+            <li><span class="sev low">low</span><span class="t"><b>Most expensive contestant</b> — ~34.2M tokens / $20.73 / 75 min for the worst R1 result; the model’s own harness was not the equalizer one might expect.</span></li>
           </ul>
         </div>
       </div>
