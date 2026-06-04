@@ -16,10 +16,12 @@ H="$(command -v hermes || echo "$HOME/.local/bin/hermes")"
 BUILD_DIR="${1:-$PWD/hermes-m3}"
 BOARD="minecraft-m3"
 
-echo "==> 1. Model: all agents on MiniMax-M3 via the minimax provider"
+echo "==> 1. Model: all agents on MiniMax-M3 via the minimax-oauth provider"
+# NOTE: the working provider is 'minimax-oauth' (OAuth via `hermes login minimax-oauth`),
+# NOT the API-key 'minimax' provider. base_url is left empty — the oauth provider supplies it.
 "$H" config set model.default   MiniMax-M3
-"$H" config set model.provider  minimax
-"$H" config set model.base_url  https://api.minimax.io/anthropic
+"$H" config set model.provider  minimax-oauth
+"$H" config set model.base_url  ""
 "$H" config set model.api_mode  anthropic_messages
 
 echo "==> 2. Playwright MCP (live in-browser verification) into the default config"

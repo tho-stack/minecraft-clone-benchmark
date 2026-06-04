@@ -7,8 +7,10 @@ parallel to M3 · MiniMax-Code's `/team` (multi-agent) and distinct from M3 · P
 Reproduce the whole config with [`setup-hermes-kanban.sh`](./setup-hermes-kanban.sh). What it sets up:
 
 ## Model
-All agents run **MiniMax-M3** via the `minimax` provider (`api.minimax.io/anthropic`, `MINIMAX_API_KEY`).
-Hermes's default is deepseek — the script switches it; revert after the run.
+All agents run **MiniMax-M3** via the **`minimax-oauth`** provider (OAuth — `hermes login minimax-oauth`),
+with an empty `base_url` (the oauth provider supplies its own endpoint). This is the provider Hermes itself
+selected as correct — **not** the API-key `minimax` provider. Hermes's default is deepseek — the script
+switches it; revert after the run.
 
 ## Playwright MCP (live in-browser verification)
 Added to `~/.hermes/config.yaml` (and every worker profile) right after `credential_pool_strategies: {}`:
