@@ -375,10 +375,33 @@
         Capability ≈ <b>40/100</b> (lowest of five); ranks <b>last on the playable board</b>, below M3 · Pi.
         And it burned the <b>most tokens and money of any contestant</b> — <b>~34.2M tokens · $20.73 · 75 min</b>
         — for the worst result: the model’s own first-party harness was <em>not</em> the equalizer one might
-        expect. <span class="muted">(Round 2 / self-repair to follow, same as the others.)</span>
+        expect. <span class="muted">(Round&nbsp;2 below.)</span>
         <div class="gallery" style="margin-top:10px">
           <figure><img src="assets/m3-mavis-void.png" alt="M3·Mavis — invisible world after a save (player position NaN)"><figcaption><b>After any save</b> → player pos NaN → camera dead → world invisible. The hotbar icons <em>are</em> textured, so textures generate fine — the world just isn’t there.</figcaption></figure>
           <figure><img src="assets/m3-mavis-islands.png" alt="M3·Mavis — clean load renders as floating disconnected chunk-islands"><figcaption><b>Even from a clean load</b> → continuous solid terrain (verified via the block data) meshes into disconnected floating islands: the chunk offset is applied twice.</figcaption></figure>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--line);margin:14px 0">
+        <b style="color:var(--good)">Round 2 (self-repair): FIXED — now playable.</b> Handed its own bug list
+        (the two showstoppers plus the seed/edit-restore majors the reviews surfaced), the Mavis team made a
+        surgical <b>4-commit</b> pass and, on hands-on re-play, <b>came out actually playable</b> — the rare
+        MiniMax build that <em>improved</em> in round 2 (both M3·Pi and 2.7 shipped showstopper regressions and
+        stayed broken). The mesher now applies the chunk offset once + uses a corrected face table → one
+        continuous grass-and-trees world; the save got a v2 schema + finite-guard and round-trips properly
+        (position, broken blocks, and placements all persist — no more NaN brick); the seed is actually
+        threaded through the noise; and break/place is verified one-block-per-click. Capability jumps
+        <b>≈40 → ≈70/100</b>. Two caveats a Codex adversarial pass surfaced (and I confirmed): the save’s
+        diff-vs-baseline is <em>objectively wrong</em> — it diffs against pre-tree generation, so every chunk
+        holding a tree (~275 of 289) is serialized as a “user edit” (<b>253&nbsp;KB for two real edits</b>;
+        those two <em>do</em> round-trip, but the payload bloats and a quota failure is silently swallowed);
+        and the biome fix is partial — grass + trees cover the map, but <b>spawn itself still lands in water</b>.
+        Seed determinism covers world blocks only (mobs/clouds still use <code>Math.random</code>). Round-2
+        effort: <b>~19.8M tokens · $12.06 · 34&nbsp;min</b> (cumulative ~54M / ~$33, still the priciest
+        contestant). <span class="muted">Codex round-2 verdict: both blockers repaired, playability not refuted;
+        trims capability to ~68–70 for the save-baseline bug + overcredited biome.</span>
+        <b>▶ <a href="round2/minimax-code-m3/game.html">Play the round-2 build</a></b>
+        <div class="gallery" style="margin-top:10px">
+          <figure><img src="assets/m3-mavis-islands.png" alt="Round 1: floating islands"><figcaption><b>Round 1</b> — continuous terrain meshed into disconnected floating islands (double chunk-offset).</figcaption></figure>
+          <figure><img src="assets/m3-mavis-r2-fixed.png" alt="Round 2: one continuous grass-and-trees world"><figcaption><b>Round 2 (same camera angle)</b> — one continuous grass-and-trees world. The mesher fix landed.</figcaption></figure>
         </div>
       </div>
     </div>

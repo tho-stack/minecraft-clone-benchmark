@@ -78,7 +78,16 @@ image-moderation incident** mid-run, so Speed isn't comparable.
   showstoppers — any save bricks the world (no finite-guard → camera `NaN`), and the chunk mesher double-applies the
   world-offset so solid terrain renders as disconnected floating islands — plus a cosmetic-only seed and a save that
   never restores edits. It also burned the **most tokens and money of any contestant** (~34.2M tokens / $20.73 / 75 min):
-  the model's own first-party harness was not the equalizer one might expect. Round 2 (self-repair) to follow.
+  the model's own first-party harness was not the equalizer one might expect.
+- **Model vs. harness — Round 2 (self-repair):** handed its own bug list, the Mavis team made a surgical 4-commit pass and
+  **came out actually playable** — the only MiniMax build to *improve* in round 2 (both M3·Pi and 2.7 shipped showstopper
+  regressions). Mesher offset applied once + corrected face table → one continuous world; save v2 schema + finite-guard
+  round-trips properly; seed actually threaded; break/place verified one-per-click. Capability **≈40 → ≈70**. A Codex
+  adversarial pass confirmed both blocker fixes but caught two caveats: the save's diff-vs-baseline is *wrong* (it diffs
+  against pre-tree generation, so ~275/289 chunks are serialized as "edits" → 253 KB for 2 real edits, with a silently
+  swallowed quota failure), and the biome fix is partial (grass/trees cover the map, but spawn still lands in water).
+  Round-2 effort ~19.8M tokens / $12.06 / 34 min.
+  [**▶ Play the round-2 build**](https://tho-stack.github.io/minecraft-clone-benchmark/round2/minimax-code-m3/game.html).
 - **Round 2 — self-repair**: each agent was handed its own Round-1 bug list and fixed its build in
   place (assisted repair); re-graded by hands-on live-play + fresh Claude + Codex adversarial reviews.
   **Verdict: all four fixed their checklists, but only the frontier models stayed playable** — both
