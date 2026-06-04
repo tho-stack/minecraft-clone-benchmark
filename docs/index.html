@@ -357,9 +357,13 @@
         plugin/verification loadout.
       </div>
       <div class="callout" style="margin-bottom:0;margin-top:14px">
-        <b>Added run — MiniMax-M3 on its own first-party harness (Mavis).</b> Round&nbsp;1 ran M3 through <b>Pi</b> (above). To separate
-        <em>model</em> from <em>harness</em>, the identical <code>PROMPT.md</code> + operating guide is also run through <b>Mavis</b> —
-        MiniMax’s own agent runtime (<code>minimax</code> CLI v3, default model <code>MiniMax-M3</code>) — launched in <b>agent-team mode</b>.
+        <b>Added run — MiniMax-M3 on MiniMax’s <em>own</em> coding harness, “MiniMax&nbsp;Code” (the <code>minimax</code>/Mavis CLI v3, agent-team mode).</b>
+        <span class="pill" style="background:#2563eb;color:#fff">don’t conflate</span> <b>This is a SEPARATE contestant from “MiniMax-M3 · Pi” above.</b>
+        Same M3 <em>model</em>, different <em>harness</em>: the round-1 entry is the M3 model driven by the third-party <b>Pi</b> agent
+        (build dir <code>minimax-m3/</code>); this one is the same model driven by MiniMax’s <em>first-party</em> agent, <b>MiniMax&nbsp;Code</b>
+        (the <code>minimax</code>/Mavis CLI, build dir <code>minimax-code-m3/</code>). It is labeled <b>“M3 · MiniMax&nbsp;Code”</b> everywhere
+        below to keep it distinct from <b>“M3 · Pi.”</b> The whole point of the run is to isolate <em>model</em> from <em>harness</em>:
+        M3 · MiniMax Code gets the identical <code>PROMPT.md</code> + operating guide, launched in <b>agent-team mode</b>.
         To keep parity with round&nbsp;1, where each harness’s planner decomposed the rubric itself, the team is told to derive its own agent
         roles rather than being handed an architecture; the only non-identical token vs. round&nbsp;1 is the planner invocation
         (<code>/team</code> in place of Pi’s <code>/goal</code> + dynamic workflow):
@@ -377,12 +381,12 @@
         — for the worst result: the model’s own first-party harness was <em>not</em> the equalizer one might
         expect. <span class="muted">(Round&nbsp;2 below.)</span>
         <div class="gallery" style="margin-top:10px">
-          <figure><img src="assets/m3-mavis-void.png" alt="M3·Mavis — invisible world after a save (player position NaN)"><figcaption><b>After any save</b> → player pos NaN → camera dead → world invisible. The hotbar icons <em>are</em> textured, so textures generate fine — the world just isn’t there.</figcaption></figure>
-          <figure><img src="assets/m3-mavis-islands.png" alt="M3·Mavis — clean load renders as floating disconnected chunk-islands"><figcaption><b>Even from a clean load</b> → continuous solid terrain (verified via the block data) meshes into disconnected floating islands: the chunk offset is applied twice.</figcaption></figure>
+          <figure><img src="assets/m3-mavis-void.png" alt="M3 · MiniMax Code — invisible world after a save (player position NaN)"><figcaption><b>After any save</b> → player pos NaN → camera dead → world invisible. The hotbar icons <em>are</em> textured, so textures generate fine — the world just isn’t there.</figcaption></figure>
+          <figure><img src="assets/m3-mavis-islands.png" alt="M3 · MiniMax Code — clean load renders as floating disconnected chunk-islands"><figcaption><b>Even from a clean load</b> → continuous solid terrain (verified via the block data) meshes into disconnected floating islands: the chunk offset is applied twice.</figcaption></figure>
         </div>
         <hr style="border:none;border-top:1px solid var(--line);margin:14px 0">
         <b style="color:var(--good)">Round 2 (self-repair): FIXED — now playable.</b> Handed its own bug list
-        (the two showstoppers plus the seed/edit-restore majors the reviews surfaced), the Mavis team made a
+        (the two showstoppers plus the seed/edit-restore majors the reviews surfaced), the M3 · MiniMax&nbsp;Code team made a
         surgical <b>4-commit</b> pass and, on hands-on re-play, <b>came out actually playable</b> — the rare
         MiniMax build that <em>improved</em> in round 2 (both M3·Pi and 2.7 shipped showstopper regressions and
         stayed broken). The mesher now applies the chunk offset once + uses a corrected face table → one

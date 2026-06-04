@@ -68,9 +68,11 @@ image-moderation incident** mid-run, so Speed isn't comparable.
   planning/verification plugins — a real confound; Opus self-verified via Playwright and Codex/GPT-5.5
   via Chrome DevTools Protocol, while Pi's vision pass was cut short by the incident),
   and MiniMax-M3 hit a MiniMax server-side image-moderation incident mid-run.
-- **Model vs. harness (added run)**: round-1 MiniMax-M3 ran through **Pi**. To separate the *model* from the *harness*,
-  the identical [`PROMPT.md`](PROMPT.md) + operating guide is also run through **Mavis** — MiniMax's own agent runtime
-  (`minimax` CLI, default `MiniMax-M3`) — in agent-team mode. For parity with round 1 (where each harness's planner
+- **Model vs. harness — a SEPARATE 5th contestant (don't conflate with "MiniMax-M3 · Pi" above):** same M3 *model*,
+  different *harness*. The round-1 entry (build dir `minimax-m3/`) is M3 driven by the third-party **Pi** agent; this one
+  (build dir `minimax-code-m3/`) is the same model driven by MiniMax's *own* first-party agent — **MiniMax Code** (the
+  `minimax`/Mavis CLI), in agent-team mode. Labeled **M3 · MiniMax Code** throughout, kept distinct from **M3 · Pi**. It
+  gets the identical [`PROMPT.md`](PROMPT.md) + operating guide. For parity with round 1 (where each harness's planner
   decomposed the rubric itself) the team derives its own agent roles; the only non-identical token is the planner call
   (`/team` vs. Pi's `/goal` + dynamic workflow). Launch prompt:
   [`prompts/round1/goal-minimax-mavis.txt`](prompts/round1/goal-minimax-mavis.txt). **Round-1 result: NOT PLAYABLE —
@@ -79,7 +81,7 @@ image-moderation incident** mid-run, so Speed isn't comparable.
   world-offset so solid terrain renders as disconnected floating islands — plus a cosmetic-only seed and a save that
   never restores edits. It also burned the **most tokens and money of any contestant** (~34.2M tokens / $20.73 / 75 min):
   the model's own first-party harness was not the equalizer one might expect.
-- **Model vs. harness — Round 2 (self-repair):** handed its own bug list, the Mavis team made a surgical 4-commit pass and
+- **M3 · MiniMax Code — Round 2 (self-repair):** handed its own bug list, the team made a surgical 4-commit pass and
   **came out actually playable** — the only MiniMax build to *improve* in round 2 (both M3·Pi and 2.7 shipped showstopper
   regressions). Mesher offset applied once + corrected face table → one continuous world; save v2 schema + finite-guard
   round-trips properly; seed actually threaded; break/place verified one-per-click. Capability **≈40 → ≈70**. A Codex
