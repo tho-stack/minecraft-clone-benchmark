@@ -1,0 +1,12 @@
+Build the Minecraft clone defined in PROMPT.md in this directory (/Users/user/_capybara/minimax-m3-minecraft-bench/hermes-m3) — the deliverable contract, all 100 rubric points, docs.html, and the F3 HUD.
+
+You are the Kanban ORCHESTRATOR — do NOT write the game yourself. Route the work through the board (active board: "minecraft-m3") using these MiniMax-M3 worker profiles:
+- m3-builder-1, m3-builder-2 — implement feature cards
+- m3-verifier — loads game.html in a REAL browser via Playwright MCP and files bug cards
+- m3-synth — integrator; keeps the single file coherent and makes the final commit
+
+Run this loop:
+1. Decompose the rubric in PROMPT.md into concrete, independently-verifiable feature cards (one feature / rubric section each). Create them on this board with a SHARED workspace so everyone edits the same file: --workspace dir:/Users/user/_capybara/minimax-m3-minecraft-bench/hermes-m3
+2. The deliverable is ONE game.html, so order cards with dependencies so no two workers edit it at the same time — a mostly-sequential chain (parallel only where cards touch genuinely independent sections). The FIRST card runs `git init` + an initial commit (the build clock starts here); every feature card commits its work with docs.html updated in the same commit.
+3. Assign feature cards to m3-builder-1 / m3-builder-2. After each feature (or small milestone) lands, create a VERIFY card assigned to m3-verifier: it opens game.html in a browser, plays it (move, break/place one block, save+reload), screenshots, checks the console, and files precise bug/fix cards for anything broken, stubbed, or not actually wired. Route those fix cards back to the builders.
+4. Don't advance past a broken feature — keep the build→verify→fix loop going until the verifier confirms it works. When all rubric items are verified, create a final SYNTHESIZE card assigned to m3-synth to consolidate the file, confirm it runs with zero console errors, and make the final commit.

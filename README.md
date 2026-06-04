@@ -107,12 +107,14 @@ docs/                       ← GitHub Pages site
 PROMPT.md                   ← the identical build prompt (Round 1)
 GRADING.md                  ← the 130-point rubric
 prompts/                    ← every prompt used
-  round1/                   ← per-harness launch prompts (Pi/Claude, Codex, MiniMax/Mavis)
+  round1/                   ← per-harness launch prompts (Pi/Claude, Codex, MiniMax/Mavis, MiniMax/Hermes-kanban)
   round2/                   ← self-repair fix prompts + variance-study prompts
   reviews/                  ← the Claude/Codex adversarial-review prompts + Pi setup
 harness/                    ← tooling + methodology
   probe.mjs · smoke.mjs     ← static + runtime grading harnesses (text output)
   PLAN.md · RESULTS.md      ← Round-2 design + full results/findings
+  hermes-kanban-setup.md    ← MiniMax-M3 · Hermes (kanban) harness config
+  setup-hermes-kanban.sh    ← reproduces the 5-agent M3/Hermes kanban squad
 LICENSE                     ← Benchmark Evaluation License (report + AI-generated builds)
 LICENSE-CODE                ← MIT (the harness, prompts, scripts)
 ```
