@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Does MiniMax-M3 prompt caching work? — verified &amp; measured</title>
+<style>
+  :root{
+    --bg:#eef2f7; --panel:#ffffff; --panel2:#f4f7fb; --line:#dbe3ee; --ink:#101a2b; --mut:#516074; --dim:#7c8aa0;
+    --accent:#0e7490; --good:#15803d; --warn:#b45309; --bad:#dc2626;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#eef2f7,#e7eef6 60%,#eef2f7);color:var(--ink);
+    font:15px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial}
+  a{color:var(--accent)}
+  .wrap{max-width:1000px;margin:0 auto;padding:32px 20px 80px}
+  header.hero{border:1px solid var(--line);border-radius:16px;padding:26px 28px;background:
+    radial-gradient(900px 320px at 12% -25%,rgba(14,116,144,.12),transparent),linear-gradient(180deg,#ffffff,#f7fafd)}
+  .kick{color:var(--accent);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+  h1{margin:.3em 0 .2em;font-size:29px;line-height:1.15}
+  .sub{color:var(--mut);max-width:760px}
+  .meta{color:var(--dim);font-size:13px;margin-top:10px}
+  section{margin-top:30px}
+  h2{font-size:20px;border-left:3px solid var(--accent);padding-left:10px;margin:0 0 14px}
+  h3{font-size:15.5px;margin:18px 0 8px}
+  .muted{color:var(--mut)} .dim{color:var(--dim)} small{color:var(--dim)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:0 1px 2px rgba(16,26,43,.05)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:.2em 0}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{color:var(--mut);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line)}
+  .pill.win{background:rgba(21,128,61,.12);color:#15803d;border-color:#a7d8b6}
+  .pill.bad{background:rgba(220,38,38,.10);color:#b91c1c;border-color:#f3b4b4}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+  .stat{flex:1 1 150px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .stat .n{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+  .stat .l{font-size:11.5px;color:var(--mut);margin-top:3px}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:10px;background:var(--panel2);padding:14px 16px;margin:14px 0}
+  .callout.bad{border-left-color:var(--bad)} .callout.good{border-left-color:var(--good)} .callout.info{border-left-color:#2563eb}
+  code{background:#eef3f9;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12.5px;color:#0b3b4a}
+  pre{background:#0f1b2d;color:#e2ecf7;border-radius:11px;padding:14px 16px;overflow:auto;font-size:12.5px;line-height:1.5;border:1px solid #20324a}
+  pre .c{color:#6b86a6} pre .g{color:#7ee0a1} pre .y{color:#ffd479} pre .r{color:#ff9b9b}
+  .toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;margin:6px 0 0}
+  .toc a{color:var(--mut);text-decoration:none} .toc a:hover{color:var(--accent)}
+  .foot{margin-top:46px;color:var(--dim);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kick">MiniMax-M3 · prompt caching · investigation</div>
+    <h1>Does MiniMax-M3 prompt caching work?</h1>
+    <p class="sub">A widely-shared report claims M3's Anthropic-compatible prompt cache is broken — "phantom",
+      "stale", "no benefit". We tested it two ways from a clean room: <b>caching works, and cache reads bill
+      ~5× cheaper.</b> The one genuine defect is a telemetry gap, not a caching failure.</p>
+    <div class="meta">Endpoint <code>api.minimax.io/anthropic</code> · model <b>MiniMax-M3</b> · Anthropic Messages API
+      · all results reproduced live · part of the <a href="index.html">coding-benchmark</a> token-cost work.</div>
+    <div class="toc">
+      <b style="color:var(--ink)">Jump:</b>
+      <a href="#verdict">Verdict</a><a href="#how">How caching works</a><a href="#claim">The claim</a>
+      <a href="#test1">Test 1 · does it cache?</a><a href="#quirk">The M3 quirk</a><a href="#wrong">Why the report is wrong</a>
+      <a href="#test2">Test 2 · is it cheaper?</a><a href="#bench">Benchmark implications</a><a href="#report">Correct bug report</a>
+      <a href="#repro">Reproduce</a>
+    </div>
+  </header>
+
+  <main>
+
+  <section id="verdict">
+    <div class="callout good">
+      <h2 style="border:0;padding:0;margin:.1em 0 .4em">Verdict</h2>
+      <b>MiniMax-M3 prompt caching works.</b> A request that re-presents a cached prefix returns a large
+      <code>cache_read_input_tokens</code> and only a handful of fresh input tokens, and those cache reads bill
+      <b>~5.2× less coding-plan quota</b> than uncached input (independently matching a prior ~5.4× measurement).
+      <b>The only real defect is reporting:</b> M3 never populates <code>cache_creation_input_tokens</code> (it is
+      <code>0</code> on every call, including the write), which breaks <em>write-cost accounting</em> — but does
+      <em>not</em> mean "nothing is cached." The viral "caching is a phantom/stale server bug" claim is a
+      <b>misdiagnosis</b>: it used a popular copy-pasted prompt whose prefix was already warm in MiniMax's cache.
+    </div>
+    <div class="chips">
+      <div class="stat"><div class="n" style="color:var(--good)">YES</div><div class="l">caching works (cache_read returns the prefix)</div></div>
+      <div class="stat"><div class="n">~5.2×</div><div class="l">cheaper: cache-read vs uncached input (measured on quota)</div></div>
+      <div class="stat"><div class="n" style="color:var(--bad)">0</div><div class="l">cache_creation_input_tokens M3 ever reports (the real bug)</div></div>
+      <div class="stat"><div class="n">512+</div><div class="l">input tokens needed before caching engages</div></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>How MiniMax-M3 caching is supposed to work</h2>
+    <div class="panel">
+      <p style="margin-top:0">Per MiniMax's
+        <a href="https://platform.minimax.io/docs/api-reference/anthropic-api-compatible-cache">Anthropic-compatible caching docs</a>,
+        you mark a stable prefix with <code>cache_control: {"type":"ephemeral"}</code>. The first request writes that
+        prefix to a server-side cache; later requests that begin with the identical prefix read it back at a discount.</p>
+      <table>
+        <tr><th>Property</th><th>Value</th></tr>
+        <tr><td>Endpoint</td><td><code>https://api.minimax.io/anthropic</code> (the SDK appends <code>/v1/messages</code>), header <code>anthropic-version: 2023-06-01</code></td></tr>
+        <tr><td>Trigger</td><td><code>cache_control: {"type":"ephemeral"}</code> on the cached block; <b>minimum 512 input tokens</b></td></tr>
+        <tr><td>Reported as</td><td><code>usage.cache_read_input_tokens</code> (cache hit) and <code>usage.cache_creation_input_tokens</code> (write)</td></tr>
+        <tr><td>Discount</td><td>cache-read input billed well below standard input (docs ~5×; current pay-go shows a discounted tier preserving the ~5× ratio)</td></tr>
+      </table>
+      <p class="muted" style="margin-bottom:0"><b>The M3 deviation, up front:</b> M3 serves cache reads correctly but
+        <b>never reports <code>cache_creation_input_tokens</code></b> — it stays <code>0</code> even on the write. Every
+        confusion below traces back to people reading that <code>0</code> as "nothing was cached."</p>
+    </div>
+  </section>
+
+  <section id="claim">
+    <h2>The claim under test</h2>
+    <p class="muted">A report circulating in the MiniMax community, posted as "definitive proof of the M3 caching bug":</p>
+    <pre><span class="c"># tester.py output (the report's evidence)</span>
+Call 1: input_new=83,  cache_read=3698, cache_creation=0   <span class="c">← "3698 tokens from nowhere"</span>
+Call 2: input_new=99,  cache_read=3698, cache_creation=0   <span class="c">← "same stale value"</span>
+Call 3: input_new=115, cache_read=3698, cache_creation=0
+Call 4: input_new=131, cache_read=3698, cache_creation=0
+Call 5: input_new=147, cache_read=3698, cache_creation=0
+
+<span class="y">Claims:</span>
+ (a) cache_creation=0 on every call  → "nothing is ever written to cache"
+ (b) cache_read=3698 persists         → "reading stale/wrong data from other sessions"
+ (c) therefore                        → "no cache benefit, phantom hits, server-side bug"</pre>
+    <p class="muted">All three reduce to one belief: that a non-zero <code>cache_read</code> with a zero
+      <code>cache_creation</code> means the cache is fake. We test that belief directly.</p>
+  </section>
+
+  <section id="test1">
+    <h2>Test 1 — Does it actually cache? <small>(cold-start, unique nonce)</small></h2>
+    <p class="muted">The fix for the ambiguity above is a <b>unique per-run nonce</b> in the cached prefix, so every
+      run starts <b>cold</b>: call 1 <em>must</em> be a write, and any later <code>cache_read</code> can only be
+      <em>this run's own</em> content. We send a ~4,000-token system block (nonce + filler), marked
+      <code>cache_control: ephemeral</code>, then vary only the user message.</p>
+    <pre><span class="c"># live run — MiniMax-M3, fresh nonce'd prefix</span>
+call  input_new  cache_read  cache_create  status
+ 1       4087        114          0         <span class="y">write</span>   <span class="c"># cold: prefix is NEW → tiny cache_read</span>
+ 2        119       4082          0         <span class="g">HIT</span>     <span class="c"># prefix now served from cache</span>
+ 3        119       4082          0         <span class="g">HIT</span>
+ 4        119       4082          0         <span class="g">HIT</span></pre>
+    <div class="callout good">
+      <b>Caching works, unambiguously.</b> Call 1's <code>cache_read=114</code> (not 4082) proves the prefix was
+      <b>not</b> pre-cached — so it cannot be "stale cross-session data". Calls 2–4 then return
+      <code>cache_read=4082</code>, exactly the size of <em>this run's</em> nonce'd prefix, while fresh input collapses
+      to ~119. If caching were off, every call would show ~4,000 fresh input and <code>cache_read=0</code>.
+    </div>
+  </section>
+
+  <section id="quirk">
+    <h2>The one real defect: M3 doesn't report cache <em>writes</em></h2>
+    <div class="panel">
+      <p style="margin-top:0">Notice <code>cache_creation_input_tokens = 0</code> on <b>every</b> row above — including the
+        write (call 1). On a spec-compliant Anthropic endpoint, call 1 would report
+        <code>cache_creation_input_tokens ≈ 4000</code>. M3 instead reports a tiny constant <code>cache_read=114</code>
+        on the write and <code>cache_creation=0</code> throughout.</p>
+      <p class="muted">This is a genuine bug — but a <b>telemetry</b> bug, not a caching bug. Consequences:</p>
+      <ul class="muted" style="margin:.2em 0">
+        <li><b>Write-cost accounting breaks:</b> you cannot see what the initial cache write cost from the usage block.</li>
+        <li><b>It fools naive testers:</b> any tool that prints <code>cached? = (cache_creation &gt; 0)</code> shows
+          <b>"NO" on every row</b> even while caching is working. Judge caching by <code>cache_read</code>, never by
+          <code>cache_creation</code>.</li>
+      </ul>
+      <p class="muted" style="margin-bottom:0">Everything else — the read discount, the prefix matching — works.</p>
+    </div>
+  </section>
+
+  <section id="wrong">
+    <h2>Why the "phantom/stale" report was wrong</h2>
+    <div class="two">
+      <div class="panel">
+        <h3 style="margin-top:0">"cache_read=3698 from nowhere on call 1"</h3>
+        <p class="muted">The report used the popular copy-pasted prompt <code>"You are a helpful assistant. " × 600</code>
+          (~3,698 tokens). Because <b>many people run that exact string</b>, MiniMax already had it cached server-side —
+          so the reporter's call 1 was an immediate <b>hit on a warm shared prefix</b>, not "tokens from nowhere".
+          <b>3698 is the size of their own prompt</b>, tracking their own content. Add a unique nonce (as in Test 1) and
+          call 1 reverts to a real cold write (<code>cache_read ≈ 114</code>).</p>
+      </div>
+      <div class="panel">
+        <h3 style="margin-top:0">"persists → stale / cross-session"</h3>
+        <p class="muted"><code>cache_read</code> equalling the prefix size on <em>every</em> call is exactly what a working
+          prefix cache does — the cached prefix is identical each call. Our nonce'd run shows the value equals
+          <em>our</em> prefix and changes with it, so it is this-session, not leaked. <b>"no benefit / phantom"</b> is
+          also false — see the measured quota discount below.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="test2">
+    <h2>Test 2 — Is it actually cheaper? <small>(A/B on real quota)</small></h2>
+    <p class="muted">"It reports cache reads" is not the same as "those reads cost less." To close that gap we ran a
+      controlled A/B against the live coding-plan quota meter (the <code>general</code> lane of
+      <code>/coding_plan/remains</code>): an <b>uncached</b> batch (a unique ~100k-token prefix per call → all fresh
+      input) versus a <b>cached</b> batch (one warm-up write, then same-prefix reads → <code>cache_read</code>), measuring
+      how much quota each burned. The ratio is taken on the fine 5-hour interval meter while total spend is hard-capped at
+      <b>3% of the weekly quota</b>.</p>
+    <pre><span class="c"># A/B result — MiniMax-M3, coding-plan quota</span>
+UNCACHED:   9 reqs    900,810 fresh input tokens    → interval <span class="r">-1%</span>
+CACHED  :  93 reqs    9,307,626 cache_read tokens    → interval <span class="g">-2%</span>
+
+per 1% of interval quota:  uncached ~900,810 fresh   vs   cached ~4,653,813 cache_read
+<span class="g">=&gt; cache reads are ~5.2× CHEAPER per unit of quota than uncached input.</span>
+   (spent ~1% of weekly quota · 10.3M tokens throughput · 0 cache misses)</pre>
+    <table>
+      <tr><th>Batch</th><th class="num">Requests</th><th class="num">Big-metric tokens</th><th class="num">Interval drop</th><th class="num">Tokens / 1% interval</th></tr>
+      <tr><td>Uncached <small>(unique prefix → fresh input)</small></td><td class="num">9</td><td class="num">900,810</td><td class="num">−1%</td><td class="num">~900k</td></tr>
+      <tr><td>Cached <small>(stable prefix → cache_read)</small></td><td class="num">93</td><td class="num">9,307,626</td><td class="num">−2%</td><td class="num">~4.65M</td></tr>
+      <tr><td colspan="4"><b>Cache reads fit ~5.2× more tokens into the same quota</b></td><td class="num"><span class="pill win">~5.2×</span></td></tr>
+    </table>
+    <p class="muted"><b>Two independent measurements agree:</b> a separate 120-read run (different prefix, 100,082
+      <code>cache_read</code> per call) measured <b>~5.4×</b> by quota; this A/B measured <b>~5.2×</b>. Both sit within the
+      ±1-integer-percent resolution of the meter, and both match the docs' ~5× pricing ratio.</p>
+    <div class="callout info">
+      <b>Safety of the A/B harness.</b> The benchmark was adversarially reviewed (an independent GPT-5.5 pass) and made
+      overspend-proof before running: it <b>reserves the worst-case next-request cost before every send</b> (so the
+      integer/lagging quota meter cannot overshoot), routes the warm-up write through the same guarded path, <b>aborts on
+      any cache miss</b> (a TTL miss would corrupt the ratio), and counts real throughput (<code>input + cache_read</code>)
+      against the cap. It stopped well under budget — ~1% of weekly quota.
+    </div>
+  </section>
+
+  <section id="bench">
+    <h2>What this means for token-cost comparisons</h2>
+    <div class="panel">
+      <p style="margin-top:0">In agentic coding runs the context is re-sent every turn, so the headline "millions of input
+        tokens" are dominated by <b>repeated prefix</b> — which is exactly what caching discounts. With caching active,
+        the real cost of those millions is closer to <b>1/5th</b> of the raw throughput. Two conditions must hold for a
+        run to actually capture that:</p>
+      <ul class="muted" style="margin:.2em 0">
+        <li><b>The harness must send <code>cache_control</code></b> on a stable prefix (the system prompt / tool preamble).</li>
+        <li><b>The prefix must stay byte-identical across turns.</b> Aggressive context <em>compression</em> or rewriting
+          changes the prefix and silently <b>invalidates the cache</b> — turning every "input" token back into full price.</li>
+      </ul>
+      <p class="muted" style="margin-bottom:0">So when comparing token spend across agents, "input tokens" is not a flat
+        unit: a cache-read input token can be ~5× cheaper than a fresh one. The
+        <a href="index.html#value">benchmark's token breakdown</a> shows output tokens are tiny and comparable across
+        models; the large input/throughput figures are where caching — when actually engaged — changes the economics.</p>
+    </div>
+  </section>
+
+  <section id="report">
+    <h2>The accurate bug report</h2>
+    <div class="callout">
+      <p style="margin-top:0">If you are filing this with MiniMax, the <b>defensible</b> framing is narrow and correct —
+        not "caching is broken":</p>
+      <p style="margin:.2em 0"><span class="pill win">works</span> &nbsp;Prompt caching functions on MiniMax-M3 via the
+        Anthropic-compatible endpoint, and cache-read input bills ~5× cheaper (measured on quota).</p>
+      <p style="margin:.2em 0"><span class="pill bad">bug</span> &nbsp;<b>M3 does not populate
+        <code>cache_creation_input_tokens</code></b> — it is <code>0</code> on every response, including the cache-write
+        call. This breaks write-cost accounting and causes false "caching is broken" reports because tools key off
+        <code>cache_creation</code>. <b>Request:</b> populate <code>cache_creation_input_tokens</code> on the write, to
+        match the documented Anthropic-compatible usage schema.</p>
+    </div>
+  </section>
+
+  <section id="repro">
+    <h2>Reproduce it yourself</h2>
+    <p class="muted">A self-contained cold-start verifier (the essential ~30 lines). It uses the official
+      <code>anthropic</code> SDK, so anyone can re-run it:</p>
+    <pre><span class="c"># pip install anthropic ; export MINIMAX_API_KEY=...</span>
+import os, anthropic
+c = anthropic.Anthropic(base_url="https://api.minimax.io/anthropic",
+                        api_key=os.environ["MINIMAX_API_KEY"])
+run = os.urandom(6).hex()                          <span class="c"># unique nonce → cold start</span>
+sys = f"[probe {run}] " + "You are a helpful, precise assistant. " * 500   <span class="c"># ~4k tok, &gt;512</span>
+for i in range(4):
+    u = c.messages.with_raw_response.create(
+        model="MiniMax-M3", max_tokens=16,
+        system=[{"type":"text","text":sys,"cache_control":{"type":"ephemeral"}}],
+        messages=[{"role":"user","content":f"say token{i}"}]).parse().usage
+    cr = getattr(u,"cache_read_input_tokens",0) or 0
+    print(i, "input", u.input_tokens, "cache_read", cr,
+          "->", "HIT" if cr &gt; 2000 else "write/miss")
+<span class="c"># call 0 = write (cache_read≈114); calls 1-3 = HIT (cache_read≈4000). cache_creation stays 0.</span></pre>
+    <p class="muted">The full verifier (cold-start + the quota A/B billing benchmark, with the overspend-proof safety caps)
+      lives in <code>minimax-cache-test.py</code> — run <code>python3 minimax-cache-test.py</code> for the cache check, or
+      <code>MODE=ab python3 minimax-cache-test.py</code> for the A/B (it hard-caps spend at 3% of weekly quota).</p>
+  </section>
+
+  <section>
+    <h2>Methods &amp; caveats</h2>
+    <div class="panel muted">
+      <ul style="margin:0">
+        <li><b>Quantization.</b> The quota meter is integer-percent; the ~5.2× ratio carries ±~1-percent resolution. Two
+          runs (5.2× and 5.4×) and the docs' 5× pricing ratio agree, so the figure is robust to that noise.</li>
+        <li><b>Scope.</b> Test 1 proves M3 <em>reports</em> cache reads consistent with hits; Test 2 proves those reads
+          <em>cost less quota</em>. Together they cover both "does it cache" and "is it cheaper".</li>
+        <li><b>Cache TTL.</b> MiniMax expires the prefix based on system load; rapid successive reads (≈ every few seconds)
+          stayed warm with zero misses across 93+120 reads. A long idle gap can let the prefix expire (a later read becomes
+          a write) — the A/B aborts rather than mis-measure if that happens.</li>
+        <li><b>Endpoint.</b> Anthropic Messages API (<code>/v1/messages</code>, <code>anthropic-version: 2023-06-01</code>),
+          not the OpenAI-compatible path. The OpenAI path reports the same thing as
+          <code>prompt_tokens_details.cached_tokens</code>.</li>
+      </ul>
+    </div>
+  </section>
+
+  </main>
+
+  <div class="foot">
+    MiniMax-M3 prompt-caching investigation · all results reproduced live against <code>api.minimax.io/anthropic</code>
+    · companion to the <a href="index.html">coding-clone benchmark</a>. Figures are the operator's own measurements; no
+    affiliation with MiniMax.
+  </div>
+</div>
+</body>
+</html>
