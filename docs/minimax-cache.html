@@ -266,6 +266,13 @@ POST https://api.minimax.io/anthropic/v1/messages        <span class="c">(header
         <li><b>The prefix must stay byte-identical across turns.</b> Aggressive context <em>compression</em> or rewriting
           changes the prefix and silently <b>invalidates the cache</b> — turning every "input" token back into full price.</li>
       </ul>
+      <div class="callout bad" style="margin:14px 0">
+        <b>A real example of the second point.</b> This benchmark's heaviest run — the 5-agent kanban "Hermes" build of
+        MiniMax-M3 — logged <b>0 cache reads and 0 cache writes across 31.5M input tokens</b> in its round-2 pass
+        (242 API calls, input:output ≈ 495:1). Its orchestration kept compressing and rewriting context, so the cached
+        prefix never survived between turns and it paid <b>full price for all 31.5M tokens</b> — even though M3 caching
+        works (proven above). The capability is there; capturing it needs a stable prefix the harness doesn't keep rewriting.
+      </div>
       <p class="muted" style="margin-bottom:0">So when comparing token spend across agents, "input tokens" is not a flat
         unit: a cache-read input token can be ~5× cheaper than a fresh one. The
         <a href="index.html#value">benchmark's token breakdown</a> shows output tokens are tiny and comparable across
