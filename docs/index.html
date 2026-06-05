@@ -95,7 +95,7 @@
       self-contained <code>game.html</code> (Three.js, runs from <code>file://</code>, zero external assets) plus living
       <code>docs.html</code>. Graded on <b>130 points</b> — Quality (100) + Documentation (10) + Speed (20) — from source inspection
       and live in-browser play, adversarially reviewed twice (Claude + Codex), with the report itself reviewed by Codex.</p>
-    <div class="meta">Four contestants: <b>MiniMax-M3</b> (Pi) · <b>MiniMax-2.7-highspeed</b> (Pi) · <b>GPT-5.5</b> (Codex) · <b>Claude Opus-4.8</b> ·
+    <div class="meta">Four contestants: <b>MiniMax-M3</b> (Pi) · <b>MiniMax-2.7-highspeed</b> (Pi) · <b>GPT-5.5</b> (Codex, xhigh) · <b>Claude Opus-4.8</b> (ultracode) ·
       run mode <code>/goal</code> + dynamic workflow · world seed 1337. <b>+ two later runs of the same M3 model on other harnesses:</b>
       <b>MiniMax-M3 · MiniMax&nbsp;Code</b> (MiniMax’s own harness — <a href="#minimax-code">jump →</a>) and
       <b>MiniMax-M3 · Hermes</b> (kanban, a 3rd harness; the strongest MiniMax build — <a href="#hermes">jump →</a>).</div>
@@ -155,33 +155,22 @@
         <figcaption><b>Capability × build time</b> — round 1, all six. Time is a log axis (7m → 8h). GPT &amp; Opus sit top-left; Hermes earns its 78 only at the far right.</figcaption>
       </figure>
       <figure>
-        <svg class="sc" viewBox="0 0 480 318" role="img" aria-label="Scatter: capability versus tokens, round 2">
-          <g font-family="inherit">
-            <rect x="58" y="18" width="150" height="80" fill="#16a34a" opacity="0.06"/>
-            <text x="64" y="33" font-size="10" fill="#15803d" opacity="0.75">↖ better</text>
-            <line x1="58" y1="18" x2="460" y2="18" stroke="#eef2f7"/><text x="52" y="21" font-size="10" fill="#7c8aa0" text-anchor="end">100</text>
-            <line x1="58" y1="70" x2="460" y2="70" stroke="#eef2f7"/><text x="52" y="73" font-size="10" fill="#7c8aa0" text-anchor="end">80</text>
-            <line x1="58" y1="121" x2="460" y2="121" stroke="#eef2f7"/><text x="52" y="124" font-size="10" fill="#7c8aa0" text-anchor="end">60</text>
-            <line x1="58" y1="173" x2="460" y2="173" stroke="#eef2f7"/><text x="52" y="176" font-size="10" fill="#7c8aa0" text-anchor="end">40</text>
-            <line x1="58" y1="18" x2="58" y2="276" stroke="#cbd5e1"/><line x1="58" y1="276" x2="460" y2="276" stroke="#cbd5e1"/>
-            <text x="58" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">0</text>
-            <text x="176" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">10M</text>
-            <text x="294" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">20M</text>
-            <text x="413" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">30M</text>
-            <text x="259" y="310" font-size="10.5" fill="#5b6b80" text-anchor="middle">round-2 tokens (throughput) →</text>
-            <text x="15" y="147" font-size="10.5" fill="#5b6b80" text-anchor="middle" transform="rotate(-90 15 147)">capability →</text>
-            <circle cx="140" cy="27" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="146" y="31" font-size="11" font-weight="600" fill="#0f2233">Opus 96.5</text>
-            <circle cx="193" cy="32" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="199" y="44" font-size="11" font-weight="600" fill="#0f2233">GPT 94.5</text>
-            <circle cx="424" cy="64" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="418" y="68" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">Hermes 82</text>
-            <circle cx="292" cy="95" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="298" y="99" font-size="11" font-weight="600" fill="#0f2233">Mavis 70</text>
-            <circle cx="268" cy="108" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="262" y="112" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">M3·Pi 65</text>
-            <circle cx="146" cy="121" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="152" y="125" font-size="11" font-weight="600" fill="#0f2233">2.7 (60)</text>
-          </g>
-        </svg>
-        <figcaption><b>Capability × tokens</b> — round 2 (the only round logged for all six). <span class="dim">Token classes differ — Opus's ~6.9M is mostly cache-reads, MiniMax's are throughput × multi-agent fan-out — so X is <b>indicative, not a ranking</b>.</span></figcaption>
+        <div style="border:1px solid var(--line);border-radius:10px;background:#fcfdfe;padding:11px 13px 13px">
+          <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700;margin-bottom:2px">Token breakdown — output vs. input/context</div>
+          <table style="font-size:11.5px">
+            <tr><th>Build</th><th class="num">Output<br><span style="font-weight:400;text-transform:none;letter-spacing:0">generated</span></th><th class="num">Input / ctx<br><span style="font-weight:400;text-transform:none;letter-spacing:0">throughput</span></th><th class="num">Total</th></tr>
+            <tr><td><b>Opus-4.8</b> <small>ultracode</small></td><td class="num"><b>77k</b></td><td class="num">~6.6M*</td><td class="num">~6.9M</td></tr>
+            <tr><td><b>GPT-5.5</b> <small>xhigh</small></td><td class="num"><b>50k</b></td><td class="num">11.4M</td><td class="num">~11.4M</td></tr>
+            <tr><td>MiniMax-2.7 <small>Pi</small></td><td class="num" colspan="2" style="text-align:center;color:var(--dim)">lump — no split</td><td class="num">7.4M</td></tr>
+            <tr><td>M3 · Pi</td><td class="num" colspan="2" style="text-align:center;color:var(--dim)">lump — no split</td><td class="num">17.75M</td></tr>
+            <tr><td>M3 · MiniMax&nbsp;Code</td><td class="num"><b>87k</b></td><td class="num">19.75M</td><td class="num">19.84M</td></tr>
+            <tr><td>M3 · Hermes <small>R1</small></td><td class="num"><b>120k</b></td><td class="num">51.56M</td><td class="num">51.7M</td></tr>
+          </table>
+        </div>
+        <figcaption><b>Output — the actually-generated tokens — is tiny &amp; comparable: 50–130k for every build that splits it.</b> The headline “millions” are all <b>input/context</b> re-read each agent turn. <span class="dim">*Opus’s input is mostly discounted cache-reads; the two Pi builds report only a lump total (no in/out split). Round 2, except Hermes (R1).</span></figcaption>
       </figure>
     </div>
-    <small style="display:block;margin-top:14px"><b>Round-1 build times</b> (left chart): Opus ~2h, GPT ~45m, 2.7 ~7m, M3·Pi ~4h, Mavis ~75m, Hermes 8h&nbsp;4m — operator wall-clock, prompt&nbsp;→&nbsp;final build. <b>M3&nbsp;·&nbsp;Pi's ~4h</b> includes a mid-run MiniMax 1026 image-moderation incident (MiniMax's <em>own</em> platform fault, so it counts); <b>GPT's ~45m</b> = ~35&nbsp;min agent labor + ~10&nbsp;min operator overhead (the larger calendar gap was operator-side review delay, excluded). The right chart uses <b>round-2</b> tokens &amp; capability because round-1 tokens were never separately logged for the original four. Both axes are shown <b>raw</b> — deliberately not divided into a single value/$ ratio, since the token denominators aren't comparable across vendors. <span class="dim">(Both added MiniMax runs improved in round-2 self-repair — Mavis 40→70 &amp; playable, Hermes 78→82 — see the round-2 section.)</span></small>
+    <small style="display:block;margin-top:14px"><b>Models:</b> Opus-4.8 ran in <b>ultracode</b> (multi-agent workflow orchestration); GPT-5.5 at <b>xhigh</b> reasoning effort (Codex). <b>Round-1 build times</b> (left chart): Opus ~2h, GPT ~45m, 2.7 ~7m, M3·Pi ~4h, Mavis ~75m, Hermes 8h&nbsp;4m — operator wall-clock, prompt&nbsp;→&nbsp;final build. <b>M3&nbsp;·&nbsp;Pi's ~4h</b> includes a mid-run MiniMax 1026 image-moderation incident (MiniMax's <em>own</em> platform fault, so it counts); <b>GPT's ~45m</b> = ~35&nbsp;min agent labor + ~10&nbsp;min operator overhead (the larger calendar gap was operator-side review delay, excluded). The token breakdown (right) separates <b>output</b> (generated) from <b>input/context</b> (throughput); round-1 tokens weren't separately logged for the original four, so it uses round-2 figures (Hermes R1). We deliberately don't collapse tokens into a single value/$ ratio — the denominators aren't comparable across vendors. <span class="dim">(Both added MiniMax runs improved in round-2 self-repair — Mavis 40→70 &amp; playable, Hermes 78→82 — see the round-2 section.)</span></small>
   </div>
 
   <div class="callout info" style="margin-top:18px">
@@ -237,8 +226,8 @@
         <h3>Capability <small>(raw rubric · 0–100)</small></h3>
         <table>
           <tr><th class="rank">#</th><th>Model</th><th class="num">Capability</th><th class="num">Playable?</th></tr>
-          <tr><td class="rank">1</td><td><b>Opus-4.8</b> <span class="pill win">lead</span></td><td class="num">96.5</td><td class="num">✓</td></tr>
-          <tr><td class="rank">2</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">✓</td></tr>
+          <tr><td class="rank">1</td><td><b>Opus-4.8</b> <small class="dim">ultracode</small> <span class="pill win">lead</span></td><td class="num">96.5</td><td class="num">✓</td></tr>
+          <tr><td class="rank">2</td><td><b>GPT-5.5</b> <small class="dim">xhigh</small></td><td class="num">94.5</td><td class="num">✓</td></tr>
           <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <small>(kanban · added run)</small></td><td class="num">78.0 <small class="dim">→ 82 (R2)</small></td><td class="num">✓</td></tr>
           <tr><td class="rank">4</td><td><b>MiniMax-M3</b> <small>(Pi)</small></td><td class="num">65.0</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span></td></tr>
           <tr><td class="rank">5</td><td><b>MiniMax-2.7-highspeed</b></td><td class="num">60.0</td><td class="num">✓ <small>flat</small></td></tr>
@@ -250,8 +239,8 @@
         <h3>Overall <small>(Quality + Docs + Speed · 0–130)</small></h3>
         <table>
           <tr><th class="rank">#</th><th>Model</th><th class="num">Q</th><th class="num">Docs</th><th class="num">Spd</th><th class="num">Total</th></tr>
-          <tr><td class="rank">1</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">10</td><td class="num">3†</td><td class="num"><b>107.5</b></td></tr>
-          <tr><td class="rank">2</td><td><b>Opus-4.8</b></td><td class="num">96.5</td><td class="num">9</td><td class="num">1</td><td class="num"><b>106.5</b></td></tr>
+          <tr><td class="rank">1</td><td><b>GPT-5.5</b> <small class="dim">xhigh</small></td><td class="num">94.5</td><td class="num">10</td><td class="num">3†</td><td class="num"><b>107.5</b></td></tr>
+          <tr><td class="rank">2</td><td><b>Opus-4.8</b> <small class="dim">ultracode</small></td><td class="num">96.5</td><td class="num">9</td><td class="num">1</td><td class="num"><b>106.5</b></td></tr>
           <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <span class="pill win">plays</span> <small>(kanban · added run)</small></td><td class="num">78.0</td><td class="num">8</td><td class="num">0‡</td><td class="num"><b>86.0</b></td></tr>
           <tr><td class="rank">4</td><td><b>MiniMax-2.7-highspeed</b> <span class="pill win">plays</span></td><td class="num">60.0</td><td class="num">5</td><td class="num">20</td><td class="num"><b>85.0</b></td></tr>
           <tr><td class="rank dim">5</td><td><b>MiniMax-M3 · Pi</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">1*</td><td class="num"><b>broken*</b></td></tr>
@@ -541,7 +530,7 @@
         <img class="shot" src="assets/opus-4.8.jpeg" alt="Opus-4.8 gameplay (night)">
         <div class="body">
           <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <h3 style="margin:0">Claude Opus-4.8 <small>· ~2h · quality lead</small></h3>
+            <h3 style="margin:0">Claude Opus-4.8 <small>· ultracode · ~2h · quality lead</small></h3>
             <div class="scorebig" style="color:var(--good)">96.5<small class="dim">/100</small></div>
           </div>
           <div class="chips"><span class="chip">Docs <b>9/10</b></span><span class="chip">Speed <b>1/20</b> <small>(~2h)</small></span><span class="chip">Overall <b>106.5</b></span><span class="chip">Workflow ×2 + Playwright self-verify</span></div>
@@ -573,7 +562,7 @@
         <img class="shot" src="assets/gpt-5.5.jpeg" alt="GPT-5.5 gameplay">
         <div class="body">
           <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <h3 style="margin:0">GPT-5.5 <small>· Codex · ~45 min · overall lead</small></h3>
+            <h3 style="margin:0">GPT-5.5 <small>· Codex · xhigh · ~45 min · overall lead</small></h3>
             <div class="scorebig" style="color:var(--good)">94.5<small class="dim">/100</small></div>
           </div>
           <div class="chips"><span class="chip">Docs <b>10/10</b></span><span class="chip">Speed <b>3/20</b> <small>(~45m)</small></span><span class="chip">Overall <b>107.5</b></span><span class="chip">console <b>clean</b></span></div>
