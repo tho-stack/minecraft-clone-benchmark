@@ -107,6 +107,22 @@
 
   <main>
 
+  <div class="panel" id="value" style="margin-top:18px;border-left:3px solid var(--good)">
+    <h2 style="margin:.1em 0 .4em">Value — capability per million tokens <small>(both rounds)</small></h2>
+    <p class="muted" style="margin:0 0 10px">The blunt "what did the spend buy?" view: raw rubric capability ÷ total tokens. Higher = more quality per token — and, on flat-rate subscriptions, per dollar. <span class="dim">(For the two added MiniMax runs, the second number is after their round-2 self-repair, on cumulative tokens.)</span></p>
+    <table>
+      <tr><th>Contestant <small>(harness)</small></th><th class="num">Capability</th><th class="num">Total tokens</th><th class="num">Cap / M&#8209;tok</th><th>value</th></tr>
+      <tr><td><b>Opus-4.8</b> <small>(Claude)</small></td><td class="num">96.5</td><td class="num">~6.9M</td><td class="num"><b>14.0</b> <span class="pill win">best</span></td><td><div class="gctrack"><i class="c-opus" style="width:100%"></i></div></td></tr>
+      <tr><td><b>GPT-5.5</b> <small>(Codex)</small></td><td class="num">94.5</td><td class="num">~11.4M</td><td class="num"><b>8.3</b></td><td><div class="gctrack"><i class="c-gpt" style="width:59%"></i></div></td></tr>
+      <tr><td>MiniMax-2.7-highspeed <small>(Pi)</small></td><td class="num">60</td><td class="num">~7.4M</td><td class="num">8.1</td><td><div class="gctrack"><i class="c-27" style="width:58%"></i></div></td></tr>
+      <tr><td>MiniMax-M3 <small>(Pi)</small></td><td class="num">65</td><td class="num">~17.75M</td><td class="num">3.7</td><td><div class="gctrack"><i class="c-m3" style="width:26%"></i></div></td></tr>
+      <tr><td>MiniMax-M3 · MiniMax&nbsp;Code</td><td class="num">40 → 70 <small class="dim">R2</small></td><td class="num">~34M → ~54M</td><td class="num">1.2 → 1.3</td><td><div class="gctrack"><i class="c-mc" style="width:9%"></i></div></td></tr>
+      <tr><td>MiniMax-M3 · Hermes <small>(kanban)</small></td><td class="num">78 → 82 <small class="dim">R2</small></td><td class="num">~51.7M → ~82.6M</td><td class="num">1.5 → 1.0</td><td><div class="gctrack"><i class="c-hm" style="width:7%"></i></div></td></tr>
+    </table>
+    <small><b>The frontier subscriptions win decisively on value.</b> Opus returns ~14 capability points per million tokens — <b>~4× the best MiniMax run and ~14× the worst.</b> Every MiniMax build needed <b>3–12× more tokens for a lower score</b>, and spending <em>more</em> in round 2 barely helped — Hermes's value actually <b>fell</b> (1.5 → 1.0): it doubled its tokens for +4 points. So a <b>$100–200 Claude / Codex subscription out-produces a ~$90 MiniMax one both per token and per dollar</b>, matching the intuition.<br>
+    <b>Caveats:</b> these were <b>subscription</b> runs (flat monthly fee, not metered), and token counts are each vendor's own throughput number — cache discounts (Opus's is mostly discounted cache-reads) and multi-agent overhead (Hermes ran 5 agents) differ wildly — so read cap/M&#8209;tok as a rough value proxy, not an invoice. MiniMax's <em>per-token API price</em> is far lower (~10–30×), so on pure metered $/token the gap narrows — but you still need many more tokens and the quality ceiling is lower (best MiniMax 82 vs 96.5).</small>
+  </div>
+
   <div class="callout info" style="margin-top:18px">
     <b>Scored under the revised “working-integration” rubric.</b> After Codex’s adversarial review of the games <em>and</em> of this report,
     the rubric was tightened to credit <em>working integration, not announced intent</em> — a feature merely <em>defined</em> (textures,
@@ -118,7 +134,7 @@
     <h2>The four builds <small>— real daylight screenshots, captured live in-browser (seed 1337)</small></h2>
     <div class="gallery">
       <figure><img src="assets/opus-4.8.jpeg" alt="Opus-4.8 at midday"><figcaption><b>Opus-4.8</b> — wired per-face textures + ambient occlusion, water, a wandering mob, F3 HUD + crosshair. Noon.</figcaption></figure>
-      <figure><img src="assets/minimax-m3.jpeg" alt="MiniMax-M3 at midday"><figcaption><b>MiniMax-M3</b> — the richest world (1.6M triangles): textured trees, stone cliffs, water, mob, live block-highlight. Midday.</figcaption></figure>
+      <figure><img src="assets/minimax-m3.jpeg" alt="MiniMax-M3 at midday"><figcaption><b>MiniMax-M3 · Pi</b> — the richest world (1.6M triangles): textured trees, stone cliffs, water, mob, live block-highlight. Midday.</figcaption></figure>
       <figure><img src="assets/gpt-5.5.jpeg" alt="GPT-5.5"><figcaption><b>GPT-5.5</b> — wired textures, drifting clouds, clean F3 HUD. Lower-ambient art; its day-night cycle happened to be mid-shadow in this frame.</figcaption></figure>
       <figure><img src="assets/minimax-m2.7-highspeed.jpeg" alt="MiniMax-2.7-highspeed at midday"><figcaption><b>MiniMax-2.7-highspeed</b> — blue-sky day, coastline + clouds, but <em>flat vertex colors</em>: its textures/AO were never wired into the mesh.</figcaption></figure>
     </div>
@@ -138,7 +154,7 @@
     <div class="panel">
       <p style="margin-top:0">All four shipped <b>running voxel worlds</b> — but only three are <b>actually playable</b>. Under integration-grading,
       capability and playability split apart: <b>Opus-4.8 leads on capability (96.5)</b> and GPT-5.5 trails it (94.5), both fully playable.
-      <b>MiniMax-M3 out-points 2.7 on raw capability (65.0 vs 60.0)</b> — richer world, real texture/AO wiring — <b>yet its core build loop is
+      <b>MiniMax-M3 · Pi out-points 2.7 on raw capability (65.0 vs 60.0)</b> — richer world, real texture/AO wiring — <b>yet its core build loop is
       broken</b>: duplicated <code>mousedown</code> handlers make every left-click <b>break two blocks</b> and every right-click <b>place two</b>,
       and the save never restores your position, so it is <b>not playable as a Minecraft clone</b>. 2.7 is the opposite — flat and feature-thin,
       but it <b>plays</b>. So on the <b>playability-gated headline, 2.7 ranks above M3, and M3 lands last.</b></p>
@@ -175,7 +191,7 @@
           <tr><td class="rank">2</td><td><b>Opus-4.8</b></td><td class="num">96.5</td><td class="num">9</td><td class="num">2</td><td class="num"><b>107.5</b></td></tr>
           <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <span class="pill win">plays</span> <small>(kanban · added run)</small></td><td class="num">78.0</td><td class="num">8</td><td class="num">0‡</td><td class="num"><b>86.0</b></td></tr>
           <tr><td class="rank">4</td><td><b>MiniMax-2.7-highspeed</b> <span class="pill win">plays</span></td><td class="num">60.0</td><td class="num">5</td><td class="num">20</td><td class="num"><b>85.0</b></td></tr>
-          <tr><td class="rank dim">5</td><td><b>MiniMax-M3</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">n/a*</td><td class="num"><b>broken*</b></td></tr>
+          <tr><td class="rank dim">5</td><td><b>MiniMax-M3 · Pi</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">n/a*</td><td class="num"><b>broken*</b></td></tr>
           <tr><td class="rank dim">6</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>added run · not playable* (R1)</small></td><td class="num">40.0</td><td class="num">7</td><td class="num">n/a*</td><td class="num"><b>broken*</b> <small class="dim">→ playable R2</small></td></tr>
         </table>
         <small>Headline ranks <b>playable builds first</b>; Speed = round(20 × T<sub>fastest</sub> / T), T<sub>fastest</sub> = 7 min (2.7-highspeed).<br>
@@ -205,7 +221,7 @@
           <div class="gctitle"><span>World / Terrain</span><span class="max">/ 20</span></div>
           <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:100%"></i></div><span class="val">20</span></div>
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:95%"></i></div><span class="val">19</span></div>
-          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:90%"></i></div><span class="val">18</span></div>
+          <div class="gcrow"><span class="lbl">M3 · Pi</span><div class="gctrack"><i class="c-m3" style="width:90%"></i></div><span class="val">18</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:82.5%"></i></div><span class="val">16.5</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:85%"></i></div><span class="val">17</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45%"></i></div><span class="val">9</span></div>
@@ -214,7 +230,7 @@
           <div class="gctitle"><span>Player + Interaction</span><span class="max">/ 22</span></div>
           <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:95.5%"></i></div><span class="val">21</span></div>
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:93.2%"></i></div><span class="val">20.5</span></div>
-          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:31.8%"></i></div><span class="val">7</span></div>
+          <div class="gcrow"><span class="lbl">M3 · Pi</span><div class="gctrack"><i class="c-m3" style="width:31.8%"></i></div><span class="val">7</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.8%"></i></div><span class="val">12.5</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:81.8%"></i></div><span class="val">18</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45.5%"></i></div><span class="val">10</span></div>
@@ -223,7 +239,7 @@
           <div class="gctitle"><span>Rendering Authenticity</span><span class="max">/ 22</span></div>
           <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:100%"></i></div><span class="val">22</span></div>
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:95.5%"></i></div><span class="val">21</span></div>
-          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:90.9%"></i></div><span class="val">20</span></div>
+          <div class="gcrow"><span class="lbl">M3 · Pi</span><div class="gctrack"><i class="c-m3" style="width:90.9%"></i></div><span class="val">20</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:45.5%"></i></div><span class="val">10</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:54.5%"></i></div><span class="val">12</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:31.8%"></i></div><span class="val">7</span></div>
@@ -232,7 +248,7 @@
           <div class="gctitle"><span>Persistence + Atmosphere</span><span class="max">/ 16</span></div>
           <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:100%"></i></div><span class="val">16</span></div>
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:96.9%"></i></div><span class="val">15.5</span></div>
-          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:50%"></i></div><span class="val">8</span></div>
+          <div class="gcrow"><span class="lbl">M3 · Pi</span><div class="gctrack"><i class="c-m3" style="width:50%"></i></div><span class="val">8</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.3%"></i></div><span class="val">9</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:87.5%"></i></div><span class="val">14</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:31.3%"></i></div><span class="val">5</span></div>
@@ -241,7 +257,7 @@
           <div class="gctitle"><span>Scale + Engineering</span><span class="max">/ 20</span></div>
           <div class="gcrow"><span class="lbl">Opus-4.8</span><div class="gctrack"><i class="c-opus" style="width:87.5%"></i></div><span class="val">17.5</span></div>
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:92.5%"></i></div><span class="val">18.5</span></div>
-          <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:60%"></i></div><span class="val">12</span></div>
+          <div class="gcrow"><span class="lbl">M3 · Pi</span><div class="gctrack"><i class="c-m3" style="width:60%"></i></div><span class="val">12</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:60%"></i></div><span class="val">12</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:85%"></i></div><span class="val">17</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45%"></i></div><span class="val">9</span></div>
@@ -271,10 +287,11 @@
       <tr><th>Build</th><th>Assigned bugs</th><th>New bugs introduced</th><th class="num">Real-play</th></tr>
       <tr><td><b>Opus-4.8</b></td><td>5/5 fixed</td><td>1 major (inventory overlay) + 1 minor</td><td class="num"><span class="pill win">playable</span></td></tr>
       <tr><td><b>GPT-5.5</b></td><td>7/7 fixed</td><td>3 minor (water / sky / caves)</td><td class="num"><span class="pill win">playable*</span></td></tr>
-      <tr><td><b>MiniMax-M3</b></td><td>fixed in code</td><td><b>2 blockers</b> (surface cave-holes; highlight inverted) + a save-mesh bug</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">unplayable</span></td></tr>
+      <tr><td><b>MiniMax-M3 · Pi</b></td><td>fixed in code</td><td><b>2 blockers</b> (surface cave-holes; highlight inverted) + a save-mesh bug</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">unplayable</span></td></tr>
       <tr><td><b>MiniMax-2.7-highspeed</b></td><td>fixed in code</td><td><b>2 blockers</b> (click-to-play; save-restore)</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">unplayable ↓</span></td></tr>
     </table>
     <small>*GPT playable but 60–90s chunk-load at spawn. &nbsp;↓ 2.7 <b>regressed</b>: playable (flat) in Round 1 → its fix pass broke the start flow.</small>
+    <p class="muted" style="margin:.6em 0 0"><b>This table is the original four.</b> The two later MiniMax-M3 runs ran their <em>own</em> self-repair rounds (separate experiment): <b>M3 · MiniMax&nbsp;Code</b> went <b>broken → playable</b> (<a href="#minimax-code">see it</a>), and <b>M3 · Hermes</b> went <b>78 → 82, a partial fix</b> — the black-block bug persists on stone/AO-heavy faces (<a href="#hermes">see it</a>).</p>
     <h3 style="margin-top:18px">The regressions (what real play + the reviews caught, the harness didn't)</h3>
     <ul class="issues">
       <li><span class="sev critical">M3</span><span class="t"><b>Cave-uncap</b>: a fix removed the cave-depth cap, so caves carve through hillsides/surface → world riddled with holes, you fall through. And the targeted-block <b>highlight is inverted</b> (never shows in play) — <b>which was true in Round 1 too</b>: our Round-1 grade credited it from a screenshot that dismissed the overlay the wrong way. Honest correction.</span></li>
@@ -283,7 +300,7 @@
       <li><span class="sev high">GPT</span><span class="t">60–90s to stream chunks at spawn (a pre-existing FPS death-spiral, not fixed). Minor: right-click on water submerges the block; a sky-dome horizon seam.</span></li>
     </ul>
     <div class="gallery" style="margin-top:12px">
-      <figure><img src="assets/r2-m3-holes.jpeg" alt="MiniMax-M3 Round-2 top-down: terrain shredded into fragments with gaps"><figcaption><b>MiniMax-M3 (Round 2), looking down.</b> The cave-uncap regression: the surface is shredded into fragments separated by gaps — you fall through the voids. (Round-1 M3 was one contiguous world.)</figcaption></figure>
+      <figure><img src="assets/r2-m3-holes.jpeg" alt="MiniMax-M3 Round-2 top-down: terrain shredded into fragments with gaps"><figcaption><b>MiniMax-M3 · Pi (Round 2), looking down.</b> The cave-uncap regression: the surface is shredded into fragments separated by gaps — you fall through the voids. (Round-1 M3 was one contiguous world.)</figcaption></figure>
       <figure><img src="assets/r2-27-stuck.jpeg" alt="MiniMax-2.7 Round-2: the Click to Play overlay never dismisses"><figcaption><b>MiniMax-2.7 (Round 2): can't start.</b> Real pointer-lock never registers (a debug-lock test hook reads its own stale value), so "Click to Play" never dismisses and the PAUSED overlay stacks on top.</figcaption></figure>
     </div>
     <p class="muted" style="margin:.4em 0"><b>Pattern:</b> every build that made non-trivial fixes introduced ≥1 new bug — <b>minor for the frontier models, showstoppers for the MiniMax builds.</b> The lesson: a faked-pointer-lock, no-physics smoke harness (and the agents' own checks) can confirm an assigned bug is <em>fixed</em>, but not that the game is <em>playable</em> — only real play can. The Claude live-play review enumerated the four blockers; Codex's adversarial pass didn't refute them (it focused on review methodology + repo state).</p>
@@ -293,7 +310,9 @@
       <tr><td>Opus-4.8</td><td class="num">~6.9M</td><td class="num">~32 min</td><td class="num">playable</td></tr>
       <tr><td>GPT-5.5</td><td class="num">~11.4M</td><td class="num">~21 min</td><td class="num">playable</td></tr>
       <tr><td>MiniMax-2.7-highspeed</td><td class="num">~7.4M</td><td class="num">~31 min</td><td class="num">unplayable</td></tr>
-      <tr><td>MiniMax-M3</td><td class="num">~17.75M</td><td class="num">~44 min</td><td class="num">unplayable</td></tr>
+      <tr><td>MiniMax-M3 · Pi</td><td class="num">~17.75M</td><td class="num">~44 min</td><td class="num">unplayable</td></tr>
+      <tr><td>MiniMax-M3 · MiniMax&nbsp;Code <small>(added)</small></td><td class="num">~34.2M</td><td class="num">~75 min</td><td class="num">R1 broken → R2 playable</td></tr>
+      <tr><td>MiniMax-M3 · Hermes <small>(kanban, added)</small></td><td class="num">~51.7M <small class="dim">(R1+R2 ~82.6M)</small></td><td class="num">~8h</td><td class="num">playable</td></tr>
     </table>
     <small>*Total tokens = throughput (context re-read each agentic turn + output), each vendor's own count. <b>Treat as rough order-of-magnitude</b>, not a precise ratio — cache economics differ (Opus's is mostly discounted cache-reads). We deliberately publish <b>no efficiency leaderboard</b>: output-only tokens and $ aren't reported for the MiniMax runs, so an output-vs-total comparison would be apples-to-oranges. On this common basis the spread is ~1.5–2.6×.</small>
     <div class="callout">
@@ -331,7 +350,7 @@
   <section>
     <h2>Caveats &amp; incidents <small>(transparency)</small></h2>
     <div class="callout bad">
-      <b>MiniMax server-side image-moderation incident (error 1026) — hit MiniMax-M3 mid-run.</b> M3 verifies by reading rendered
+      <b>MiniMax server-side image-moderation incident (error 1026) — hit MiniMax-M3 · Pi mid-run.</b> M3 verifies by reading rendered
       screenshots; partway through, MiniMax’s API began rejecting <em>all</em> image inputs as “sensitive” (a server-side change that also
       hit other users that day). It jammed at 34/35 todos; we rescued the session by stripping the flagged images and finished text-only.
       Consequence: M3’s wall-clock (Speed) is not comparable, and it never got vision self-verification like Opus did. Its deliverable is unaffected.
