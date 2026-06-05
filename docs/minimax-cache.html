@@ -269,9 +269,12 @@ POST https://api.minimax.io/anthropic/v1/messages        <span class="c">(header
       <div class="callout bad" style="margin:14px 0">
         <b>A real example of the second point.</b> This benchmark's heaviest run — the 5-agent kanban "Hermes" build of
         MiniMax-M3 — logged <b>0 cache reads and 0 cache writes across 31.5M input tokens</b> in its round-2 pass
-        (242 API calls, input:output ≈ 495:1). Its orchestration kept compressing and rewriting context, so the cached
-        prefix never survived between turns and it paid <b>full price for all 31.5M tokens</b> — even though M3 caching
-        works (proven above). The capability is there; capturing it needs a stable prefix the harness doesn't keep rewriting.
+        (242 API calls, input:output ≈ 495:1). <b>Hermes supports MiniMax caching</b> (its prompt-cache policy enables
+        <code>cache_control</code> for the <code>api.minimax.io</code> endpoint, and it correctly tallies
+        <code>cache_read</code> — so the zero is real, not a counting gap). But a 5-agent kanban run is hostile to prefix
+        caching: the orchestrator re-reads every agent's output and the context is repeatedly compressed/rewritten, so the
+        cached prefix almost never repeats byte-for-byte → <b>0 hits → full price for all 31.5M tokens</b>, even though M3
+        caching works. It's the multi-agent usage pattern, not a missing capability on either side.
       </div>
       <p class="muted" style="margin-bottom:0">So when comparing token spend across agents, "input tokens" is not a flat
         unit: a cache-read input token can be ~5× cheaper than a fresh one. The
