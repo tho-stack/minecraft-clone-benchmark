@@ -116,12 +116,12 @@ playable, so it ranks last.)
 
 | Contestant | Capability /100 | Playable? | Docs /10 | T (min) | Speed /20 | Overall /130 | Efficiency (Q/min) |
 |------------|----------------:|:---------:|---------:|--------:|----------:|-------------:|-------------------:|
-| gpt-5.5 | 94.5 | ✓ | 10 | ~35 | 4† | **108.5†** | 2.7 |
-| opus-4.8 | 96.5 | ✓ | 9 | ~68 | 2 | **107.5** | 1.4 |
+| gpt-5.5 | 94.5 | ✓ | 10 | ~45 | 3† | **107.5** | 2.1 |
+| opus-4.8 | 96.5 | ✓ | 9 | ~120 | 1 | **106.5** | 0.8 |
 | minimax-m2.7-highspeed | 60.0 | ✓ (flat) | 5 | ~7 | 20 | **85.0** | 8.6 |
-| minimax-m3 | 65.0 | ✗ core loop broken | 5 | n/a* | n/a* | **last*** | — |
+| minimax-m3 | 65.0 | ✗ core loop broken | 5 | ~240* | 1* | **last*** | 0.3 |
 
-*† GPT-5.5 Speed uses ~35 min active labor; under strict elapsed timing Opus leads Overall.
-\* M3 ranked last by the playability gate; Speed also unverifiable after the MiniMax image-moderation incident.*
+*† GPT-5.5 T = ~45 min build (≈35 min agent labor + ~10 min operator overhead); the larger calendar gap was operator-side review delay, excluded.
+\* M3 · Pi ranked last by the playability gate; its ~4h (incl. the mid-run MiniMax 1026 image-moderation incident — MiniMax's own fault) counts → Speed 1, gated to last regardless.*
 
 **Tie-breakers (Overall ties):** fewer console warnings → more quality lines at *full* vs *half* → higher Efficiency.

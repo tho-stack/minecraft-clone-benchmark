@@ -107,19 +107,39 @@
 
   <main>
 
-  <div class="panel" id="value" style="margin-top:18px;border-left:3px solid #2563eb">
-    <h2 style="margin:.1em 0 .4em">Effort &amp; outcome <small>— deliberately <em>not</em> an efficiency ranking</small></h2>
-    <p class="muted" style="margin:0 0 10px">What did each run cost, and what did it produce? We show capability, playability, reported tokens, wall-clock and orchestration side by side — but <b>we do not divide them into a single value score.</b> The token numbers are each platform's <em>own</em> telemetry (cache-read-heavy for Opus, input for Codex, total throughput for MiniMax, multiplied by multi-agent fan-out) — useful for rough workload scale, <b>not a cross-vendor denominator.</b> <span class="dim">(For the two added MiniMax runs the second figure is after round-2 self-repair, on cumulative tokens.)</span></p>
-    <table>
-      <tr><th>Contestant <small>(harness)</small></th><th class="num">Capability</th><th>Playable?</th><th class="num">Reported tokens</th><th class="num">Wall-clock</th><th>Orchestration</th></tr>
-      <tr><td><b>Opus-4.8</b> <small>(Claude)</small></td><td class="num">96.5</td><td><span class="pill win">yes</span></td><td class="num">~6.9M</td><td class="num">~32 min</td><td><small>/goal + workflow</small></td></tr>
-      <tr><td><b>GPT-5.5</b> <small>(Codex)</small></td><td class="num">94.5</td><td><span class="pill win">yes</span></td><td class="num">~11.4M</td><td class="num">~21 min</td><td><small>/goal + workflow</small></td></tr>
-      <tr><td>MiniMax-2.7-highspeed <small>(Pi)</small></td><td class="num">60</td><td><span class="pill">no</span></td><td class="num">~7.4M</td><td class="num">~31 min</td><td><small>workflow</small></td></tr>
-      <tr><td>MiniMax-M3 <small>(Pi)</small></td><td class="num">65</td><td><span class="pill">no</span></td><td class="num">~17.75M</td><td class="num">~44 min</td><td><small>workflow</small></td></tr>
-      <tr><td>MiniMax-M3 · MiniMax&nbsp;Code</td><td class="num">40 → 70 <small class="dim">R2</small></td><td><small>broken → <span class="pill win">yes</span></small></td><td class="num">~34M → ~54M</td><td class="num">~75 min</td><td><small>agent-team</small></td></tr>
-      <tr><td>MiniMax-M3 · Hermes <small>(kanban)</small></td><td class="num">78 → 82 <small class="dim">R2</small></td><td><span class="pill win">yes</span></td><td class="num">~51.7M → ~82.6M</td><td class="num">~8h → +2h</td><td><small>5-agent kanban</small></td></tr>
-    </table>
-    <small>Read this as <b>effort vs outcome, not a ratio.</b> The qualitative read that <em>does</em> survive: the two frontier models reached the highest capability <b>and</b> stayed playable on the <b>least</b> reported throughput and the <b>lightest</b> orchestration; every MiniMax-M3 harness spent <b>far more</b> tokens, wall-clock and agent fan-out to land <b>lower</b> capability, and a second round of spend bought only small gains. That matches the intuition that a frontier-model subscription out-produces the MiniMax one here — but we <b>publish no single value/$-per-token leaderboard</b>: the denominators aren't comparable (subscription flat-rate vs metered API, cache discounts, orchestration overhead), and near-ties (GPT-5.5 vs 2.7-highspeed) flip under any reasonable re-accounting. This mirrors the round-2 effort note below, which also publishes <b>no efficiency ranking.</b></small>
+  <style>
+    .herochart{display:grid;gap:11px;margin-top:4px}
+    .hrow{display:grid;grid-template-columns:165px 1fr 46px 1fr 62px;gap:11px;align-items:center;font-size:12.5px}
+    .hrow .hn{font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .hrow .hn small{display:block;font-weight:400;color:var(--dim);font-size:10.5px;letter-spacing:.01em}
+    .hbar{height:16px;border-radius:8px;background:#e9eef5;overflow:hidden}
+    .hbar>i{display:block;height:100%;border-radius:8px}
+    .hrow .hv{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:700}
+    .hrow .hv.t{font-weight:600;color:var(--mut)}
+    .hhead{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
+    .hrow.frontier .hn{color:#0e7490}
+    @media(max-width:760px){.hrow{grid-template-columns:104px 1fr 38px;gap:7px}.hrow .htime,.hrow .htv{display:none}}
+  </style>
+  <div class="panel" id="value" style="margin-top:18px;padding:20px 22px;background:radial-gradient(720px 240px at 92% -30%,rgba(14,116,144,.10),transparent),var(--panel)">
+    <h2 style="margin:.1em 0 .25em;border-left-color:var(--good)">The frontier models won on every axis at once <small>— capability × build time (round 1)</small></h2>
+    <p class="muted" style="margin:0 0 14px">Opus-4.8 and GPT-5.5 scored <b>highest</b>, stayed <b>playable</b>, and finished <b>fastest</b> — GPT reached <b>94.5 in ~45&nbsp;minutes</b>. The strongest MiniMax build, Hermes, ground for <b>8&nbsp;hours&nbsp;4&nbsp;minutes to land 78</b>; M3&nbsp;·&nbsp;Pi spent ~4&nbsp;hours on a build whose core loop is broken. The one fast MiniMax build (2.7, ~7&nbsp;min) is flat and feature-thin. Two bars per row — <b>longer capability is better, shorter build time is better</b>:</p>
+    <div class="legend" style="margin:0 0 12px">
+      <span><i style="background:linear-gradient(90deg,#15803d,#22c55e)"></i> playable</span>
+      <span><i style="background:linear-gradient(90deg,#d97706,#f59e0b)"></i> plays, but flat</span>
+      <span><i style="background:linear-gradient(90deg,#dc2626,#ef4444)"></i> broken / unplayable</span>
+      <span><i style="background:linear-gradient(90deg,#475569,#94a3b8)"></i> build time <span class="dim">(scaled to 8h&nbsp;4m)</span></span>
+    </div>
+    <div class="herochart">
+      <div class="hrow"><span class="hhead">Contestant</span><span class="hhead">Capability 0–100 ▸</span><span></span><span class="hhead htime">Build time ◂ shorter wins</span><span class="htv"></span></div>
+      <div class="hrow frontier"><div class="hn">Opus-4.8 <small>Claude · ✓ plays</small></div><div class="hbar"><i style="width:96.5%;background:linear-gradient(90deg,#15803d,#22c55e)"></i></div><div class="hv">96.5</div><div class="hbar htime"><i style="width:25%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~2h</div></div>
+      <div class="hrow frontier"><div class="hn">GPT-5.5 <small>Codex · ✓ plays</small></div><div class="hbar"><i style="width:94.5%;background:linear-gradient(90deg,#15803d,#22c55e)"></i></div><div class="hv">94.5</div><div class="hbar htime"><i style="width:9%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~45m</div></div>
+      <div class="hrow"><div class="hn">M3 · Hermes <small>kanban · ✓ plays</small></div><div class="hbar"><i style="width:78%;background:linear-gradient(90deg,#15803d,#22c55e)"></i></div><div class="hv">78</div><div class="hbar htime"><i style="width:100%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">8h 4m</div></div>
+      <div class="hrow"><div class="hn">M3 · Pi <small>Pi · ✗ broken</small></div><div class="hbar"><i style="width:65%;background:linear-gradient(90deg,#dc2626,#ef4444)"></i></div><div class="hv">65</div><div class="hbar htime"><i style="width:50%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~4h</div></div>
+      <div class="hrow"><div class="hn">MiniMax-2.7 <small>Pi · ✓ flat</small></div><div class="hbar"><i style="width:60%;background:linear-gradient(90deg,#d97706,#f59e0b)"></i></div><div class="hv">60</div><div class="hbar htime"><i style="width:3%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~7m</div></div>
+      <div class="hrow"><div class="hn">M3 · MiniMax Code <small>Mavis · ✗ broken</small></div><div class="hbar"><i style="width:40%;background:linear-gradient(90deg,#dc2626,#ef4444)"></i></div><div class="hv">40</div><div class="hbar htime"><i style="width:16%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~75m</div></div>
+    </div>
+    <small style="display:block;margin-top:15px"><b>Read the two bars together:</b> the frontier rows have a <em>long</em> capability bar and a <em>short</em> time bar — high quality, little time. Hermes is the mirror image: a full-width time bar (8h&nbsp;4m) for a mid-length 78. <span class="dim">(Both added MiniMax runs later improved in round-2 self-repair — Mavis 40→70 &amp; playable, Hermes 78→82 — see the round-2 section.)</span><br>
+    <b>All figures are round-1 build numbers.</b> Capability = round-1 working-integration rubric (0–100). Build time = operator wall-clock, prompt&nbsp;→&nbsp;final build. <b>M3&nbsp;·&nbsp;Pi's ~4h</b> includes a mid-run MiniMax server-side image-moderation incident (error&nbsp;1026) — MiniMax's <em>own</em> platform fault, so it counts. <b>GPT's ~45m</b> = ~35&nbsp;min agent labor&nbsp;+~10&nbsp;min operator overhead; the larger calendar gap was operator-side review delay and is excluded. We show three <b>raw</b> axes, deliberately <em>not</em> a single value ratio — the token/cost denominators aren't comparable across vendors (per-round tokens are in the effort table below; round-1 tokens weren't separately logged for the original four).</small>
   </div>
 
   <div class="callout info" style="margin-top:18px">
@@ -162,8 +182,8 @@
       <div class="callout info" style="margin-bottom:0">
         <b>Two axes, on purpose.</b> <b>Capability</b> = raw rubric points (what the build contains, wired-up). <b>Playable?</b> = can a person
         actually move, break, place, and persist — the brief asked for a <em>playable</em> clone. M3 wins the capability comparison with 2.7 but
-        <b>fails the playability gate</b>, so the headline ranks playable builds first. (Overall also folds in Docs + Speed; M3’s Speed is
-        unmeasurable after a platform incident.) The benchmark measures <b>model + harness + plugins</b>, not the model alone.
+        <b>fails the playability gate</b>, so the headline ranks playable builds first. (Overall also folds in Docs + Speed; M3·Pi’s ~4h build —
+        including a mid-run MiniMax server incident, MiniMax’s own fault — counts toward Speed, but it’s gated to last regardless.) The benchmark measures <b>model + harness + plugins</b>, not the model alone.
       </div>
     </div>
   </section>
@@ -188,18 +208,18 @@
         <h3>Overall <small>(Quality + Docs + Speed · 0–130)</small></h3>
         <table>
           <tr><th class="rank">#</th><th>Model</th><th class="num">Q</th><th class="num">Docs</th><th class="num">Spd</th><th class="num">Total</th></tr>
-          <tr><td class="rank">1</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">10</td><td class="num">4†</td><td class="num"><b>108.5†</b></td></tr>
-          <tr><td class="rank">2</td><td><b>Opus-4.8</b></td><td class="num">96.5</td><td class="num">9</td><td class="num">2</td><td class="num"><b>107.5</b></td></tr>
+          <tr><td class="rank">1</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">10</td><td class="num">3†</td><td class="num"><b>107.5</b></td></tr>
+          <tr><td class="rank">2</td><td><b>Opus-4.8</b></td><td class="num">96.5</td><td class="num">9</td><td class="num">1</td><td class="num"><b>106.5</b></td></tr>
           <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <span class="pill win">plays</span> <small>(kanban · added run)</small></td><td class="num">78.0</td><td class="num">8</td><td class="num">0‡</td><td class="num"><b>86.0</b></td></tr>
           <tr><td class="rank">4</td><td><b>MiniMax-2.7-highspeed</b> <span class="pill win">plays</span></td><td class="num">60.0</td><td class="num">5</td><td class="num">20</td><td class="num"><b>85.0</b></td></tr>
-          <tr><td class="rank dim">5</td><td><b>MiniMax-M3 · Pi</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">n/a*</td><td class="num"><b>broken*</b></td></tr>
-          <tr><td class="rank dim">6</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>added run · not playable* (R1)</small></td><td class="num">40.0</td><td class="num">7</td><td class="num">n/a*</td><td class="num"><b>broken*</b> <small class="dim">→ playable R2</small></td></tr>
+          <tr><td class="rank dim">5</td><td><b>MiniMax-M3 · Pi</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">1*</td><td class="num"><b>broken*</b></td></tr>
+          <tr><td class="rank dim">6</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>added run · not playable* (R1)</small></td><td class="num">40.0</td><td class="num">7</td><td class="num">2*</td><td class="num"><b>broken*</b> <small class="dim">→ playable R2</small></td></tr>
         </table>
-        <small>Headline ranks <b>playable builds first</b>; Speed = round(20 × T<sub>fastest</sub> / T), T<sub>fastest</sub> = 7 min (2.7-highspeed).<br>
-          <b>†GPT-5.5:</b> T = ~35 min <em>active labor</em> (≈30 core + ≈5 for the later overlay fix) → Speed 4 (calendar delay is a
-          reviewer artifact). Under strict first→final-commit timing (≈205 min) Speed = 1 → Overall 105.5, in which case <b>Opus leads Overall</b>.<br>
-          <b>*M3:</b> ranked <b>last</b> — its core build loop is unusable (both verbs double-fire; save doesn’t restore), so it fails the
-          playability gate regardless of its 65.0 capability. Timing is also unverifiable after the MiniMax incident → Speed n/a.<br>
+        <small>Headline ranks <b>playable builds first</b>; Speed = round(20 × T<sub>fastest</sub> / T), T<sub>fastest</sub> = 7 min (2.7-highspeed). T = operator wall-clock per build (round 1).<br>
+          <b>†GPT-5.5:</b> T = <b>~45 min</b> (≈35 min agent labor + ~10 min operator overhead) → Speed 3. The much larger calendar gap was
+          operator-side review delay and is excluded. <b>Opus</b> T ≈ <b>2h</b> → Speed 1; GPT still leads Overall by 1 (107.5 vs 106.5), while Opus leads Capability (96.5).<br>
+          <b>*M3·Pi:</b> ranked <b>last</b> — its core build loop is unusable (both verbs double-fire; save doesn’t restore), so it fails the
+          playability gate regardless of its 65.0 capability. Its <b>~4h</b> includes a mid-run MiniMax 1026 image-moderation incident — MiniMax’s <em>own</em> platform fault, so it counts (Speed 1, but gated to last). <b>*Mavis</b> T = ~75 min (Speed 2), also gated (R1 unplayable).<br>
           <b>‡M3·Hermes:</b> playable, but its <b>8h 4m</b> wall-clock (the slowest by far, and ~51.7M tokens — the most expensive of any
           contestant) puts Speed at 0. So it places 3rd on both boards: 3rd-highest capability and, among <em>playable</em> builds, 3rd overall.</small>
       </div>
@@ -310,15 +330,15 @@
       <figure><img src="assets/r2-hermes.jpeg" alt="MiniMax-M3 · Hermes Round-2: lit sky and clouds but black block faces in foreground"><figcaption><b>MiniMax-M3 · Hermes (R2) — partial.</b> The added 6th run: double-shade gone (lit sky, sand tops, puffy clouds) — <em>but the black-block bug persists</em>: every downward / AO-heavy face still crushes to solid black (no brightness floor).</figcaption></figure>
     </div>
     <p class="muted" style="margin:.4em 0"><b>Pattern:</b> every build that made non-trivial fixes introduced ≥1 new bug — <b>minor for the frontier models, showstoppers for the MiniMax builds.</b> The lesson: a faked-pointer-lock, no-physics smoke harness (and the agents' own checks) can confirm an assigned bug is <em>fixed</em>, but not that the game is <em>playable</em> — only real play can. The Claude live-play review enumerated the four blockers; Codex's adversarial pass didn't refute them (it focused on review methodology + repo state).</p>
-    <h3 style="margin-top:18px">Effort <small>— like-for-like only (the metrics every platform reports)</small></h3>
+    <h3 style="margin-top:18px">Round-2 effort <small>— the self-repair pass (round-1 build times are in the top chart)</small></h3>
     <table>
       <tr><th>Build</th><th class="num">Total tokens*</th><th class="num">Wall-clock</th><th class="num">Real-play</th></tr>
       <tr><td>Opus-4.8</td><td class="num">~6.9M</td><td class="num">~32 min</td><td class="num">playable</td></tr>
       <tr><td>GPT-5.5</td><td class="num">~11.4M</td><td class="num">~21 min</td><td class="num">playable</td></tr>
       <tr><td>MiniMax-2.7-highspeed</td><td class="num">~7.4M</td><td class="num">~31 min</td><td class="num">unplayable</td></tr>
       <tr><td>MiniMax-M3 · Pi</td><td class="num">~17.75M</td><td class="num">~44 min</td><td class="num">unplayable</td></tr>
-      <tr><td>MiniMax-M3 · MiniMax&nbsp;Code <small>(added)</small></td><td class="num">~34.2M</td><td class="num">~75 min</td><td class="num">R1 broken → R2 playable</td></tr>
-      <tr><td>MiniMax-M3 · Hermes <small>(kanban, added)</small></td><td class="num">~51.7M <small class="dim">(R1+R2 ~82.6M)</small></td><td class="num">~8h</td><td class="num">playable</td></tr>
+      <tr><td>MiniMax-M3 · MiniMax&nbsp;Code <small>(added)</small></td><td class="num">~19.8M</td><td class="num">~34 min</td><td class="num">R1 broken → R2 playable</td></tr>
+      <tr><td>MiniMax-M3 · Hermes <small>(kanban, added)</small></td><td class="num">~31M <small class="dim">(R1+R2 ~82.6M)</small></td><td class="num">~2h 1m</td><td class="num">playable</td></tr>
     </table>
     <small>*Total tokens = throughput (context re-read each agentic turn + output), each vendor's own count. <b>Treat as rough order-of-magnitude</b>, not a precise ratio — cache economics differ (Opus's is mostly discounted cache-reads). We deliberately publish <b>no efficiency leaderboard</b>: output-only tokens and $ aren't reported for the MiniMax runs, so an output-vs-total comparison would be apples-to-oranges. On this common basis the spread is ~1.5–2.6×.</small>
     <div class="callout">
@@ -362,8 +382,8 @@
       Consequence: M3’s wall-clock (Speed) is not comparable, and it never got vision self-verification like Opus did. Its deliverable is unaffected.
     </div>
     <div class="callout">
-      <b>GPT-5.5 needed one later bugfix.</b> Core build ~30 min; a separate later commit <code>“Fix start overlay click handling”</code>
-      (~3 h later) fixed a real start bug. Speed uses ~35 min active labor (see leaderboard footnote for the strict-timing alternative).
+      <b>GPT-5.5 needed one later bugfix.</b> Core build ~35 min agent labor; a separate later commit <code>“Fix start overlay click handling”</code>
+      fixed a real start bug. Build time is counted as <b>~45 min</b> (≈35 min labor + ~10 min operator overhead); the much larger calendar gap was operator-side review delay and is excluded.
     </div>
     <div class="callout">
       <b>Git hygiene.</b> M3’s agent never made its own repo, so it committed into the parent harness repo (<b>9</b> commits after
@@ -479,10 +499,10 @@
         <img class="shot" src="assets/opus-4.8.jpeg" alt="Opus-4.8 gameplay (night)">
         <div class="body">
           <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <h3 style="margin:0">Claude Opus-4.8 <small>· ~68 min · quality lead</small></h3>
+            <h3 style="margin:0">Claude Opus-4.8 <small>· ~2h · quality lead</small></h3>
             <div class="scorebig" style="color:var(--good)">96.5<small class="dim">/100</small></div>
           </div>
-          <div class="chips"><span class="chip">Docs <b>9/10</b></span><span class="chip">Speed <b>2/20</b></span><span class="chip">Overall <b>107.5</b></span><span class="chip">Workflow ×2 + Playwright self-verify</span></div>
+          <div class="chips"><span class="chip">Docs <b>9/10</b></span><span class="chip">Speed <b>1/20</b> <small>(~2h)</small></span><span class="chip">Overall <b>106.5</b></span><span class="chip">Workflow ×2 + Playwright self-verify</span></div>
           <p class="muted" style="margin:.4em 0">Highest-integrity build — ran a dedicated Playwright verification workflow and screenshot-verified
             itself (as did Codex, via CDP), which shows in fully-wired rendering and interaction. <em>The screenshot caught the day-night cycle mid-night — in normal daylight
             play the world renders bright; the darkness is the cycle, not a rendering fault.</em></p>
@@ -511,10 +531,10 @@
         <img class="shot" src="assets/gpt-5.5.jpeg" alt="GPT-5.5 gameplay">
         <div class="body">
           <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <h3 style="margin:0">GPT-5.5 <small>· Codex · ~30 min · overall lead</small></h3>
+            <h3 style="margin:0">GPT-5.5 <small>· Codex · ~45 min · overall lead</small></h3>
             <div class="scorebig" style="color:var(--good)">94.5<small class="dim">/100</small></div>
           </div>
-          <div class="chips"><span class="chip">Docs <b>10/10</b></span><span class="chip">Speed <b>4/20†</b></span><span class="chip">Overall <b>108.5†</b></span><span class="chip">console <b>clean</b></span></div>
+          <div class="chips"><span class="chip">Docs <b>10/10</b></span><span class="chip">Speed <b>3/20</b> <small>(~45m)</small></span><span class="chip">Overall <b>107.5</b></span><span class="chip">console <b>clean</b></span></div>
           <p class="muted" style="margin:.4em 0">Cleanest source of the four (Codex found no source issues <small>(rubric score; real bugs exist)</small>) and fastest of the strong builds. Full F3 HUD
             (~640K tris fully meshed, 289 chunks @ R=8), seeded terrain, wired AO + per-face textures, Web-Audio SFX, day-night, inventory with extra types.</p>
           <div class="callout info">
@@ -543,10 +563,10 @@
         <img class="shot" src="assets/minimax-m3.jpeg" alt="MiniMax-M3 gameplay">
         <div class="body">
           <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <h3 style="margin:0">MiniMax-M3 <small>· Pi · not playable*</small></h3>
+            <h3 style="margin:0">MiniMax-M3 <small>· Pi · ~4h · not playable*</small></h3>
             <div class="scorebig" style="color:var(--bad)">65.0<small class="dim">/100 cap.</small></div>
           </div>
-          <div class="chips"><span class="chip" style="background:var(--bad);color:#fff">core loop broken — not playable</span><span class="chip">Docs <b>5/10</b></span><span class="chip">Speed <b>n/a*</b></span><span class="chip">Q+D cap.: <b>70 / 110</b></span><span class="chip">richest world (1.6M tris)</span></div>
+          <div class="chips"><span class="chip" style="background:var(--bad);color:#fff">core loop broken — not playable</span><span class="chip">Docs <b>5/10</b></span><span class="chip">Speed <b>1*</b> <small>(~4h)</small></span><span class="chip">Q+D cap.: <b>70 / 110</b></span><span class="chip">richest world (1.6M tris)</span></div>
           <p class="muted" style="margin:.4em 0"><b>Highest raw capability of the two MiniMax builds</b> — richest world, real texture/AO wiring, wandering mob, snow/glass, confirmed live.
             But the <b>core build loop is broken</b>: two live <code>mousedown</code> handlers (a botched de-dup at line 1858 removes nothing) make
             <b>every left-click break two blocks and every right-click place two</b> (the second offset), and only the second edit is saved — so you
@@ -694,8 +714,8 @@
       <p style="margin-top:0">The old rubric awarded near-full credit for declared features. The revised rubric requires <b>working integration</b>:
         a feature has to be wired into the running game, not merely named in code or described in a manifest.</p>
       <p class="muted">That matters most for MiniMax-2.7-highspeed: textures were defined but not mapped to the mesh (<code>vertexColors</code> only);
-        the AO helper exists but is unused; block placement is source-broken; and inventory equals hotbar. Speed also uses GPT-5.5’s
-        <b>35 min active labor</b>, not calendar delay. M3 Speed is n/a because timing is unverifiable after the MiniMax incident.</p>
+        the AO helper exists but is unused; block placement is source-broken; and inventory equals hotbar. Speed uses GPT-5.5’s
+        <b>~45 min build</b> (≈35 min labor + ~10 min operator overhead), not the operator-side calendar delay; M3·Pi’s <b>~4h</b> counts its mid-run MiniMax 1026 incident (MiniMax’s own platform fault).</p>
     </div>
   </section>
 

@@ -36,16 +36,16 @@ fails the playability gate below.
 
 | # | Model | Q | Docs | Speed | Total |
 |---|-------|--:|-----:|------:|------:|
-| 1 | GPT-5.5 | 94.5 | 10 | 4† | **108.5†** |
-| 2 | Opus-4.8 | 96.5 | 9 | 2 | **107.5** |
+| 1 | GPT-5.5 | 94.5 | 10 | 3† | **107.5** |
+| 2 | Opus-4.8 | 96.5 | 9 | 1 | **106.5** |
 | 3 | MiniMax-2.7-highspeed *(playable)* | 60.0 | 5 | 20 | **85.0** |
-| 4 | MiniMax-M3 *(not playable\*)* | 65.0 | 5 | n/a\* | **broken\*** |
+| 4 | MiniMax-M3 *(not playable\*)* | 65.0 | 5 | 1\* | **broken\*** |
 
-† GPT-5.5 Speed = ~35 min active labor; under strict elapsed timing (~205 min) it drops to Overall 105.5, just behind Opus.
-\* MiniMax-M3 is ranked **last**: two duplicated `mousedown` handlers make every left-click break two blocks and every
+† GPT-5.5 Speed uses **~45 min** build (≈35 min agent labor + ~10 min operator overhead); the much larger calendar gap was operator-side review delay and is excluded. Opus T ≈ **2h** → Speed 1. GPT still leads Overall by 1 (107.5 vs 106.5); Opus leads Capability (96.5).
+\* MiniMax-M3 · Pi is ranked **last**: two duplicated `mousedown` handlers make every left-click break two blocks and every
 right-click place two, and the save never restores position — the core build loop is unusable, so it fails the
-playability gate regardless of its 65.0 capability. Its wall-clock was also distorted by a MiniMax **server-side
-image-moderation incident** mid-run, so Speed isn't comparable.
+playability gate regardless of its 65.0 capability. Its **~4h** wall-clock includes a mid-run MiniMax **server-side
+image-moderation incident** (error 1026) — MiniMax's *own* platform fault, so it counts (Speed 1), but it's gated to last regardless.
 
 ## The four builds
 
