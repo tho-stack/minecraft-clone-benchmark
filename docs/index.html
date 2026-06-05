@@ -160,7 +160,7 @@
           <tr><th class="rank">#</th><th>Model</th><th class="num">Capability</th><th class="num">Playable?</th></tr>
           <tr><td class="rank">1</td><td><b>Opus-4.8</b> <span class="pill win">lead</span></td><td class="num">96.5</td><td class="num">✓</td></tr>
           <tr><td class="rank">2</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">✓</td></tr>
-          <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <small>(kanban · added run)</small></td><td class="num">78.0</td><td class="num">✓</td></tr>
+          <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <small>(kanban · added run)</small></td><td class="num">78.0 <small class="dim">→ 82 (R2)</small></td><td class="num">✓</td></tr>
           <tr><td class="rank">4</td><td><b>MiniMax-M3</b> <small>(Pi)</small></td><td class="num">65.0</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span></td></tr>
           <tr><td class="rank">5</td><td><b>MiniMax-2.7-highspeed</b></td><td class="num">60.0</td><td class="num">✓ <small>flat</small></td></tr>
           <tr><td class="rank">6</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>(added run)</small></td><td class="num">40.0 <small class="dim">→ 70 (R2)</small></td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span> <small>→ ✓ R2</small></td></tr>
@@ -617,7 +617,13 @@
             dismisses, and the <b>best save of any MiniMax run</b> (184 B, versioned, round-trips — confirmed). Held back from great by a
             <b>rendering bug</b>: blocks bake face-shade + AO into vertex colors AND use a Lambert material that shades them <em>again</em> →
             shadow faces go near-black, water reads ~invisible. Verified live + by Codex. The catch is cost: <b>8h 4m, ~51.7M tokens — the
-            most expensive contestant by far.</b> Round-2 fix list is ready (almost entirely "un-break the shading").</p>
+            most expensive contestant by far.</b></p>
+          <div class="callout" style="border-left-color:#1e3a8a;margin:8px 0"><b>Round 2 (self-repair): partial fix → ≈82.</b>
+            Switched terrain + water to unlit <code>MeshBasicMaterial</code>, so the double-shade is gone and open-air faces are now
+            lit (clouds reworked too). <b>But the black-block bug is NOT fully resolved:</b> the baked <code>shade × AO</code> bottoms
+            out at 0.45 with no brightness floor, so any AO-heavy face still goes near-black — including <b>the top of stone blocks</b>
+            (only seen by digging / in caves) and all undersides. Confirmed by Codex + operator. Round-3 fix: add a min-brightness floor.
+            R2 cost ~31M tokens / 2h (cumulative ~82.6M).</div>
           <div class="catbars">
             <span class="k">World/Terrain</span><div class="bar"><i style="width:85%"></i></div><span class="v">17/20</span>
             <span class="k">Player+Interaction</span><div class="bar"><i style="width:81.8%"></i></div><span class="v">18/22</span>
