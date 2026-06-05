@@ -108,38 +108,80 @@
   <main>
 
   <style>
-    .herochart{display:grid;gap:11px;margin-top:4px}
-    .hrow{display:grid;grid-template-columns:165px 1fr 46px 1fr 62px;gap:11px;align-items:center;font-size:12.5px}
-    .hrow .hn{font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .hrow .hn small{display:block;font-weight:400;color:var(--dim);font-size:10.5px;letter-spacing:.01em}
-    .hbar{height:16px;border-radius:8px;background:#e9eef5;overflow:hidden}
-    .hbar>i{display:block;height:100%;border-radius:8px}
-    .hrow .hv{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:700}
-    .hrow .hv.t{font-weight:600;color:var(--mut)}
-    .hhead{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
-    .hrow.frontier .hn{color:#0e7490}
-    @media(max-width:760px){.hrow{grid-template-columns:104px 1fr 38px;gap:7px}.hrow .htime,.hrow .htv{display:none}}
+    .scwrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px}
+    .scwrap figure{margin:0}
+    .scwrap figcaption{font-size:11.5px;color:var(--mut);margin-top:4px;line-height:1.35}
+    .scwrap figcaption b{color:var(--ink)}
+    svg.sc{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:#fcfdfe}
+    svg.sc text{font-family:inherit}
+    @media(max-width:760px){.scwrap{grid-template-columns:1fr}}
   </style>
   <div class="panel" id="value" style="margin-top:18px;padding:20px 22px;background:radial-gradient(720px 240px at 92% -30%,rgba(14,116,144,.10),transparent),var(--panel)">
-    <h2 style="margin:.1em 0 .25em;border-left-color:var(--good)">The frontier models won on every axis at once <small>— capability × build time (round 1)</small></h2>
-    <p class="muted" style="margin:0 0 14px">Opus-4.8 and GPT-5.5 scored <b>highest</b>, stayed <b>playable</b>, and finished <b>fastest</b> — GPT reached <b>94.5 in ~45&nbsp;minutes</b>. The strongest MiniMax build, Hermes, ground for <b>8&nbsp;hours&nbsp;4&nbsp;minutes to land 78</b>; M3&nbsp;·&nbsp;Pi spent ~4&nbsp;hours on a build whose core loop is broken. The one fast MiniMax build (2.7, ~7&nbsp;min) is flat and feature-thin. Two bars per row — <b>longer capability is better, shorter build time is better</b>:</p>
+    <h2 style="margin:.1em 0 .25em;border-left-color:var(--good)">The frontier models won on every axis at once <small>— capability vs. effort</small></h2>
+    <p class="muted" style="margin:0 0 12px">Plot quality against effort and the story is the <b>top-left corner</b> — high capability for little spend. <b>GPT-5.5 and Opus-4.8 own it.</b> The strongest MiniMax build, Hermes, only reaches a 78 out at the <em>far right</em> (8h&nbsp;4m, the most tokens); the broken MiniMax builds sit lower still. Higher score, a fraction of the effort.</p>
     <div class="legend" style="margin:0 0 12px">
-      <span><i style="background:linear-gradient(90deg,#15803d,#22c55e)"></i> playable</span>
-      <span><i style="background:linear-gradient(90deg,#d97706,#f59e0b)"></i> plays, but flat</span>
-      <span><i style="background:linear-gradient(90deg,#dc2626,#ef4444)"></i> broken / unplayable</span>
-      <span><i style="background:linear-gradient(90deg,#475569,#94a3b8)"></i> build time <span class="dim">(scaled to 8h&nbsp;4m)</span></span>
+      <span><i style="background:#16a34a"></i> playable</span>
+      <span><i style="background:#f59e0b"></i> plays, but flat</span>
+      <span><i style="background:#ef4444"></i> broken / unplayable</span>
+      <span class="dim">↖ top-left = more capability for less effort</span>
     </div>
-    <div class="herochart">
-      <div class="hrow"><span class="hhead">Contestant</span><span class="hhead">Capability 0–100 ▸</span><span></span><span class="hhead htime">Build time ◂ shorter wins</span><span class="htv"></span></div>
-      <div class="hrow frontier"><div class="hn">Opus-4.8 <small>Claude · ✓ plays</small></div><div class="hbar"><i style="width:96.5%;background:linear-gradient(90deg,#15803d,#22c55e)"></i></div><div class="hv">96.5</div><div class="hbar htime"><i style="width:25%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~2h</div></div>
-      <div class="hrow frontier"><div class="hn">GPT-5.5 <small>Codex · ✓ plays</small></div><div class="hbar"><i style="width:94.5%;background:linear-gradient(90deg,#15803d,#22c55e)"></i></div><div class="hv">94.5</div><div class="hbar htime"><i style="width:9%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~45m</div></div>
-      <div class="hrow"><div class="hn">M3 · Hermes <small>kanban · ✓ plays</small></div><div class="hbar"><i style="width:78%;background:linear-gradient(90deg,#15803d,#22c55e)"></i></div><div class="hv">78</div><div class="hbar htime"><i style="width:100%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">8h 4m</div></div>
-      <div class="hrow"><div class="hn">M3 · Pi <small>Pi · ✗ broken</small></div><div class="hbar"><i style="width:65%;background:linear-gradient(90deg,#dc2626,#ef4444)"></i></div><div class="hv">65</div><div class="hbar htime"><i style="width:50%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~4h</div></div>
-      <div class="hrow"><div class="hn">MiniMax-2.7 <small>Pi · ✓ flat</small></div><div class="hbar"><i style="width:60%;background:linear-gradient(90deg,#d97706,#f59e0b)"></i></div><div class="hv">60</div><div class="hbar htime"><i style="width:3%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~7m</div></div>
-      <div class="hrow"><div class="hn">M3 · MiniMax Code <small>Mavis · ✗ broken</small></div><div class="hbar"><i style="width:40%;background:linear-gradient(90deg,#dc2626,#ef4444)"></i></div><div class="hv">40</div><div class="hbar htime"><i style="width:16%;background:linear-gradient(90deg,#475569,#94a3b8)"></i></div><div class="hv t htv">~75m</div></div>
+    <div class="scwrap">
+      <figure>
+        <svg class="sc" viewBox="0 0 480 318" role="img" aria-label="Scatter: capability versus build time, round 1">
+          <g font-family="inherit">
+            <rect x="58" y="18" width="150" height="80" fill="#16a34a" opacity="0.06"/>
+            <text x="64" y="33" font-size="10" fill="#15803d" opacity="0.75">↖ better</text>
+            <line x1="58" y1="18" x2="460" y2="18" stroke="#eef2f7"/><text x="52" y="21" font-size="10" fill="#7c8aa0" text-anchor="end">100</text>
+            <line x1="58" y1="70" x2="460" y2="70" stroke="#eef2f7"/><text x="52" y="73" font-size="10" fill="#7c8aa0" text-anchor="end">80</text>
+            <line x1="58" y1="121" x2="460" y2="121" stroke="#eef2f7"/><text x="52" y="124" font-size="10" fill="#7c8aa0" text-anchor="end">60</text>
+            <line x1="58" y1="173" x2="460" y2="173" stroke="#eef2f7"/><text x="52" y="176" font-size="10" fill="#7c8aa0" text-anchor="end">40</text>
+            <line x1="58" y1="18" x2="58" y2="276" stroke="#cbd5e1"/><line x1="58" y1="276" x2="460" y2="276" stroke="#cbd5e1"/>
+            <text x="104" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">10m</text>
+            <text x="202" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">30m</text>
+            <text x="264" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">1h</text>
+            <text x="326" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">2h</text>
+            <text x="388" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">4h</text>
+            <text x="450" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">8h</text>
+            <text x="259" y="310" font-size="10.5" fill="#5b6b80" text-anchor="middle">build time (log scale) →</text>
+            <text x="15" y="147" font-size="10.5" fill="#5b6b80" text-anchor="middle" transform="rotate(-90 15 147)">capability →</text>
+            <circle cx="326" cy="27" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="332" y="31" font-size="11" font-weight="600" fill="#0f2233">Opus 96.5</text>
+            <circle cx="238" cy="32" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="232" y="36" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">GPT 94.5</text>
+            <circle cx="450" cy="75" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="443" y="79" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">Hermes 78</text>
+            <circle cx="388" cy="108" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="382" y="112" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">M3·Pi 65</text>
+            <circle cx="72" cy="121" r="6" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/><text x="79" y="125" font-size="11" font-weight="600" fill="#0f2233">2.7 (60)</text>
+            <circle cx="284" cy="173" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="290" y="177" font-size="11" font-weight="600" fill="#0f2233">Mavis 40</text>
+          </g>
+        </svg>
+        <figcaption><b>Capability × build time</b> — round 1, all six. Time is a log axis (7m → 8h). GPT &amp; Opus sit top-left; Hermes earns its 78 only at the far right.</figcaption>
+      </figure>
+      <figure>
+        <svg class="sc" viewBox="0 0 480 318" role="img" aria-label="Scatter: capability versus tokens, round 2">
+          <g font-family="inherit">
+            <rect x="58" y="18" width="150" height="80" fill="#16a34a" opacity="0.06"/>
+            <text x="64" y="33" font-size="10" fill="#15803d" opacity="0.75">↖ better</text>
+            <line x1="58" y1="18" x2="460" y2="18" stroke="#eef2f7"/><text x="52" y="21" font-size="10" fill="#7c8aa0" text-anchor="end">100</text>
+            <line x1="58" y1="70" x2="460" y2="70" stroke="#eef2f7"/><text x="52" y="73" font-size="10" fill="#7c8aa0" text-anchor="end">80</text>
+            <line x1="58" y1="121" x2="460" y2="121" stroke="#eef2f7"/><text x="52" y="124" font-size="10" fill="#7c8aa0" text-anchor="end">60</text>
+            <line x1="58" y1="173" x2="460" y2="173" stroke="#eef2f7"/><text x="52" y="176" font-size="10" fill="#7c8aa0" text-anchor="end">40</text>
+            <line x1="58" y1="18" x2="58" y2="276" stroke="#cbd5e1"/><line x1="58" y1="276" x2="460" y2="276" stroke="#cbd5e1"/>
+            <text x="58" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">0</text>
+            <text x="176" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">10M</text>
+            <text x="294" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">20M</text>
+            <text x="413" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">30M</text>
+            <text x="259" y="310" font-size="10.5" fill="#5b6b80" text-anchor="middle">round-2 tokens (throughput) →</text>
+            <text x="15" y="147" font-size="10.5" fill="#5b6b80" text-anchor="middle" transform="rotate(-90 15 147)">capability →</text>
+            <circle cx="140" cy="27" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="146" y="31" font-size="11" font-weight="600" fill="#0f2233">Opus 96.5</text>
+            <circle cx="193" cy="32" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="199" y="44" font-size="11" font-weight="600" fill="#0f2233">GPT 94.5</text>
+            <circle cx="424" cy="64" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="418" y="68" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">Hermes 82</text>
+            <circle cx="292" cy="95" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="298" y="99" font-size="11" font-weight="600" fill="#0f2233">Mavis 70</text>
+            <circle cx="268" cy="108" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="262" y="112" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">M3·Pi 65</text>
+            <circle cx="146" cy="121" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="152" y="125" font-size="11" font-weight="600" fill="#0f2233">2.7 (60)</text>
+          </g>
+        </svg>
+        <figcaption><b>Capability × tokens</b> — round 2 (the only round logged for all six). <span class="dim">Token classes differ — Opus's ~6.9M is mostly cache-reads, MiniMax's are throughput × multi-agent fan-out — so X is <b>indicative, not a ranking</b>.</span></figcaption>
+      </figure>
     </div>
-    <small style="display:block;margin-top:15px"><b>Read the two bars together:</b> the frontier rows have a <em>long</em> capability bar and a <em>short</em> time bar — high quality, little time. Hermes is the mirror image: a full-width time bar (8h&nbsp;4m) for a mid-length 78. <span class="dim">(Both added MiniMax runs later improved in round-2 self-repair — Mavis 40→70 &amp; playable, Hermes 78→82 — see the round-2 section.)</span><br>
-    <b>All figures are round-1 build numbers.</b> Capability = round-1 working-integration rubric (0–100). Build time = operator wall-clock, prompt&nbsp;→&nbsp;final build. <b>M3&nbsp;·&nbsp;Pi's ~4h</b> includes a mid-run MiniMax server-side image-moderation incident (error&nbsp;1026) — MiniMax's <em>own</em> platform fault, so it counts. <b>GPT's ~45m</b> = ~35&nbsp;min agent labor&nbsp;+~10&nbsp;min operator overhead; the larger calendar gap was operator-side review delay and is excluded. We show three <b>raw</b> axes, deliberately <em>not</em> a single value ratio — the token/cost denominators aren't comparable across vendors (per-round tokens are in the effort table below; round-1 tokens weren't separately logged for the original four).</small>
+    <small style="display:block;margin-top:14px"><b>Round-1 build times</b> (left chart): Opus ~2h, GPT ~45m, 2.7 ~7m, M3·Pi ~4h, Mavis ~75m, Hermes 8h&nbsp;4m — operator wall-clock, prompt&nbsp;→&nbsp;final build. <b>M3&nbsp;·&nbsp;Pi's ~4h</b> includes a mid-run MiniMax 1026 image-moderation incident (MiniMax's <em>own</em> platform fault, so it counts); <b>GPT's ~45m</b> = ~35&nbsp;min agent labor + ~10&nbsp;min operator overhead (the larger calendar gap was operator-side review delay, excluded). The right chart uses <b>round-2</b> tokens &amp; capability because round-1 tokens were never separately logged for the original four. Both axes are shown <b>raw</b> — deliberately not divided into a single value/$ ratio, since the token denominators aren't comparable across vendors. <span class="dim">(Both added MiniMax runs improved in round-2 self-repair — Mavis 40→70 &amp; playable, Hermes 78→82 — see the round-2 section.)</span></small>
   </div>
 
   <div class="callout info" style="margin-top:18px">
