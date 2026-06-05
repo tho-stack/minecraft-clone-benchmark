@@ -100,7 +100,7 @@
       <b>MiniMax-M3 · MiniMax&nbsp;Code</b> (MiniMax’s own harness — <a href="#minimax-code">jump →</a>) and
       <b>MiniMax-M3 · Hermes</b> (kanban, a 3rd harness; the strongest MiniMax build — <a href="#hermes">jump →</a>).</div>
   </header>
-  <div class="panel" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="margin-right:4px">▶ Play the four builds live:</b> <a class="chip" href="opus-4.8/game.html">Opus-4.8</a> <a class="chip" href="gpt-5.5/game.html">GPT-5.5</a> <a class="chip" href="minimax-m3/game.html">MiniMax-M3</a> <a class="chip" href="minimax-m2.7-highspeed/game.html">MiniMax-2.7-highspeed</a> <small class="dim">— click the canvas to capture the mouse</small></div>
+  <div class="panel" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="margin-right:4px">▶ Play all six builds live:</b> <a class="chip" href="opus-4.8/game.html">Opus-4.8</a> <a class="chip" href="gpt-5.5/game.html">GPT-5.5</a> <a class="chip" href="minimax-m3/game.html">M3 · Pi</a> <a class="chip" href="minimax-m2.7-highspeed/game.html">MiniMax-2.7</a> <a class="chip" href="round2/minimax-code-m3/game.html">M3 · MiniMax&nbsp;Code <small>(R2)</small></a> <a class="chip" href="hermes-m3/game.html">M3 · Hermes</a> <small class="dim">— click the canvas to capture the mouse</small></div>
   <div class="panel" style="margin-top:12px;border-left:3px solid var(--accent)"><b>🆕 Round 2 — Self-Repair:</b> each agent got its own bug list and fixed its own build. Verdict: all four fixed their checklists, but only the frontier models stayed playable; both MiniMax builds shipped showstopper regressions. <a href="#round2"><b>Jump to Round 2 →</b></a></div>
   <div class="panel" style="margin-top:12px;border-left:3px solid #2563eb"><b>🆕 5th contestant — M3 · MiniMax&nbsp;Code:</b> the same MiniMax-M3 model on MiniMax’s <em>own</em> first-party harness (not Pi). <b>Broken &amp; unplayable in round 1 → fixed &amp; playable in round 2</b> — the one MiniMax build that improved. <a href="#minimax-code"><b>Jump to it →</b></a></div>
   <div class="panel" style="margin-top:12px;border-left:3px solid #1e3a8a"><b>🆕 6th contestant — M3 · Hermes (kanban):</b> the same M3 model on a <em>third</em> harness, built by a 5-agent kanban squad with in-browser QA. <b>The strongest MiniMax build — playable, 3rd-highest capability (78)</b>, with the best save of any MiniMax run — but a shading bug renders many blocks black. <a href="#hermes"><b>Jump to it →</b></a> · <b>▶ <a href="hermes-m3/game.html">Play it</a></b></div>
@@ -130,12 +130,14 @@
   </div>
 
   <section>
-    <h2>The four builds <small>— real daylight screenshots, captured live in-browser (seed 1337)</small></h2>
+    <h2>The six builds <small>— real daylight screenshots, captured live in-browser (seed 1337)</small></h2>
     <div class="gallery">
-      <figure><img src="assets/opus-4.8.jpeg" alt="Opus-4.8 at midday"><figcaption><b>Opus-4.8</b> — wired per-face textures + ambient occlusion, water, a wandering mob, F3 HUD + crosshair. Noon.</figcaption></figure>
+      <figure><img src="assets/opus-4.8.jpeg" alt="Opus-4.8 at midday"><figcaption><b>Opus-4.8</b> <small>(Claude)</small> — wired per-face textures + ambient occlusion, water, a wandering mob, F3 HUD + crosshair. Noon.</figcaption></figure>
+      <figure><img src="assets/gpt-5.5.jpeg" alt="GPT-5.5"><figcaption><b>GPT-5.5</b> <small>(Codex)</small> — wired textures, drifting clouds, a sheep mob, clean F3 HUD. Lower-ambient art, but daylight here.</figcaption></figure>
       <figure><img src="assets/minimax-m3.jpeg" alt="MiniMax-M3 at midday"><figcaption><b>MiniMax-M3 · Pi</b> — the richest world (1.6M triangles): textured trees, stone cliffs, water, mob, live block-highlight. Midday.</figcaption></figure>
-      <figure><img src="assets/gpt-5.5.jpeg" alt="GPT-5.5"><figcaption><b>GPT-5.5</b> — wired textures, drifting clouds, clean F3 HUD. Lower-ambient art; its day-night cycle happened to be mid-shadow in this frame.</figcaption></figure>
-      <figure><img src="assets/minimax-m2.7-highspeed.jpeg" alt="MiniMax-2.7-highspeed at midday"><figcaption><b>MiniMax-2.7-highspeed</b> — blue-sky day, coastline + clouds, but <em>flat vertex colors</em>: its textures/AO were never wired into the mesh.</figcaption></figure>
+      <figure><img src="assets/minimax-m2.7-highspeed.jpeg" alt="MiniMax-2.7-highspeed at midday"><figcaption><b>MiniMax-2.7-highspeed</b> <small>(Pi)</small> — blue-sky day, coastline + clouds, but <em>flat vertex colors</em>: its textures/AO were never wired into the mesh.</figcaption></figure>
+      <figure><img src="assets/m3-mavis-r2-fixed.png" alt="MiniMax-M3 · MiniMax Code (Mavis) — continuous grass-and-trees world"><figcaption><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>(Mavis)</small> — one continuous grass-and-trees world. <em>Shown post-repair:</em> its round-1 build was unplayable (floating islands); the round-2 mesher fix made it playable.</figcaption></figure>
+      <figure><img src="assets/hermes-m3-world.png" alt="MiniMax-M3 · Hermes (kanban) — hills and trees with black block faces"><figcaption><b>MiniMax-M3 · Hermes</b> <small>(kanban)</small> — the strongest MiniMax world (sky, clouds, trees, water), but its signature <em>black-block shading bug</em> crushes many faces to black. Daylight.</figcaption></figure>
     </div>
     <div class="callout info">
       <b>Why the first screenshots looked dark.</b> Every shot here is a genuine in-browser capture, re-taken at midday. The earlier round
@@ -144,14 +146,14 @@
     </div>
     <div class="gallery">
       <figure><img src="assets/opus-4.8-night.jpeg" alt="Opus-4.8 at night, same world"><figcaption><b>Opus-4.8 — the very same world at night.</b> Day-night cycle (feature X1): stars fade in, the moon orbits, sky + light lerp. Not a rendering fault — just dusk.</figcaption></figure>
-      <figure style="display:flex;align-items:center;justify-content:center"><figcaption style="padding:18px;font-size:13px"><b>Day-night across the field.</b> All four builds cycle sky colour + sun/ambient over time. The earlier “dark” shots just caught the wrong phase — judge brightness from the <b>midday</b> shots above, which is how each looks in normal play.</figcaption></figure>
+      <figure style="display:flex;align-items:center;justify-content:center"><figcaption style="padding:18px;font-size:13px"><b>Day-night across the field.</b> All six builds cycle sky colour + sun/ambient over time. The earlier “dark” shots just caught the wrong phase — judge brightness from the <b>midday</b> shots above, which is how each looks in normal play. <span class="dim">(A dedicated night capture exists only for Opus; the others are shown at their daylight phase.)</span></figcaption></figure>
     </div>
   </section>
 
   <section>
     <h2>Verdict</h2>
     <div class="panel">
-      <p style="margin-top:0">All four shipped <b>running voxel worlds</b> — but only three are <b>actually playable</b>. Under integration-grading,
+      <p style="margin-top:0">All four <b>core builds</b> shipped <b>running voxel worlds</b> — but only three are <b>actually playable</b> <small class="dim">(the two added MiniMax-M3 runs — MiniMax&nbsp;Code &amp; Hermes — are covered as separate experiments below)</small>. Under integration-grading,
       capability and playability split apart: <b>Opus-4.8 leads on capability (96.5)</b> and GPT-5.5 trails it (94.5), both fully playable.
       <b>MiniMax-M3 · Pi out-points 2.7 on raw capability (65.0 vs 60.0)</b> — richer world, real texture/AO wiring — <b>yet its core build loop is
       broken</b>: duplicated <code>mousedown</code> handlers make every left-click <b>break two blocks</b> and every right-click <b>place two</b>,
@@ -298,9 +300,14 @@
       <li><span class="sev high">Opus</span><span class="t">Pressing <kbd>E</kbd> opens inventory but the start overlay paints over it → can't pick blocks. (Minor: the audio fix reuses one noise buffer → every dig sounds identical.)</span></li>
       <li><span class="sev high">GPT</span><span class="t">60–90s to stream chunks at spawn (a pre-existing FPS death-spiral, not fixed). Minor: right-click on water submerges the block; a sky-dome horizon seam.</span></li>
     </ul>
+    <h3 style="margin-top:18px">All six round-2 builds, captured live <small>(seed 1337 — the two added MiniMax runs included)</small></h3>
     <div class="gallery" style="margin-top:12px">
-      <figure><img src="assets/r2-m3-holes.jpeg" alt="MiniMax-M3 Round-2 top-down: terrain shredded into fragments with gaps"><figcaption><b>MiniMax-M3 · Pi (Round 2), looking down.</b> The cave-uncap regression: the surface is shredded into fragments separated by gaps — you fall through the voids. (Round-1 M3 was one contiguous world.)</figcaption></figure>
-      <figure><img src="assets/r2-27-stuck.jpeg" alt="MiniMax-2.7 Round-2: the Click to Play overlay never dismisses"><figcaption><b>MiniMax-2.7 (Round 2): can't start.</b> Real pointer-lock never registers (a debug-lock test hook reads its own stale value), so "Click to Play" never dismisses and the PAUSED overlay stacks on top.</figcaption></figure>
+      <figure><img src="assets/r2-opus.jpeg" alt="Opus-4.8 Round-2: daylight world, textures, AO, F3 HUD"><figcaption><b>Opus-4.8 (R2) — playable.</b> Fixed 5/5 of its list; still a clean textured world with AO + F3 HUD. The only regression is non-fatal (the inventory overlay paints under the start panel).</figcaption></figure>
+      <figure><img src="assets/r2-gpt.jpeg" alt="GPT-5.5 Round-2: green hills, sheep, clouds, F3 HUD"><figcaption><b>GPT-5.5 (R2) — playable.</b> Fixed 7/7; grassy hills, a sheep, clouds, block-highlight, full F3 HUD. Caveat: 60–90 s chunk-stream at spawn (pre-existing, not fixed).</figcaption></figure>
+      <figure><img src="assets/r2-m3-holes.jpeg" alt="MiniMax-M3 Round-2 top-down: terrain shredded into fragments with gaps"><figcaption><b>MiniMax-M3 · Pi (R2) — unplayable.</b> The cave-uncap regression: the surface is shredded into fragments separated by gaps — you fall through the voids. (Round-1 M3 was one contiguous world.)</figcaption></figure>
+      <figure><img src="assets/r2-27-stuck.jpeg" alt="MiniMax-2.7 Round-2: the Click to Play overlay never dismisses"><figcaption><b>MiniMax-2.7 (R2) — unplayable ↓.</b> Real pointer-lock never registers (a debug-lock test hook reads its own stale value), so "Click to Play" never dismisses and the PAUSED overlay stacks on top.</figcaption></figure>
+      <figure><img src="assets/m3-mavis-r2-fixed.png" alt="MiniMax-M3 · MiniMax Code Round-2: one continuous grass-and-trees world"><figcaption><b>MiniMax-M3 · MiniMax&nbsp;Code (R2) — broken → playable.</b> The added 5th run: round-1 floating-islands bug fixed → one continuous grass-and-trees world. The one MiniMax build that improved to playable.</figcaption></figure>
+      <figure><img src="assets/r2-hermes.jpeg" alt="MiniMax-M3 · Hermes Round-2: lit sky and clouds but black block faces in foreground"><figcaption><b>MiniMax-M3 · Hermes (R2) — partial.</b> The added 6th run: double-shade gone (lit sky, sand tops, puffy clouds) — <em>but the black-block bug persists</em>: every downward / AO-heavy face still crushes to solid black (no brightness floor).</figcaption></figure>
     </div>
     <p class="muted" style="margin:.4em 0"><b>Pattern:</b> every build that made non-trivial fixes introduced ≥1 new bug — <b>minor for the frontier models, showstoppers for the MiniMax builds.</b> The lesson: a faked-pointer-lock, no-physics smoke harness (and the agents' own checks) can confirm an assigned bug is <em>fixed</em>, but not that the game is <em>playable</em> — only real play can. The Claude live-play review enumerated the four blockers; Codex's adversarial pass didn't refute them (it focused on review methodology + repo state).</p>
     <h3 style="margin-top:18px">Effort <small>— like-for-like only (the metrics every platform reports)</small></h3>
