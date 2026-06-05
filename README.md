@@ -90,6 +90,14 @@ image-moderation incident** mid-run, so Speed isn't comparable.
   swallowed quota failure), and the biome fix is partial (grass/trees cover the map, but spawn still lands in water).
   Round-2 effort ~19.8M tokens / $12.06 / 34 min.
   [**▶ Play the round-2 build**](https://tho-stack.github.io/minecraft-clone-benchmark/round2/minimax-code-m3/game.html).
+- **Model vs. harness — a 6th run: MiniMax-M3 · Hermes (kanban):** the same M3 model on a *third* harness — **Hermes**
+  (Nous), driven by a **5-agent Kanban squad** (orchestrator + 2 builders + verifier + synthesizer, all M3, with
+  Playwright MCP for in-browser QA; see [`harness/hermes-kanban-setup.md`](harness/hermes-kanban-setup.md)). **This is
+  the strongest MiniMax build — playable, capability ≈ 78 (3rd-highest overall), with the best save of any MiniMax run**
+  (184 B, versioned, round-trips). One real flaw: a **shading bug** renders many block faces near-black and water
+  ~invisible (face-shade + AO baked into vertex colors *and* a Lambert material shading again). Verified live + by a
+  Codex review. Effort is the catch: **8h 4m, ~51.7M tokens — the most expensive contestant by far.** Round-2 fix list
+  ready. [**▶ Play it**](https://tho-stack.github.io/minecraft-clone-benchmark/hermes-m3/game.html).
 - **Round 2 — self-repair**: each agent was handed its own Round-1 bug list and fixed its build in
   place (assisted repair); re-graded by hands-on live-play + fresh Claude + Codex adversarial reviews.
   **Verdict: all four fixed their checklists, but only the frontier models stayed playable** — both

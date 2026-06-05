@@ -81,6 +81,7 @@
   .c-m3{background:linear-gradient(90deg,#b45309,#f59e0b)}
   .c-27{background:linear-gradient(90deg,#7c3aed,#a855f7)}
   .c-mc{background:linear-gradient(90deg,#9f1239,#fb7185)}
+  .c-hm{background:linear-gradient(90deg,#1e3a8a,#3b82f6)}
   @media(max-width:760px){.two{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.gcrow{grid-template-columns:96px 1fr 36px}}
 </style>
 </head>
@@ -95,12 +96,14 @@
       <code>docs.html</code>. Graded on <b>130 points</b> — Quality (100) + Documentation (10) + Speed (20) — from source inspection
       and live in-browser play, adversarially reviewed twice (Claude + Codex), with the report itself reviewed by Codex.</p>
     <div class="meta">Four contestants: <b>MiniMax-M3</b> (Pi) · <b>MiniMax-2.7-highspeed</b> (Pi) · <b>GPT-5.5</b> (Codex) · <b>Claude Opus-4.8</b> ·
-      run mode <code>/goal</code> + dynamic workflow · world seed 1337. <b>+ a 5th run added later:</b> <b>MiniMax-M3 · MiniMax&nbsp;Code</b>
-      (the same model on MiniMax’s <em>own</em> harness, not Pi — <a href="#minimax-code">jump →</a>).</div>
+      run mode <code>/goal</code> + dynamic workflow · world seed 1337. <b>+ two later runs of the same M3 model on other harnesses:</b>
+      <b>MiniMax-M3 · MiniMax&nbsp;Code</b> (MiniMax’s own harness — <a href="#minimax-code">jump →</a>) and
+      <b>MiniMax-M3 · Hermes</b> (kanban, a 3rd harness; the strongest MiniMax build — <a href="#hermes">jump →</a>).</div>
   </header>
   <div class="panel" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="margin-right:4px">▶ Play the four builds live:</b> <a class="chip" href="opus-4.8/game.html">Opus-4.8</a> <a class="chip" href="gpt-5.5/game.html">GPT-5.5</a> <a class="chip" href="minimax-m3/game.html">MiniMax-M3</a> <a class="chip" href="minimax-m2.7-highspeed/game.html">MiniMax-2.7-highspeed</a> <small class="dim">— click the canvas to capture the mouse</small></div>
   <div class="panel" style="margin-top:12px;border-left:3px solid var(--accent)"><b>🆕 Round 2 — Self-Repair:</b> each agent got its own bug list and fixed its own build. Verdict: all four fixed their checklists, but only the frontier models stayed playable; both MiniMax builds shipped showstopper regressions. <a href="#round2"><b>Jump to Round 2 →</b></a></div>
   <div class="panel" style="margin-top:12px;border-left:3px solid #2563eb"><b>🆕 5th contestant — M3 · MiniMax&nbsp;Code:</b> the same MiniMax-M3 model on MiniMax’s <em>own</em> first-party harness (not Pi). <b>Broken &amp; unplayable in round 1 → fixed &amp; playable in round 2</b> — the one MiniMax build that improved. <a href="#minimax-code"><b>Jump to it →</b></a></div>
+  <div class="panel" style="margin-top:12px;border-left:3px solid #1e3a8a"><b>🆕 6th contestant — M3 · Hermes (kanban):</b> the same M3 model on a <em>third</em> harness, built by a 5-agent kanban squad with in-browser QA. <b>The strongest MiniMax build — playable, 3rd-highest capability (78)</b>, with the best save of any MiniMax run — but a shading bug renders many blocks black. <a href="#hermes"><b>Jump to it →</b></a> · <b>▶ <a href="hermes-m3/game.html">Play it</a></b></div>
 
   <main>
 
@@ -157,9 +160,10 @@
           <tr><th class="rank">#</th><th>Model</th><th class="num">Capability</th><th class="num">Playable?</th></tr>
           <tr><td class="rank">1</td><td><b>Opus-4.8</b> <span class="pill win">lead</span></td><td class="num">96.5</td><td class="num">✓</td></tr>
           <tr><td class="rank">2</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">✓</td></tr>
-          <tr><td class="rank">3</td><td><b>MiniMax-M3</b></td><td class="num">65.0</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span></td></tr>
-          <tr><td class="rank">4</td><td><b>MiniMax-2.7-highspeed</b></td><td class="num">60.0</td><td class="num">✓ <small>flat</small></td></tr>
-          <tr><td class="rank">5</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>(added run)</small></td><td class="num">40.0 <small class="dim">→ 70 (R2)</small></td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span> <small>→ ✓ R2</small></td></tr>
+          <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <small>(kanban · added run)</small></td><td class="num">78.0</td><td class="num">✓</td></tr>
+          <tr><td class="rank">4</td><td><b>MiniMax-M3</b> <small>(Pi)</small></td><td class="num">65.0</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span></td></tr>
+          <tr><td class="rank">5</td><td><b>MiniMax-2.7-highspeed</b></td><td class="num">60.0</td><td class="num">✓ <small>flat</small></td></tr>
+          <tr><td class="rank">6</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>(added run)</small></td><td class="num">40.0 <small class="dim">→ 70 (R2)</small></td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span> <small>→ ✓ R2</small></td></tr>
         </table>
         <small>M3 out-points 2.7 on raw capability (richer world + wired textures/AO) but its core build loop is unusable — the headline ranking (right) gates on playability. <b>Row 5</b> is the same M3 model on MiniMax’s <b>own</b> harness (not Pi) — worst at 40 in round 1, <b>fixed to ~70 and playable</b> in its round-2 self-repair (<a href="#minimax-code">details</a>).</small>
       </div>
@@ -169,25 +173,29 @@
           <tr><th class="rank">#</th><th>Model</th><th class="num">Q</th><th class="num">Docs</th><th class="num">Spd</th><th class="num">Total</th></tr>
           <tr><td class="rank">1</td><td><b>GPT-5.5</b></td><td class="num">94.5</td><td class="num">10</td><td class="num">4†</td><td class="num"><b>108.5†</b></td></tr>
           <tr><td class="rank">2</td><td><b>Opus-4.8</b></td><td class="num">96.5</td><td class="num">9</td><td class="num">2</td><td class="num"><b>107.5</b></td></tr>
-          <tr><td class="rank">3</td><td><b>MiniMax-2.7-highspeed</b> <span class="pill win">plays</span></td><td class="num">60.0</td><td class="num">5</td><td class="num">20</td><td class="num"><b>85.0</b></td></tr>
-          <tr><td class="rank dim">4</td><td><b>MiniMax-M3</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">n/a*</td><td class="num"><b>broken*</b></td></tr>
-          <tr><td class="rank dim">5</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>added run · not playable* (R1)</small></td><td class="num">40.0</td><td class="num">7</td><td class="num">n/a*</td><td class="num"><b>broken*</b> <small class="dim">→ playable R2</small></td></tr>
+          <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <span class="pill win">plays</span> <small>(kanban · added run)</small></td><td class="num">78.0</td><td class="num">8</td><td class="num">0‡</td><td class="num"><b>86.0</b></td></tr>
+          <tr><td class="rank">4</td><td><b>MiniMax-2.7-highspeed</b> <span class="pill win">plays</span></td><td class="num">60.0</td><td class="num">5</td><td class="num">20</td><td class="num"><b>85.0</b></td></tr>
+          <tr><td class="rank dim">5</td><td><b>MiniMax-M3</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">n/a*</td><td class="num"><b>broken*</b></td></tr>
+          <tr><td class="rank dim">6</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>added run · not playable* (R1)</small></td><td class="num">40.0</td><td class="num">7</td><td class="num">n/a*</td><td class="num"><b>broken*</b> <small class="dim">→ playable R2</small></td></tr>
         </table>
         <small>Headline ranks <b>playable builds first</b>; Speed = round(20 × T<sub>fastest</sub> / T), T<sub>fastest</sub> = 7 min (2.7-highspeed).<br>
           <b>†GPT-5.5:</b> T = ~35 min <em>active labor</em> (≈30 core + ≈5 for the later overlay fix) → Speed 4 (calendar delay is a
           reviewer artifact). Under strict first→final-commit timing (≈205 min) Speed = 1 → Overall 105.5, in which case <b>Opus leads Overall</b>.<br>
           <b>*M3:</b> ranked <b>last</b> — its core build loop is unusable (both verbs double-fire; save doesn’t restore), so it fails the
-          playability gate regardless of its 65.0 capability. Timing is also unverifiable after the MiniMax incident → Speed n/a.</small>
+          playability gate regardless of its 65.0 capability. Timing is also unverifiable after the MiniMax incident → Speed n/a.<br>
+          <b>‡M3·Hermes:</b> playable, but its <b>8h 4m</b> wall-clock (the slowest by far, and ~51.7M tokens — the most expensive of any
+          contestant) puts Speed at 0. So it places 3rd on both boards: 3rd-highest capability and, among <em>playable</em> builds, 3rd overall.</small>
       </div>
     </div>
   </section>
 
   <section>
-    <h2>Quality by bucket <small>— all five builds across the five rubric buckets <span class="dim">(round-1 capability)</span></small></h2>
+    <h2>Quality by bucket <small>— all six builds across the five rubric buckets <span class="dim">(round-1 capability)</span></small></h2>
     <div class="panel">
       <div class="legend">
         <span><i class="c-opus"></i> Opus-4.8</span>
         <span><i class="c-gpt"></i> GPT-5.5</span>
+        <span><i class="c-hm"></i> M3 · Hermes <span class="dim">(kanban, added run)</span></span>
         <span><i class="c-m3"></i> MiniMax-M3 · Pi</span>
         <span><i class="c-27"></i> MiniMax-2.7-highspeed</span>
         <span><i class="c-mc"></i> M3 · MiniMax Code <span class="dim">(added run)</span></span>
@@ -199,6 +207,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:95%"></i></div><span class="val">19</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:90%"></i></div><span class="val">18</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:82.5%"></i></div><span class="val">16.5</span></div>
+          <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:85%"></i></div><span class="val">17</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45%"></i></div><span class="val">9</span></div>
         </div>
         <div>
@@ -207,6 +216,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:93.2%"></i></div><span class="val">20.5</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:31.8%"></i></div><span class="val">7</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.8%"></i></div><span class="val">12.5</span></div>
+          <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:81.8%"></i></div><span class="val">18</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45.5%"></i></div><span class="val">10</span></div>
         </div>
         <div>
@@ -215,6 +225,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:95.5%"></i></div><span class="val">21</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:90.9%"></i></div><span class="val">20</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:45.5%"></i></div><span class="val">10</span></div>
+          <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:54.5%"></i></div><span class="val">12</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:31.8%"></i></div><span class="val">7</span></div>
         </div>
         <div>
@@ -223,6 +234,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:96.9%"></i></div><span class="val">15.5</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:50%"></i></div><span class="val">8</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.3%"></i></div><span class="val">9</span></div>
+          <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:87.5%"></i></div><span class="val">14</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:31.3%"></i></div><span class="val">5</span></div>
         </div>
         <div>
@@ -231,6 +243,7 @@
           <div class="gcrow"><span class="lbl">GPT-5.5</span><div class="gctrack"><i class="c-gpt" style="width:92.5%"></i></div><span class="val">18.5</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-M3</span><div class="gctrack"><i class="c-m3" style="width:60%"></i></div><span class="val">12</span></div>
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:60%"></i></div><span class="val">12</span></div>
+          <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:85%"></i></div><span class="val">17</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45%"></i></div><span class="val">9</span></div>
         </div>
       </div>
@@ -585,6 +598,39 @@
             <li><span class="sev critical">crit</span><span class="t"><b>Floating-island world.</b> The mesher applies the chunk world-offset twice (+ a wrong <code>FACE_VERTS</code> table), so continuous solid terrain renders as disconnected floating slabs. <em>(R2: local coords + corrected faces.)</em></span></li>
             <li><span class="sev high">high</span><span class="t"><b>Seed is theater</b> (noise hashes ignore <code>SEED</code>) and the <b>save never restores edits</b>. <em>(R2: seed threaded; diff-vs-baseline restore.)</em></span></li>
             <li><span class="sev low">low</span><span class="t"><b>Most expensive contestant</b> — ~34.2M tokens / $20.73 / 75 min for the worst R1 result; the model’s own harness was not the equalizer one might expect.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- MiniMax-M3 · Hermes (6th, added run) -->
+      <div class="card" id="hermes" style="border:2px solid #1e3a8a">
+        <img class="shot" src="assets/hermes-m3-world.png" alt="MiniMax-M3 · Hermes — coherent rich world (with a shading bug)">
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h3 style="margin:0">MiniMax-M3 · Hermes <small>· kanban · added 6th run · playable</small></h3>
+            <div class="scorebig" style="color:var(--good)">78.0<small class="dim">/100 cap.</small></div>
+          </div>
+          <div class="chips"><span class="chip" style="background:var(--good);color:#06281d;font-weight:700">playable</span><span class="chip">strongest MiniMax build</span><span class="chip">1.85M tris</span><span class="chip">Docs <b>8/10</b></span><span class="chip">8h 4m · ~51.7M tok (priciest)</span></div>
+          <p class="muted" style="margin:.4em 0">The same M3 model on a <b>third harness — Hermes</b> (Nous), in a 5-agent <b>Kanban</b> orchestration
+            (orchestrator + 2 builders + verifier + synthesizer, all MiniMax-M3, with Playwright MCP for in-browser QA). The result is
+            <b>the strongest MiniMax build</b>: a coherent, rich, walkable world (no floating-island bug), working break/place, a pause that
+            dismisses, and the <b>best save of any MiniMax run</b> (184 B, versioned, round-trips — confirmed). Held back from great by a
+            <b>rendering bug</b>: blocks bake face-shade + AO into vertex colors AND use a Lambert material that shades them <em>again</em> →
+            shadow faces go near-black, water reads ~invisible. Verified live + by Codex. The catch is cost: <b>8h 4m, ~51.7M tokens — the
+            most expensive contestant by far.</b> Round-2 fix list is ready (almost entirely "un-break the shading").</p>
+          <div class="catbars">
+            <span class="k">World/Terrain</span><div class="bar"><i style="width:85%"></i></div><span class="v">17/20</span>
+            <span class="k">Player+Interaction</span><div class="bar"><i style="width:81.8%"></i></div><span class="v">18/22</span>
+            <span class="k">Rendering Authenticity</span><div class="bar bad"><i style="width:54.5%"></i></div><span class="v">12/22</span>
+            <span class="k">Persistence+Atmosphere</span><div class="bar"><i style="width:87.5%"></i></div><span class="v">14/16</span>
+            <span class="k">Scale+Engineering</span><div class="bar"><i style="width:85%"></i></div><span class="v">17/20</span>
+          </div>
+          <h3 style="margin-top:12px">Issues</h3>
+          <ul class="issues">
+            <li><span class="sev high">major</span><span class="t"><b>Black blocks — double shading.</b> FACE_SHADE (top 1.0/sides 0.78/bottom 0.55) + AO are baked into the vertex color <em>and</em> the mesh uses <code>MeshLambertMaterial</code> which shades by the sun again → shadow faces stack to near-black. (~757/1213/1270)</span></li>
+            <li><span class="sev high">major</span><span class="t"><b>Water ~invisible</b> — its own compositing bug (<code>WATER_COL × atlas × Lambert × 0.65 alpha</code>, ~1184/1316), <em>not</em> the block double-shade; dark transparent water over dark terrain disappears. (Water is meshed — 34k tris.)</span></li>
+            <li><span class="sev low">minor</span><span class="t">Clouds read as flat streaks (8 flat quads); manifest R6 "transparent water composited correctly" + I5 "expanded palette" overclaimed (Codex).</span></li>
+            <li><span class="sev low">note</span><span class="t"><b>Core loop confirmed solid</b> — save round-trips, break/place is one-click, seed is world-deterministic. No MiniMax brick; the strongest core loop of any MiniMax build.</span></li>
           </ul>
         </div>
       </div>
