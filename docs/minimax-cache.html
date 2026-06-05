@@ -210,6 +210,41 @@ per 1% of interval quota:  uncached ~900,810 fresh   vs   cached ~4,653,813 cach
     <p class="muted"><b>Two independent measurements agree:</b> a separate 120-read run (different prefix, 100,082
       <code>cache_read</code> per call) measured <b>~5.4×</b> by quota; this A/B measured <b>~5.2×</b>. Both sit within the
       ±1-integer-percent resolution of the meter, and both match the docs' ~5× pricing ratio.</p>
+
+    <h3>The two requests, side by side <small>(real requests from the run above, prefix truncated)</small></h3>
+    <p class="muted">Same endpoint, same <code>cache_control</code> marker, same ~100k-token prefix — the <b>only</b>
+      difference is whether that prefix <em>repeats</em> byte-for-byte:</p>
+    <pre><span class="c"># UNCACHED — a UNIQUE nonce makes the prefix new every call → it can never match the cache</span>
+POST https://api.minimax.io/anthropic/v1/messages        <span class="c">(header: anthropic-version: 2023-06-01)</span>
+{
+  "model": "MiniMax-M3", "max_tokens": 16,
+  "system": [{
+    "type": "text",
+    "cache_control": { "type": "ephemeral" },
+    "text": "<span class="y">[ab-uncached run=…-90522 req=3 1780648…321]</span> You are a helpful, precise assistant. …<span class="c">(×12500 ≈ 100k tok)</span>"
+  }],                                <span class="c">▲ unique nonce → prefix differs every call</span>
+  "messages": [{ "role": "user", "content": "reply uncached 3" }]
+}
+<span class="c"># → response usage:</span>
+{ "input_tokens": <span class="r">100090</span>, "cache_read_input_tokens": 114, "cache_creation_input_tokens": 0 }
+<span class="c"># the whole ~100k prefix is billed as FRESH input</span></pre>
+    <pre><span class="c"># CACHED — a STABLE prefix (same bytes every call) matches the cached copy</span>
+{
+  "model": "MiniMax-M3", "max_tokens": 16,
+  "system": [{
+    "type": "text",
+    "cache_control": { "type": "ephemeral" },
+    "text": "<span class="g">[ab-cached run=…-90522]</span> You are a helpful, precise assistant. …<span class="c">(×12500 ≈ 100k tok — IDENTICAL every call)</span>"
+  }],                                <span class="c">▲ byte-identical every call</span>
+  "messages": [{ "role": "user", "content": "reply cached 7" }]
+}
+<span class="c"># → response usage:</span>
+{ "input_tokens": <span class="g">109</span>, "cache_read_input_tokens": <span class="g">100082</span>, "cache_creation_input_tokens": 0 }
+<span class="c"># only 109 tokens billed fresh; ~100k served from cache (~5× cheaper)</span></pre>
+    <p class="muted"><b>That is the whole mechanism.</b> Keep the prefix identical and ~100,000 input tokens collapse to
+      <b>109 fresh + 100,082 cache_read</b>; change a single byte (the nonce) and you pay full price for all ~100k. Note
+      <code>cache_creation_input_tokens</code> is <code>0</code> in <em>both</em> — that field never tells you anything on M3.</p>
+
     <div class="callout info">
       <b>Safety of the A/B harness.</b> The benchmark was adversarially reviewed (an independent GPT-5.5 pass) and made
       overspend-proof before running: it <b>reserves the worst-case next-request cost before every send</b> (so the
