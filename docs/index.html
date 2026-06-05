@@ -144,12 +144,12 @@
             <text x="450" y="290" font-size="10" fill="#7c8aa0" text-anchor="middle">8h</text>
             <text x="259" y="310" font-size="10.5" fill="#5b6b80" text-anchor="middle">build time (log scale) →</text>
             <text x="15" y="147" font-size="10.5" fill="#5b6b80" text-anchor="middle" transform="rotate(-90 15 147)">capability →</text>
-            <circle cx="326" cy="27" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="332" y="31" font-size="11" font-weight="600" fill="#0f2233">Opus 96.5</text>
-            <circle cx="238" cy="32" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="232" y="36" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">GPT 94.5</text>
-            <circle cx="450" cy="75" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="443" y="79" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">Hermes 78</text>
-            <circle cx="388" cy="108" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="382" y="112" font-size="11" font-weight="600" fill="#0f2233" text-anchor="end">M3·Pi 65</text>
-            <circle cx="72" cy="121" r="6" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/><text x="79" y="125" font-size="11" font-weight="600" fill="#0f2233">2.7 (60)</text>
-            <circle cx="284" cy="173" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="290" y="177" font-size="11" font-weight="600" fill="#0f2233">Mavis 40</text>
+            <circle cx="326" cy="27" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="332" y="31" font-size="10" font-weight="600" fill="#0f2233">Opus-4.8 · 96.5</text>
+            <circle cx="238" cy="32" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="232" y="36" font-size="10" font-weight="600" fill="#0f2233" text-anchor="end">GPT-5.5 · 94.5</text>
+            <circle cx="450" cy="75" r="6" fill="#16a34a" stroke="#fff" stroke-width="1.5"/><text x="443" y="79" font-size="10" font-weight="600" fill="#0f2233" text-anchor="end">MiniMax-M3 (Hermes) · 78</text>
+            <circle cx="388" cy="108" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="382" y="112" font-size="10" font-weight="600" fill="#0f2233" text-anchor="end">MiniMax-M3 (Pi) · 65</text>
+            <circle cx="72" cy="121" r="6" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/><text x="79" y="125" font-size="10" font-weight="600" fill="#0f2233">MiniMax-2.7 (Pi) · 60</text>
+            <circle cx="284" cy="173" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="290" y="177" font-size="10" font-weight="600" fill="#0f2233">MiniMax-M3 (MiniMax&nbsp;Code) · 40</text>
           </g>
         </svg>
         <figcaption><b>Capability × build time</b> — round 1, all six. Time is a log axis (7m → 8h). GPT &amp; Opus sit top-left; Hermes earns its 78 only at the far right.</figcaption>
@@ -159,12 +159,12 @@
           <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700;margin-bottom:2px">Token breakdown — output vs. input/context</div>
           <table style="font-size:11.5px">
             <tr><th>Build</th><th class="num">Output<br><span style="font-weight:400;text-transform:none;letter-spacing:0">generated</span></th><th class="num">Input / ctx<br><span style="font-weight:400;text-transform:none;letter-spacing:0">throughput</span></th><th class="num">Total</th></tr>
-            <tr><td><b>Opus-4.8</b> <small>ultracode</small></td><td class="num"><b>77k</b></td><td class="num">~6.6M*</td><td class="num">~6.9M</td></tr>
-            <tr><td><b>GPT-5.5</b> <small>xhigh</small></td><td class="num"><b>50k</b></td><td class="num">11.4M</td><td class="num">~11.4M</td></tr>
-            <tr><td>MiniMax-2.7 <small>Pi</small></td><td class="num" colspan="2" style="text-align:center;color:var(--dim)">lump — no split</td><td class="num">7.4M</td></tr>
-            <tr><td>M3 · Pi</td><td class="num" colspan="2" style="text-align:center;color:var(--dim)">lump — no split</td><td class="num">17.75M</td></tr>
-            <tr><td>M3 · MiniMax&nbsp;Code</td><td class="num"><b>87k</b></td><td class="num">19.75M</td><td class="num">19.84M</td></tr>
-            <tr><td>M3 · Hermes <small>R1</small></td><td class="num"><b>120k</b></td><td class="num">51.56M</td><td class="num">51.7M</td></tr>
+            <tr><td><b>Opus-4.8</b> <small>(ultracode)</small></td><td class="num"><b>77k</b></td><td class="num">~6.6M*</td><td class="num">~6.9M</td></tr>
+            <tr><td><b>GPT-5.5</b> <small>(xhigh)</small></td><td class="num"><b>50k</b></td><td class="num">11.4M</td><td class="num">~11.4M</td></tr>
+            <tr><td>MiniMax-2.7 <small>(Pi)</small></td><td class="num" colspan="2" style="text-align:center;color:var(--dim)">lump — no split</td><td class="num">7.4M</td></tr>
+            <tr><td>MiniMax-M3 <small>(Pi)</small></td><td class="num" colspan="2" style="text-align:center;color:var(--dim)">lump — no split</td><td class="num">17.75M</td></tr>
+            <tr><td>MiniMax-M3 <small>(MiniMax&nbsp;Code)</small></td><td class="num"><b>87k</b></td><td class="num">19.75M</td><td class="num">19.84M</td></tr>
+            <tr><td>MiniMax-M3 <small>(Hermes) · R1</small></td><td class="num"><b>120k</b></td><td class="num">51.56M</td><td class="num">51.7M</td></tr>
           </table>
         </div>
         <figcaption><b>Output — the actually-generated tokens — is tiny &amp; comparable: 50–130k for every build that splits it.</b> The headline “millions” are all <b>input/context</b> re-read each agent turn. <span class="dim">*Opus’s input is mostly discounted cache-reads; the two Pi builds report only a lump total (no in/out split). Round 2, except Hermes (R1).</span></figcaption>
