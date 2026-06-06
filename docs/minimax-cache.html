@@ -269,12 +269,15 @@ POST https://api.minimax.io/anthropic/v1/messages        <span class="c">(header
       <div class="callout bad" style="margin:14px 0">
         <b>A real example of the second point.</b> This benchmark's heaviest run — the 5-agent kanban "Hermes" build of
         MiniMax-M3 — logged <b>0 cache reads and 0 cache writes across 31.5M input tokens</b> in its round-2 pass
-        (242 API calls, input:output ≈ 495:1). <b>Hermes supports MiniMax caching</b> (its prompt-cache policy enables
-        <code>cache_control</code> for the <code>api.minimax.io</code> endpoint, and it correctly tallies
-        <code>cache_read</code> — so the zero is real, not a counting gap). But a 5-agent kanban run is hostile to prefix
-        caching: the orchestrator re-reads every agent's output and the context is repeatedly compressed/rewritten, so the
-        cached prefix almost never repeats byte-for-byte → <b>0 hits → full price for all 31.5M tokens</b>, even though M3
-        caching works. It's the multi-agent usage pattern, not a missing capability on either side.
+        (242 API calls, input:output ≈ 495:1). Hermes correctly tallies <code>cache_read</code> — so the zero is real, not a counting gap. The root cause was traced
+        to a <b>one-line Hermes config bug</b>: an empty <code>model.base_url</code> in <code>~/.hermes/config.yaml</code>.
+        Hermes decides whether to attach <code>cache_control</code> via a host-check against the agent's <code>base_url</code>,
+        and the OAuth path leaves that field empty (the real endpoint lives in a different attribute the policy doesn't read).
+        So the check failed and <b>no <code>cache_control</code> markers were ever sent</b> — even though the request still
+        reached <code>api.minimax.io</code> — and it paid <b>full price on all 31.5M tokens</b>. Setting
+        <code>model.base_url</code> to the endpoint flips the policy on and caching resumes. (A secondary issue — Hermes'
+        "system + last&nbsp;3 messages" breakpoint strategy — still undercaches long multi-agent chats even after the fix.)
+        M3 caching itself works (proven above); this was a harness <em>config</em> gap, not a model or provider limit.
       </div>
       <p class="muted" style="margin-bottom:0">So when comparing token spend across agents, "input tokens" is not a flat
         unit: a cache-read input token can be ~5× cheaper than a fresh one. The
