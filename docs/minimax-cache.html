@@ -61,9 +61,9 @@
       · all results reproduced live · part of the <a href="index.html">coding-benchmark</a> token-cost work.</div>
     <div class="toc">
       <b style="color:var(--ink)">Jump:</b>
-      <a href="#verdict">Verdict</a><a href="#how">How caching works</a><a href="#claim">The claim</a>
+      <a href="#verdict">Verdict</a><a href="#how">How caching works</a><a href="#wires">Both wires</a><a href="#claim">The claim</a>
       <a href="#test1">Test 1 · does it cache?</a><a href="#quirk">The M3 quirk</a><a href="#wrong">Why the report is wrong</a>
-      <a href="#test2">Test 2 · is it cheaper?</a><a href="#bench">Benchmark implications</a><a href="#report">Correct bug report</a>
+      <a href="#test2">Test 2 · is it cheaper?</a><a href="#bench">Implications</a><a href="#hermes">Hermes fix</a><a href="#report">Bug report</a>
       <a href="#repro">Reproduce</a>
     </div>
   </header>
@@ -106,6 +106,33 @@
       <p class="muted" style="margin-bottom:0"><b>The M3 deviation, up front:</b> M3 serves cache reads correctly but
         <b>never reports <code>cache_creation_input_tokens</code></b> — it stays <code>0</code> even on the write. Every
         confusion below traces back to people reading that <code>0</code> as "nothing was cached."</p>
+    </div>
+  </section>
+
+  <section id="wires">
+    <h2>Both endpoints cache: Anthropic-wire vs OpenAI-wire</h2>
+    <div class="panel">
+      <p style="margin-top:0">MiniMax-M3 caches on <b>both</b> of its compatible endpoints — the only difference is
+        <em>how you trigger it</em>:</p>
+      <table>
+        <tr><th>Wire</th><th>Endpoint</th><th>How caching engages</th><th>Reported as</th></tr>
+        <tr><td><b>Anthropic</b></td><td><code>api.minimax.io/anthropic</code> → <code>/v1/messages</code></td>
+          <td><b>Explicit</b> — mark a block with <code>cache_control:&nbsp;{"type":"ephemeral"}</code></td>
+          <td><code>usage.cache_read_input_tokens</code></td></tr>
+        <tr><td><b>OpenAI</b></td><td><code>api.minimax.io/v1</code> → <code>/chat/completions</code></td>
+          <td><b>Automatic</b> — no marker; just repeat the prefix</td>
+          <td><code>usage.prompt_tokens_details.cached_tokens</code></td></tr>
+      </table>
+      <p class="muted">Run the same cold-start nonce test (~4,000-token prefix) on each, and they are <b>identical</b>:</p>
+      <pre><span class="c"># anthropic wire (explicit cache_control)        # openai wire (automatic, no marker)</span>
+call   cache_read   status         call   cached_tokens   status
+ 1        114        <span class="y">write</span>           1        114         <span class="y">write</span>
+ 2       4082        <span class="g">HIT</span>             2       4082         <span class="g">HIT</span>
+ 3       4082        <span class="g">HIT</span>             3       4082         <span class="g">HIT</span></pre>
+      <p class="muted" style="margin-bottom:0"><b>Neither format is broken</b> — same 114→4082 jump, same ~5× discount.
+        One caveat that matters for the Hermes case below: on the Anthropic wire, caching only happens if the client
+        actually <em>sends</em> the marker, so a harness that forgets to attach <code>cache_control</code> silently pays
+        full price — whereas the OpenAI wire would have cached automatically.</p>
     </div>
   </section>
 
@@ -267,23 +294,59 @@ POST https://api.minimax.io/anthropic/v1/messages        <span class="c">(header
           changes the prefix and silently <b>invalidates the cache</b> — turning every "input" token back into full price.</li>
       </ul>
       <div class="callout bad" style="margin:14px 0">
-        <b>A real example of the second point.</b> This benchmark's heaviest run — the 5-agent kanban "Hermes" build of
-        MiniMax-M3 — logged <b>0 cache reads and 0 cache writes across 31.5M input tokens</b> in its round-2 pass
-        (242 API calls, input:output ≈ 495:1). Hermes correctly tallies <code>cache_read</code> — so the zero is real, not a counting gap. The root cause was traced
-        to a <b>one-line Hermes config bug</b>: an empty <code>model.base_url</code> in <code>~/.hermes/config.yaml</code>.
-        Hermes decides whether to attach <code>cache_control</code> via a host-check against the agent's <code>base_url</code>,
-        and the OAuth path leaves that field empty (the real endpoint lives in a different attribute the policy doesn't read).
-        So the check failed and <b>no <code>cache_control</code> markers were ever sent</b> — even though the request still
-        reached <code>api.minimax.io</code> — and it paid <b>full price on all 31.5M tokens</b>. Setting
-        <code>model.base_url</code> to the endpoint flips the policy on and caching resumes. (A secondary issue — Hermes'
-        "system + last&nbsp;3 messages" breakpoint strategy — still undercaches long multi-agent chats even after the fix.)
-        M3 caching itself works (proven above); this was a harness <em>config</em> gap, not a model or provider limit.
-      </div>
+        <b>A real example of the first point.</b> This benchmark's heaviest run — the 5-agent kanban "Hermes" build of
+        MiniMax-M3 — logged <b>0 cache reads across 31.5M input tokens</b> (input:output ≈ 495:1) and paid full price,
+        because a one-line config bug stopped its harness from ever sending <code>cache_control</code>.
+        <a href="#hermes"><b>Full diagnosis &amp; the one-line fix below ↓</b></a></div>
       <p class="muted" style="margin-bottom:0">So when comparing token spend across agents, "input tokens" is not a flat
         unit: a cache-read input token can be ~5× cheaper than a fresh one. The
         <a href="index.html#value">benchmark's token breakdown</a> shows output tokens are tiny and comparable across
         models; the large input/throughput figures are where caching — when actually engaged — changes the economics.</p>
     </div>
+  </section>
+
+  <section id="hermes">
+    <h2>Case study: a 5× bill from one empty config field <small>(the Hermes fix)</small></h2>
+    <p class="muted">A real, diagnosed-and-fixed instance of "the harness forgot to send the marker" — the 5-agent
+      kanban Hermes (Nous Research) build of MiniMax-M3, the heaviest run in <a href="index.html#value">the benchmark</a>.</p>
+    <div class="two">
+      <div class="panel">
+        <h3 style="margin-top:0">Symptom</h3>
+        <ul class="muted" style="margin:.2em 0 0">
+          <li><b>31.5M+ input tokens</b> billed at the full uncached rate.</li>
+          <li>Every call: <code>cache_read = 0</code>. Hermes <em>does</em> tally cache reads correctly, so the zero is real.</li>
+          <li>No <code>cache_control</code> markers on outgoing requests, though the endpoint supports caching.</li>
+          <li>Silent — no error, no warning. You find out from the bill.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3 style="margin-top:0">Root cause</h3>
+        <p class="muted" style="margin:.2em 0 0">An <b>empty <code>model.base_url</code></b> in <code>~/.hermes/config.yaml</code>.
+          Hermes' <code>anthropic_prompt_cache_policy()</code> decides whether to attach <code>cache_control</code> via a
+          <b>host-check on <code>agent.base_url</code></b> — but the OAuth path leaves that field empty (the real endpoint
+          lives in a different attribute the policy never reads). Empty host → check fails → policy returns
+          <code>(False,&nbsp;False)</code> → no markers → full price.</p>
+      </div>
+    </div>
+    <h3>The one-line fix</h3>
+    <pre><span class="c"># set the resolved endpoint so the cache-policy host-check passes</span>
+hermes config set model.base_url "https://api.minimax.io/anthropic"
+<span class="c"># (don't hand-edit ~/.hermes/config.yaml — Hermes refuses agent-runtime writes to it)</span></pre>
+    <p class="muted">Proof it flips the policy — same agent object, only <code>base_url</code> changes:</p>
+    <pre>a.base_url = ''                                  -> anthropic_prompt_cache_policy(a) = <span class="r">(False, False)</span>
+a.base_url = 'https://api.minimax.io/anthropic'  -> anthropic_prompt_cache_policy(a) = <span class="g">(True, True)</span></pre>
+    <div class="callout">
+      <b>Two follow-ups worth knowing.</b>
+      <span class="dim">(1) Even after the fix, Hermes' "system + last&nbsp;3 messages" breakpoint strategy under-caches
+      long multi-agent chats — only the system prefix reliably hits; a per-message / chunked strategy would lift cache-read
+      from ~14% to ~50–80% of input. (2) The proper upstream fix is to add the OAuth provider id to the recognized set
+      <em>or</em> fall back to the resolved <code>_anthropic_base_url</code>, plus a one-line warning when caching is off
+      because <code>base_url</code> is empty.)</span>
+    </div>
+    <p class="muted" style="margin-bottom:0"><b>The general checklist</b> when "caching doesn't work" on an
+      Anthropic-compatible provider: (a) run the policy function with the <em>resolved</em> config, not the raw config;
+      (b) confirm the <code>cache_control</code> markers are actually on the wire (dump a request); (c) test the provider
+      directly with a nonced <b>≥512-token</b> prefix and watch <code>cache_read</code> jump cold→warm before blaming it.</p>
   </section>
 
   <section id="report">
