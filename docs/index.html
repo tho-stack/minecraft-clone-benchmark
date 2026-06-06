@@ -82,6 +82,7 @@
   .c-27{background:linear-gradient(90deg,#7c3aed,#a855f7)}
   .c-mc{background:linear-gradient(90deg,#9f1239,#fb7185)}
   .c-hm{background:linear-gradient(90deg,#1e3a8a,#3b82f6)}
+  .c-nt{background:linear-gradient(90deg,#475569,#94a3b8)}
   @media(max-width:760px){.two{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.gcrow{grid-template-columns:96px 1fr 36px}}
 </style>
 </head>
@@ -96,14 +97,16 @@
       <code>docs.html</code>. Graded on <b>130 points</b> — Quality (100) + Documentation (10) + Speed (20) — from source inspection
       and live in-browser play, adversarially reviewed twice (Claude + Codex), with the report itself reviewed by Codex.</p>
     <div class="meta">Four contestants: <b>MiniMax-M3</b> (Pi) · <b>MiniMax-2.7-highspeed</b> (Pi) · <b>GPT-5.5</b> (Codex, xhigh) · <b>Claude Opus-4.8</b> (ultracode) ·
-      run mode <code>/goal</code> + dynamic workflow · world seed 1337. <b>+ two later runs of the same M3 model on other harnesses:</b>
-      <b>MiniMax-M3 · MiniMax&nbsp;Code</b> (MiniMax’s own harness — <a href="#minimax-code">jump →</a>) and
-      <b>MiniMax-M3 · Hermes</b> (kanban, a 3rd harness; the strongest MiniMax build — <a href="#hermes">jump →</a>).</div>
+      run mode <code>/goal</code> + dynamic workflow · world seed 1337. <b>+ three later runs of the same M3 model:</b>
+      <b>MiniMax-M3 · MiniMax&nbsp;Code</b> (MiniMax’s own harness — <a href="#minimax-code">jump →</a>),
+      <b>MiniMax-M3 · Hermes</b> (kanban, a 3rd harness; the strongest MiniMax build — <a href="#hermes">jump →</a>) and
+      <b>MiniMax-M3 · Pi with thinking OFF</b> (does disabling reasoning help? — <a href="#nothinking">jump →</a>).</div>
   </header>
-  <div class="panel" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="margin-right:4px">▶ Play all six builds live:</b> <a class="chip" href="opus-4.8/game.html">Opus-4.8</a> <a class="chip" href="gpt-5.5/game.html">GPT-5.5</a> <a class="chip" href="minimax-m3/game.html">M3 · Pi</a> <a class="chip" href="minimax-m2.7-highspeed/game.html">MiniMax-2.7</a> <a class="chip" href="round2/minimax-code-m3/game.html">M3 · MiniMax&nbsp;Code <small>(R2)</small></a> <a class="chip" href="hermes-m3/game.html">M3 · Hermes</a> <small class="dim">— click the canvas to capture the mouse</small></div>
+  <div class="panel" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="margin-right:4px">▶ Play all seven builds live:</b> <a class="chip" href="opus-4.8/game.html">Opus-4.8</a> <a class="chip" href="gpt-5.5/game.html">GPT-5.5</a> <a class="chip" href="minimax-m3/game.html">M3 · Pi</a> <a class="chip" href="minimax-m2.7-highspeed/game.html">MiniMax-2.7</a> <a class="chip" href="round2/minimax-code-m3/game.html">M3 · MiniMax&nbsp;Code <small>(R2)</small></a> <a class="chip" href="hermes-m3/game.html">M3 · Hermes</a> <a class="chip" href="minimax-m3-nothinking/game.html">M3 · Pi <small>(no-think)</small></a> <small class="dim">— click the canvas to capture the mouse</small></div>
   <div class="panel" style="margin-top:12px;border-left:3px solid var(--accent)"><b>🆕 Round 2 — Self-Repair:</b> each agent got its own bug list and fixed its own build. Verdict: all four fixed their checklists, but only the frontier models stayed playable; both MiniMax builds shipped showstopper regressions. <a href="#round2"><b>Jump to Round 2 →</b></a></div>
   <div class="panel" style="margin-top:12px;border-left:3px solid #2563eb"><b>🆕 5th contestant — M3 · MiniMax&nbsp;Code:</b> the same MiniMax-M3 model on MiniMax’s <em>own</em> first-party harness (not Pi). <b>Broken &amp; unplayable in round 1 → fixed &amp; playable in round 2</b> — the one MiniMax build that improved. <a href="#minimax-code"><b>Jump to it →</b></a></div>
   <div class="panel" style="margin-top:12px;border-left:3px solid #1e3a8a"><b>🆕 6th contestant — M3 · Hermes (kanban):</b> the same M3 model on a <em>third</em> harness, built by a 5-agent kanban squad with in-browser QA. <b>The strongest MiniMax build — playable, 3rd-highest capability (78)</b>, with the best save of any MiniMax run — but a shading bug renders many blocks black. <a href="#hermes"><b>Jump to it →</b></a> · <b>▶ <a href="hermes-m3/game.html">Play it</a></b></div>
+  <div class="panel" style="margin-top:12px;border-left:3px solid #64748b"><b>🆕 7th contestant — M3 · Pi with thinking OFF:</b> the same M3 model on the same Pi harness, but with reasoning <em>disabled</em> — does turning off thinking help? <b>No: unplayable in both rounds (capability 55).</b> The world renders a half-chunk off the physics/raycast grid (you get stuck in blocks) and placement targets the wrong face; round-2 self-repair edited the right lines and passed automated probes, but real play is still <b>"garbage" — trees/water don't read, blocks can't be set/removed</b>, and it looks far below the frontier worlds. <a href="#nothinking"><b>Jump to it →</b></a> · <b>▶ <a href="minimax-m3-nothinking/game.html">Play it</a></b></div>
 
   <main>
 
@@ -150,9 +153,10 @@
             <circle cx="388" cy="108" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="382" y="112" font-size="10" font-weight="600" fill="#0f2233" text-anchor="end">MiniMax-M3 (Pi) · 65</text>
             <circle cx="72" cy="121" r="6" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/><text x="79" y="125" font-size="10" font-weight="600" fill="#0f2233">MiniMax-2.7 (Pi) · 60</text>
             <circle cx="284" cy="173" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="290" y="177" font-size="10" font-weight="600" fill="#0f2233">MiniMax-M3 (MiniMax&nbsp;Code) · 40</text>
+            <circle cx="372" cy="134" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><text x="365" y="145" font-size="10" font-weight="600" fill="#0f2233" text-anchor="end">M3 (Pi, no-think) · 55</text>
           </g>
         </svg>
-        <figcaption><b>Capability × build time</b> — round 1, all six. Time is a log axis (7m → 8h). GPT &amp; Opus sit top-left; Hermes earns its 78 only at the far right.</figcaption>
+        <figcaption><b>Capability × build time</b> — round 1, all seven. Time is a log axis (7m → 8h). GPT &amp; Opus sit top-left; Hermes earns its 78 only at the far right; M3·Pi with thinking off lands mid-field at 55 (and is unplayable).</figcaption>
       </figure>
       <figure>
         <div style="border:1px solid var(--line);border-radius:10px;background:#fcfdfe;padding:11px 13px 13px">
@@ -182,7 +186,7 @@
   </div>
 
   <section>
-    <h2>The six builds <small>— real daylight screenshots, captured live in-browser (seed 1337)</small></h2>
+    <h2>The seven builds <small>— real daylight screenshots, captured live in-browser (seed 1337)</small></h2>
     <div class="gallery">
       <figure><img src="assets/opus-4.8.jpeg" alt="Opus-4.8 at midday"><figcaption><b>Opus-4.8</b> <small>(Claude)</small> — wired per-face textures + ambient occlusion, water, a wandering mob, F3 HUD + crosshair. Noon.</figcaption></figure>
       <figure><img src="assets/gpt-5.5.jpeg" alt="GPT-5.5"><figcaption><b>GPT-5.5</b> <small>(Codex)</small> — wired textures, drifting clouds, a sheep mob, clean F3 HUD. Lower-ambient art, but daylight here.</figcaption></figure>
@@ -190,6 +194,7 @@
       <figure><img src="assets/minimax-m2.7-highspeed.jpeg" alt="MiniMax-2.7-highspeed at midday"><figcaption><b>MiniMax-2.7-highspeed</b> <small>(Pi)</small> — blue-sky day, coastline + clouds, but <em>flat vertex colors</em>: its textures/AO were never wired into the mesh.</figcaption></figure>
       <figure><img src="assets/m3-mavis-r2-fixed.png" alt="MiniMax-M3 · MiniMax Code (Mavis) — continuous grass-and-trees world"><figcaption><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>(Mavis)</small> — one continuous grass-and-trees world. <em>Shown post-repair:</em> its round-1 build was unplayable (floating islands); the round-2 mesher fix made it playable.</figcaption></figure>
       <figure><img src="assets/hermes-m3-world.png" alt="MiniMax-M3 · Hermes (kanban) — hills and trees with black block faces"><figcaption><b>MiniMax-M3 · Hermes</b> <small>(kanban)</small> — the strongest MiniMax world (sky, clouds, trees, water), but its signature <em>black-block shading bug</em> crushes many faces to black. Daylight.</figcaption></figure>
+      <figure><img src="assets/minimax-m3-nothinking.jpeg" alt="MiniMax-M3 · Pi (thinking off) — drab brown world, heavy fog"><figcaption><b>MiniMax-M3 · Pi</b> <small>(thinking OFF)</small> — a drab, foggy, brown-on-brown world that reads far below the frontier builds; and the render grid sits a half-chunk off physics, so you’re stuck in blocks. Midday.</figcaption></figure>
     </div>
     <div class="callout info">
       <b>Why the first screenshots looked dark.</b> Every shot here is a genuine in-browser capture, re-taken at midday. The earlier round
@@ -198,14 +203,14 @@
     </div>
     <div class="gallery">
       <figure><img src="assets/opus-4.8-night.jpeg" alt="Opus-4.8 at night, same world"><figcaption><b>Opus-4.8 — the very same world at night.</b> Day-night cycle (feature X1): stars fade in, the moon orbits, sky + light lerp. Not a rendering fault — just dusk.</figcaption></figure>
-      <figure style="display:flex;align-items:center;justify-content:center"><figcaption style="padding:18px;font-size:13px"><b>Day-night across the field.</b> All six builds cycle sky colour + sun/ambient over time. The earlier “dark” shots just caught the wrong phase — judge brightness from the <b>midday</b> shots above, which is how each looks in normal play. <span class="dim">(A dedicated night capture exists only for Opus; the others are shown at their daylight phase.)</span></figcaption></figure>
+      <figure style="display:flex;align-items:center;justify-content:center"><figcaption style="padding:18px;font-size:13px"><b>Day-night across the field.</b> All seven builds cycle sky colour + sun/ambient over time. The earlier “dark” shots just caught the wrong phase — judge brightness from the <b>midday</b> shots above, which is how each looks in normal play. <span class="dim">(A dedicated night capture exists only for Opus; the others are shown at their daylight phase.)</span></figcaption></figure>
     </div>
   </section>
 
   <section>
     <h2>Verdict</h2>
     <div class="panel">
-      <p style="margin-top:0">All four <b>core builds</b> shipped <b>running voxel worlds</b> — but only three are <b>actually playable</b> <small class="dim">(the two added MiniMax-M3 runs — MiniMax&nbsp;Code &amp; Hermes — are covered as separate experiments below)</small>. Under integration-grading,
+      <p style="margin-top:0">All four <b>core builds</b> shipped <b>running voxel worlds</b> — but only three are <b>actually playable</b> <small class="dim">(the three added MiniMax-M3 runs — MiniMax&nbsp;Code, Hermes &amp; thinking-off — are covered as separate experiments below)</small>. Under integration-grading,
       capability and playability split apart: <b>Opus-4.8 leads on capability (96.5)</b> and GPT-5.5 trails it (94.5), both fully playable.
       <b>MiniMax-M3 · Pi out-points 2.7 on raw capability (65.0 vs 60.0)</b> — richer world, real texture/AO wiring — <b>yet its core build loop is
       broken</b>: duplicated <code>mousedown</code> handlers make every left-click <b>break two blocks</b> and every right-click <b>place two</b>,
@@ -232,9 +237,10 @@
           <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <small>(kanban · added run)</small></td><td class="num">78.0 <small class="dim">→ 82 (R2)</small></td><td class="num">✓</td></tr>
           <tr><td class="rank">4</td><td><b>MiniMax-M3</b> <small>(Pi)</small></td><td class="num">65.0</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span></td></tr>
           <tr><td class="rank">5</td><td><b>MiniMax-2.7-highspeed</b></td><td class="num">60.0</td><td class="num">✓ <small>flat</small></td></tr>
-          <tr><td class="rank">6</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>(added run)</small></td><td class="num">40.0 <small class="dim">→ 70 (R2)</small></td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span> <small>→ ✓ R2</small></td></tr>
+          <tr><td class="rank">6</td><td><b>MiniMax-M3 · Pi</b> <small>(thinking OFF · added run)</small></td><td class="num">55.0</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span> <small>R1 &amp; R2</small></td></tr>
+          <tr><td class="rank">7</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>(added run)</small></td><td class="num">40.0 <small class="dim">→ 70 (R2)</small></td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">✗ broken</span> <small>→ ✓ R2</small></td></tr>
         </table>
-        <small>M3 out-points 2.7 on raw capability (richer world + wired textures/AO) but its core build loop is unusable — the headline ranking (right) gates on playability. <b>Row 5</b> is the same M3 model on MiniMax’s <b>own</b> harness (not Pi) — worst at 40 in round 1, <b>fixed to ~70 and playable</b> in its round-2 self-repair (<a href="#minimax-code">details</a>).</small>
+        <small>M3 out-points 2.7 on raw capability (richer world + wired textures/AO) but its core build loop is unusable — the headline ranking (right) gates on playability. <b>Row 6</b> is the same M3 model on Pi with <b>thinking disabled</b> — a render-vs-physics offset + inverted placement make it unplayable, and unlike the other added runs its R2 self-repair did <em>not</em> recover (<a href="#nothinking">details</a>). <b>Row 7</b> is the same M3 on MiniMax’s <b>own</b> harness — worst at 40 in round 1, <b>fixed to ~70 and playable</b> in round-2 self-repair (<a href="#minimax-code">details</a>).</small>
       </div>
       <div class="panel">
         <h3>Overall <small>(Quality + Docs + Speed · 0–130)</small></h3>
@@ -245,13 +251,15 @@
           <tr><td class="rank">3</td><td><b>MiniMax-M3 · Hermes</b> <span class="pill win">plays</span> <small>(kanban · added run)</small></td><td class="num">78.0</td><td class="num">8</td><td class="num">0‡</td><td class="num"><b>86.0</b></td></tr>
           <tr><td class="rank">4</td><td><b>MiniMax-2.7-highspeed</b> <span class="pill win">plays</span></td><td class="num">60.0</td><td class="num">5</td><td class="num">20</td><td class="num"><b>85.0</b></td></tr>
           <tr><td class="rank dim">5</td><td><b>MiniMax-M3 · Pi</b> <small>not playable*</small></td><td class="num">65.0</td><td class="num">5</td><td class="num">1*</td><td class="num"><b>broken*</b></td></tr>
-          <tr><td class="rank dim">6</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>added run · not playable* (R1)</small></td><td class="num">40.0</td><td class="num">7</td><td class="num">2*</td><td class="num"><b>broken*</b> <small class="dim">→ playable R2</small></td></tr>
+          <tr><td class="rank dim">6</td><td><b>MiniMax-M3 · Pi</b> <small>thinking OFF · added run · not playable§</small></td><td class="num">55.0</td><td class="num">8.5</td><td class="num">1§</td><td class="num"><b>broken§</b></td></tr>
+          <tr><td class="rank dim">7</td><td><b>MiniMax-M3 · MiniMax&nbsp;Code</b> <small>added run · not playable* (R1)</small></td><td class="num">40.0</td><td class="num">7</td><td class="num">2*</td><td class="num"><b>broken*</b> <small class="dim">→ playable R2</small></td></tr>
         </table>
         <small>Headline ranks <b>playable builds first</b>; Speed = round(20 × T<sub>fastest</sub> / T), T<sub>fastest</sub> = 7 min (2.7-highspeed). T = operator wall-clock per build (round 1).<br>
           <b>†GPT-5.5:</b> T = <b>~45 min</b> (≈35 min agent labor + ~10 min operator overhead) → Speed 3. The much larger calendar gap was
           operator-side review delay and is excluded. <b>Opus</b> T ≈ <b>2h</b> → Speed 1; GPT still leads Overall by 1 (107.5 vs 106.5), while Opus leads Capability (96.5).<br>
           <b>*M3·Pi:</b> ranked <b>last</b> — its core build loop is unusable (both verbs double-fire; save doesn’t restore), so it fails the
           playability gate regardless of its 65.0 capability. Its <b>~4h</b> includes a mid-run MiniMax 1026 image-moderation incident — MiniMax’s <em>own</em> platform fault, so it counts (Speed 1, but gated to last). <b>*Mavis</b> T = ~75 min (Speed 2), also gated (R1 unplayable).<br>
+          <b>§M3·Pi (thinking OFF):</b> T ≈ <b>3h 21m</b> (Speed 1), gated — render grid sits a half-chunk off the physics/raycast grid (stuck-in-blocks) + inverted placement. Its R2 self-repair edited the right lines and passed automated probes, but <b>operator hands-on play overturned that: trees/water don’t read, blocks can’t be set/removed — still unplayable.</b><br>
           <b>‡M3·Hermes:</b> playable, but its <b>8h 4m</b> wall-clock (the slowest by far, and ~51.7M tokens — the most expensive of any
           contestant) puts Speed at 0. So it places 3rd on both boards: 3rd-highest capability and, among <em>playable</em> builds, 3rd overall.</small>
       </div>
@@ -259,7 +267,7 @@
   </section>
 
   <section>
-    <h2>Quality by bucket <small>— all six builds across the five rubric buckets <span class="dim">(round-1 capability)</span></small></h2>
+    <h2>Quality by bucket <small>— all seven builds across the five rubric buckets <span class="dim">(round-1 capability)</span></small></h2>
     <div class="panel">
       <div class="legend">
         <span><i class="c-opus"></i> Opus-4.8</span>
@@ -268,6 +276,7 @@
         <span><i class="c-m3"></i> MiniMax-M3 · Pi</span>
         <span><i class="c-27"></i> MiniMax-2.7-highspeed</span>
         <span><i class="c-mc"></i> M3 · MiniMax Code <span class="dim">(added run)</span></span>
+        <span><i class="c-nt"></i> M3 · Pi <span class="dim">(thinking OFF, added run)</span></span>
       </div>
       <div class="gchart">
         <div>
@@ -278,6 +287,7 @@
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:82.5%"></i></div><span class="val">16.5</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:85%"></i></div><span class="val">17</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45%"></i></div><span class="val">9</span></div>
+          <div class="gcrow"><span class="lbl">M3·Pi no-think</span><div class="gctrack"><i class="c-nt" style="width:65%"></i></div><span class="val">13</span></div>
         </div>
         <div>
           <div class="gctitle"><span>Player + Interaction</span><span class="max">/ 22</span></div>
@@ -287,6 +297,7 @@
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.8%"></i></div><span class="val">12.5</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:81.8%"></i></div><span class="val">18</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45.5%"></i></div><span class="val">10</span></div>
+          <div class="gcrow"><span class="lbl">M3·Pi no-think</span><div class="gctrack"><i class="c-nt" style="width:27.3%"></i></div><span class="val">6</span></div>
         </div>
         <div>
           <div class="gctitle"><span>Rendering Authenticity</span><span class="max">/ 22</span></div>
@@ -296,6 +307,7 @@
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:45.5%"></i></div><span class="val">10</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:54.5%"></i></div><span class="val">12</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:31.8%"></i></div><span class="val">7</span></div>
+          <div class="gcrow"><span class="lbl">M3·Pi no-think</span><div class="gctrack"><i class="c-nt" style="width:54.5%"></i></div><span class="val">12</span></div>
         </div>
         <div>
           <div class="gctitle"><span>Persistence + Atmosphere</span><span class="max">/ 16</span></div>
@@ -305,6 +317,7 @@
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:56.3%"></i></div><span class="val">9</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:87.5%"></i></div><span class="val">14</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:31.3%"></i></div><span class="val">5</span></div>
+          <div class="gcrow"><span class="lbl">M3·Pi no-think</span><div class="gctrack"><i class="c-nt" style="width:75%"></i></div><span class="val">12</span></div>
         </div>
         <div>
           <div class="gctitle"><span>Scale + Engineering</span><span class="max">/ 20</span></div>
@@ -314,9 +327,10 @@
           <div class="gcrow"><span class="lbl">MiniMax-2.7</span><div class="gctrack"><i class="c-27" style="width:60%"></i></div><span class="val">12</span></div>
           <div class="gcrow"><span class="lbl">M3·Hermes</span><div class="gctrack"><i class="c-hm" style="width:85%"></i></div><span class="val">17</span></div>
           <div class="gcrow"><span class="lbl">M3·MiniMax-Code</span><div class="gctrack"><i class="c-mc" style="width:45%"></i></div><span class="val">9</span></div>
+          <div class="gcrow"><span class="lbl">M3·Pi no-think</span><div class="gctrack"><i class="c-nt" style="width:60%"></i></div><span class="val">12</span></div>
         </div>
       </div>
-      <p class="muted" style="margin:16px 0 0;font-size:12.5px">M3's collapse is concentrated in <b>Player + Interaction</b> (7/22 — both core verbs double-fire) and <b>Persistence</b> (8/16 — no working save); its World + Rendering stay near the top of the field. 2.7's deficit is <b>Rendering</b> (10/22 — textures never wired into the mesh). <b>M3 · MiniMax Code</b> (rose) sits <em>lowest in every bucket</em> — in round 1 its world wouldn't even render — but its round-2 self-repair lifted it to ≈70 and playable. That's the round-1 raw-capability picture; the headline still gates on playability.</p>
+      <p class="muted" style="margin:16px 0 0;font-size:12.5px">M3's collapse is concentrated in <b>Player + Interaction</b> (7/22 — both core verbs double-fire) and <b>Persistence</b> (8/16 — no working save); its World + Rendering stay near the top of the field. 2.7's deficit is <b>Rendering</b> (10/22 — textures never wired into the mesh). <b>M3 · MiniMax Code</b> (rose) sits <em>lowest in every bucket</em> — in round 1 its world wouldn't even render — but its round-2 self-repair lifted it to ≈70 and playable. <b>M3 · Pi with thinking OFF</b> (slate) keeps M3's strong World/Scale buckets but cracks in <b>Player+Interaction</b> (6/22) — a half-chunk render-vs-physics offset leaves you stuck in blocks and the verbs hit the wrong cells. That's the round-1 raw-capability picture; the headline still gates on playability.</p>
     </div>
   </section>
 
@@ -344,15 +358,16 @@
       <tr><td><b>MiniMax-2.7-highspeed</b></td><td>fixed in code</td><td><b>2 blockers</b> (click-to-play; save-restore)</td><td class="num"><span class="pill" style="background:var(--bad);color:#fff">unplayable ↓</span></td></tr>
     </table>
     <small>*GPT playable but 60–90s chunk-load at spawn. &nbsp;↓ 2.7 <b>regressed</b>: playable (flat) in Round 1 → its fix pass broke the start flow.</small>
-    <p class="muted" style="margin:.6em 0 0"><b>This table is the original four.</b> The two later MiniMax-M3 runs ran their <em>own</em> self-repair rounds (separate experiment): <b>M3 · MiniMax&nbsp;Code</b> went <b>broken → playable</b> (<a href="#minimax-code">see it</a>), and <b>M3 · Hermes</b> went <b>78 → 82, a partial fix</b> — the black-block bug persists on stone/AO-heavy faces (<a href="#hermes">see it</a>).</p>
+    <p class="muted" style="margin:.6em 0 0"><b>This table is the original four.</b> The three later MiniMax-M3 runs ran their <em>own</em> self-repair rounds (separate experiment): <b>M3 · MiniMax&nbsp;Code</b> went <b>broken → playable</b> (<a href="#minimax-code">see it</a>), <b>M3 · Hermes</b> went <b>78 → 82, a partial fix</b> — the black-block bug persists on stone/AO-heavy faces (<a href="#hermes">see it</a>), and <b>M3 · Pi (thinking OFF)</b> went <b>broken → still broken</b>: its R2 diff edited the right lines and passed automated probes, but operator play says trees/water don’t read and blocks can’t be set/removed (<a href="#nothinking">see it</a>).</p>
     <h3 style="margin-top:18px">The regressions (what real play + the reviews caught, the harness didn't)</h3>
     <ul class="issues">
       <li><span class="sev critical">M3</span><span class="t"><b>Cave-uncap</b>: a fix removed the cave-depth cap, so caves carve through hillsides/surface → world riddled with holes, you fall through. And the targeted-block <b>highlight is inverted</b> (never shows in play) — <b>which was true in Round 1 too</b>: our Round-1 grade credited it from a screenshot that dismissed the overlay the wrong way. Honest correction.</span></li>
       <li><span class="sev critical">2.7</span><span class="t"><b>Click-to-play stuck</b>: a debug-lock hook added for the test harness makes real pointer-lock never register, so the overlay never dismisses. And the sparse-save "fix" re-applies edits before chunks exist → edits lost on reload.</span></li>
       <li><span class="sev high">Opus</span><span class="t">Pressing <kbd>E</kbd> opens inventory but the start overlay paints over it → can't pick blocks. (Minor: the audio fix reuses one noise buffer → every dig sounds identical.)</span></li>
       <li><span class="sev high">GPT</span><span class="t">60–90s to stream chunks at spawn (a pre-existing FPS death-spiral, not fixed). Minor: right-click on water submerges the block; a sky-dome horizon seam.</span></li>
+      <li><span class="sev critical">M3 no-think</span><span class="t"><b>The false-positive trap, in full.</b> The R2 diff dropped the half-chunk render offset and inverted the placement face — the <em>right</em> edits — and both my probes and Codex’s (a 6-face placement matrix via a <code>__game</code> debug hook) reported <b>PLAYABLE 88/100</b>. Operator hands-on play overruled it: trees/water still don’t read and you can’t set/remove blocks. A debug hook <em>firing</em> the verbs is not the verbs <em>working</em> in real play — same class of miss as the smoke harness. Final: <b>unplayable</b>.</span></li>
     </ul>
-    <h3 style="margin-top:18px">All six round-2 builds, captured live <small>(seed 1337 — the two added MiniMax runs included)</small></h3>
+    <h3 style="margin-top:18px">All seven round-2 builds, captured live <small>(seed 1337 — the three added MiniMax runs included)</small></h3>
     <div class="gallery" style="margin-top:12px">
       <figure><img src="assets/r2-opus.jpeg" alt="Opus-4.8 Round-2: daylight world, textures, AO, F3 HUD"><figcaption><b>Opus-4.8 (R2) — playable.</b> Fixed 5/5 of its list; still a clean textured world with AO + F3 HUD. The only regression is non-fatal (the inventory overlay paints under the start panel).</figcaption></figure>
       <figure><img src="assets/r2-gpt.jpeg" alt="GPT-5.5 Round-2: green hills, sheep, clouds, F3 HUD"><figcaption><b>GPT-5.5 (R2) — playable.</b> Fixed 7/7; grassy hills, a sheep, clouds, block-highlight, full F3 HUD. Caveat: 60–90 s chunk-stream at spawn (pre-existing, not fixed).</figcaption></figure>
@@ -360,6 +375,7 @@
       <figure><img src="assets/r2-27-stuck.jpeg" alt="MiniMax-2.7 Round-2: the Click to Play overlay never dismisses"><figcaption><b>MiniMax-2.7 (R2) — unplayable ↓.</b> Real pointer-lock never registers (a debug-lock test hook reads its own stale value), so "Click to Play" never dismisses and the PAUSED overlay stacks on top.</figcaption></figure>
       <figure><img src="assets/m3-mavis-r2-fixed.png" alt="MiniMax-M3 · MiniMax Code Round-2: one continuous grass-and-trees world"><figcaption><b>MiniMax-M3 · MiniMax&nbsp;Code (R2) — broken → playable.</b> The added 5th run: round-1 floating-islands bug fixed → one continuous grass-and-trees world. The one MiniMax build that improved to playable.</figcaption></figure>
       <figure><img src="assets/r2-hermes.jpeg" alt="MiniMax-M3 · Hermes Round-2: lit sky and clouds but black block faces in foreground"><figcaption><b>MiniMax-M3 · Hermes (R2) — partial.</b> The added 6th run: double-shade gone (lit sky, sand tops, puffy clouds) — <em>but the black-block bug persists</em>: every downward / AO-heavy face still crushes to solid black (no brightness floor).</figcaption></figure>
+      <figure><img src="assets/minimax-m3-nothinking.jpeg" alt="MiniMax-M3 · Pi thinking-off Round-2: drab brown world"><figcaption><b>MiniMax-M3 · Pi, thinking OFF (R2) — still broken.</b> The added 7th run: the R2 diff fixed the offset + placement lines and passed automated probes, but real play is unchanged — trees/water don’t read, blocks can’t be set/removed, and the world looks far below the frontier builds.</figcaption></figure>
     </div>
     <p class="muted" style="margin:.4em 0"><b>Pattern:</b> every build that made non-trivial fixes introduced ≥1 new bug — <b>minor for the frontier models, showstoppers for the MiniMax builds.</b> The lesson: a faked-pointer-lock, no-physics smoke harness (and the agents' own checks) can confirm an assigned bug is <em>fixed</em>, but not that the game is <em>playable</em> — only real play can. The Claude live-play review enumerated the four blockers; Codex's adversarial pass didn't refute them (it focused on review methodology + repo state).</p>
     <h3 style="margin-top:18px">Round-2 effort <small>— the self-repair pass (round-1 build times are in the top chart)</small></h3>
@@ -714,6 +730,46 @@
             <li><span class="sev high">major</span><span class="t"><b>Water ~invisible</b> — its own compositing bug (<code>WATER_COL × atlas × Lambert × 0.65 alpha</code>, ~1184/1316), <em>not</em> the block double-shade; dark transparent water over dark terrain disappears. (Water is meshed — 34k tris.)</span></li>
             <li><span class="sev low">minor</span><span class="t">Clouds read as flat streaks (8 flat quads); manifest R6 "transparent water composited correctly" + I5 "expanded palette" overclaimed (Codex).</span></li>
             <li><span class="sev low">note</span><span class="t"><b>Core loop confirmed solid</b> — save round-trips, break/place is one-click, seed is world-deterministic. No MiniMax brick; the strongest core loop of any MiniMax build.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- MiniMax-M3 · Pi, thinking OFF (7th, added run) -->
+      <div class="card" id="nothinking" style="border:2px solid #64748b">
+        <img class="shot" src="assets/minimax-m3-nothinking.jpeg" alt="MiniMax-M3 · Pi thinking-off — drab brown foggy world">
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h3 style="margin:0">MiniMax-M3 · Pi <small>· thinking OFF · added 7th run</small></h3>
+            <div class="scorebig" style="color:var(--bad)">55.0<small class="dim">/100 cap.</small></div>
+          </div>
+          <div class="chips"><span class="chip" style="background:var(--bad);color:#fff">unplayable R1 &amp; R2</span><span class="chip">does disabling thinking help? <b>no</b></span><span class="chip">~3h 21m · ~71M tok</span><span class="chip">Docs <b>8.5/10</b></span><span class="chip">0 console errors</span></div>
+          <p class="muted" style="margin:.4em 0">The <b>same M3 model on the same Pi harness as “MiniMax-M3 · Pi,” but with reasoning <em>disabled</em></b>
+            (<code>thinking:{type:"disabled"}</code>) — a control for whether M3’s thinking budget is doing the heavy lifting. It is
+            feature-rich on paper (real seed/determinism, chunk streaming, day-night, wandering mobs, Web-Audio SFX, a save that
+            round-trips, zero console errors), but it <b>fails the playability gate twice over</b>: the chunk mesh is rendered a
+            <b>half-chunk (−8, −8) off the physics/raycast grid</b>, so you collide with and break/place against blocks drawn 8 cells
+            away (“stuck in blocks”), and <b>placement uses the inverted face normal</b> (it builds on the hidden far side / below the
+            ground). The world also simply <b>looks far below the frontier</b> — a drab, foggy, brown-on-brown palette.</p>
+          <div class="callout bad" style="margin:8px 0"><b>Round 2 (self-repair): edited the right lines, still unplayable.</b>
+            The R2 pass removed the <code>−CHUNK_W/2</code> offset from both mesh emitters, inverted the DDA placement face, and added a
+            <code>Number.isFinite</code> load guard — and <b>both my live probes and Codex’s (a 6-face placement matrix driven through a
+            <code>__game</code> debug hook) reported PLAYABLE 88/100.</b> <b>Operator hands-on play overturned that:</b> trees and water
+            don’t read as trees/water and blocks can’t actually be set or removed — “garbage.” A debug hook <em>firing</em> the verbs is
+            not the verbs <em>working</em> in real play (the same false-positive class the smoke harness produced for the other MiniMax
+            builds). Net: unplayable in both rounds.</div>
+          <div class="catbars">
+            <span class="k">World/Terrain</span><div class="bar warn"><i style="width:65%"></i></div><span class="v">13/20</span>
+            <span class="k">Player+Interaction</span><div class="bar bad"><i style="width:27.3%"></i></div><span class="v">6/22</span>
+            <span class="k">Rendering Authenticity</span><div class="bar bad"><i style="width:54.5%"></i></div><span class="v">12/22</span>
+            <span class="k">Persistence+Atmosphere</span><div class="bar"><i style="width:75%"></i></div><span class="v">12/16</span>
+            <span class="k">Scale+Engineering</span><div class="bar warn"><i style="width:60%"></i></div><span class="v">12/20</span>
+          </div>
+          <h3 style="margin-top:12px">Issues</h3>
+          <ul class="issues">
+            <li><span class="sev critical">crit</span><span class="t"><b>Render grid offset −½ chunk from physics.</b> Mesh vertices subtract <code>CHUNK_W/2</code> (game.html:795/797, water 944) on top of <code>mesh.position = cx*CHUNK_W</code> (900); camera/collision/raycast use un-shifted logical coords → you’re stuck in blocks, and the verbs hit invisible cells. <em>(R2 removed it in code, but real play still fails.)</em></span></li>
+            <li><span class="sev critical">crit</span><span class="t"><b>Placement face inverted.</b> The DDA records the step direction as the hit face (:1208–1212) not the entered face, so RMB builds on the hidden far side / below the ground (:1701). <em>(R2 inverted it in code.)</em></span></li>
+            <li><span class="sev high">high</span><span class="t"><b>Looks far below frontier</b> — drab brown-on-brown surface, busy dotted texture, heavy fog; trees/water don’t read in play. Visual execution, not just feature presence.</span></li>
+            <li><span class="sev low">note</span><span class="t"><b>What does work</b> (in isolation): real seed/determinism (HUD hash stable across reloads), chunk streaming, day-night, 6 wandering mobs, Web-Audio SFX, a finite-guarded save, zero console errors, single-file contract (only pinned <code>three@0.160.0</code>). Disabling thinking did not help M3 here.</span></li>
           </ul>
         </div>
       </div>
