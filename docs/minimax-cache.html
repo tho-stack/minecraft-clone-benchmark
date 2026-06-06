@@ -129,6 +129,18 @@ call   cache_read   status         call   cached_tokens   status
  1        114        <span class="y">write</span>           1        114         <span class="y">write</span>
  2       4082        <span class="g">HIT</span>             2       4082         <span class="g">HIT</span>
  3       4082        <span class="g">HIT</span>             3       4082         <span class="g">HIT</span></pre>
+      <p class="muted">And the <em>cost</em> is the same. Running the <a href="#test2">A/B quota benchmark</a> on
+        <em>each</em> wire (uncached vs cached batches, measured on the live 5-hour quota meter) returns the same ~5×
+        discount, within the meter's resolution:</p>
+      <table>
+        <tr><th>Wire</th><th class="num">Uncached → −1% interval</th><th class="num">Cached → −2% interval</th><th class="num">Discount</th></tr>
+        <tr><td><b>Anthropic</b> <small>(explicit)</small></td><td class="num">900,810 fresh</td><td class="num">9,307,626 cache_read</td><td class="num"><b>~5.2×</b></td></tr>
+        <tr><td><b>OpenAI</b> <small>(automatic)</small></td><td class="num">1,100,990 fresh</td><td class="num">8,807,216 cache_read</td><td class="num"><b>~4.0×</b></td></tr>
+        <tr><td>MiniMax docs <small>(list price)</small></td><td class="num" colspan="2" style="text-align:center;color:var(--dim)">cache-read priced ~1/5 of input</td><td class="num">5×</td></tr>
+      </table>
+      <p class="muted">The 4.0× vs 5.2× spread is <b>quantization noise</b>, not a real difference: at a 1–2% meter move
+        each "1%" is really 0.5–1.5%, so the true ~5× can read anywhere from ~3× to ~8×. Every cached read on both wires
+        hit a clean <b>100,082</b> tokens, 0 misses.</p>
       <p class="muted" style="margin-bottom:0"><b>Neither format is broken</b> — same 114→4082 jump, same ~5× discount.
         One caveat that matters for the Hermes case below: on the Anthropic wire, caching only happens if the client
         actually <em>sends</em> the marker, so a harness that forgets to attach <code>cache_control</code> silently pays
